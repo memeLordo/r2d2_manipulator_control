@@ -18,8 +18,6 @@ struct pipe_t {
   double radius() const { return (double)diameter / 2.0 - thickness; }
 };
 
-struct shoulder_t {};
-
 class PipeHadler {
 
 private:
@@ -38,6 +36,8 @@ public:
   }
   double get_radius() { return params.radius(); }
 };
+
+struct shoulder_t {};
 
 class ShoulderHandler {
 
@@ -74,9 +74,10 @@ public:
      *        Да: присвоить углы из shoulder_calc и elbow_calc;
      *        Нет: присвоить углы из shoulder_input elbow_input;
      *  5.  Опубликовать значения:
-     *        shoulder_angle_output       = shoulder_angle,
-     *        elbow_angle_output          = elbow_angle,
-     *        omega_s_output (w_s_output) = omega (w);
+     *        shoulder_angle_output               = shoulder_angle,
+     *        elbow_angle_output                  = elbow_angle,
+     *        omega_shoulder_output (w_s_output)  = omega (w);
+     *        omega_elbow (w_e_output)            = omega (w);
      */
 
     // test_number += msg.data;
@@ -84,7 +85,6 @@ public:
     // new_msg.data = test_number;
     // pub.publish(new_msg);
   }
-
   bool callback_service(std_srvs::SetBool::Request &req,
                         std_srvs::SetBool::Response &res) {
     // if (req.data) {
