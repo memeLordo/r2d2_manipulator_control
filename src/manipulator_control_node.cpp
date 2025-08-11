@@ -2,9 +2,18 @@
 #include <std_msgs/Int64.h>
 #include <std_srvs/SetBool.h>
 
+struct pipe_t {
+  uint16_t diameter;
+  uint8_t thickness;
+  double radius = (double)diameter / 2 - thickness;
+};
+
+struct shoulder_t {};
+
 class PipeHadler {
 
 private:
+  pipe_t params{};
   ros::Subscriber pipe_subscriber;
 
 public:
