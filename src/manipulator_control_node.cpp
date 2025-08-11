@@ -33,15 +33,13 @@ public:
 class ShoulderHandler {
 
 private:
-  int test_number;
   ros::Publisher shoulder_publisher;
   ros::Subscriber shoulder_subscriber;
   ros::ServiceServer test_service;
+  PipeHadler pipeHadler;
 
 public:
-  ShoulderHandler(ros::NodeHandle *node) {
-    test_number = 0;
-
+  ShoulderHandler(ros::NodeHandle *node) : pipeHadler(node) {
     shoulder_subscriber =
         node->subscribe("/manipulator/shoulder_input", 1000,
                         &ShoulderHandler::callback_shoulder, this);
