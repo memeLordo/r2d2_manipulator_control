@@ -2,6 +2,16 @@
 #include <std_msgs/Int64.h>
 #include <std_srvs/SetBool.h>
 
+int h_polynome(const std::vector<double> &coeff, double x) {
+  if (coeff.empty())
+    return 0;
+
+  int result = coeff.back();
+  for (size_t i = coeff.size() - 1; i > 0; --i)
+    result = result * x + coeff[i - 1];
+  return result;
+}
+
 struct pipe_t {
   uint16_t diameter;
   uint8_t thickness;
@@ -21,7 +31,6 @@ public:
     pipe_subscriber = node->subscribe("/pipe_subscriber_node", 1000,
                                       &PipeHadler::callback_pipe, this);
   }
-
   void callback_pipe(const std_msgs::Int64 &msg) {
     // params = pipe_t{msg->pipe_diam, msg->pipe_thickness};
     params =
