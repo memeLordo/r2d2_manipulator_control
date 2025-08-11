@@ -24,22 +24,22 @@ public:
   }
 
   void callback_number(const std_msgs::Int64 &msg) {
-    test_number += msg.data;
-    std_msgs::Int64 new_msg;
-    new_msg.data = test_number;
-    pub.publish(new_msg);
+    // test_number += msg.data;
+    // std_msgs::Int64 new_msg;
+    // new_msg.data = test_number;
+    // pub.publish(new_msg);
   }
 
   bool callback_reset_counter(std_srvs::SetBool::Request &req,
                               std_srvs::SetBool::Response &res) {
-    if (req.data) {
-      test_number = 0;
-      res.success = true;
-      res.message = "Counter has been successfully reset";
-    } else {
-      res.success = false;
-      res.message = "Counter has not been reset";
-    }
+    // if (req.data) {
+    //   test_number = 0;
+    //   res.success = true;
+    //   res.message = "Counter has been successfully reset";
+    // } else {
+    //   res.success = false;
+    //   res.message = "Counter has not been reset";
+    // }
 
     return true;
   }
