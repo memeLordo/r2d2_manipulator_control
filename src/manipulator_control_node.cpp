@@ -15,7 +15,7 @@ int h_polynome(const std::vector<double> &coeff, double x) {
 struct pipe_t {
   uint16_t diameter;
   uint8_t thickness;
-  double radius = (double)diameter / 2 - thickness;
+  double radius() const { return (double)diameter / 2.0 - thickness; }
 };
 
 struct shoulder_t {};
@@ -36,7 +36,7 @@ public:
     params =
         pipe_t{static_cast<uint16_t>(msg.data), static_cast<uint8_t>(msg.data)};
   }
-  pipe_t get_params() { return params; }
+  double get_radius() { return params.radius(); }
 };
 
 class ShoulderHandler {
