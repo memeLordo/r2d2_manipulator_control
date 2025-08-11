@@ -22,7 +22,12 @@ public:
                                       &PipeHadler::callback_pipe, this);
   }
 
-  void callback_pipe(const std_msgs::Int64 &msg) {}
+  void callback_pipe(const std_msgs::Int64 &msg) {
+    // params = pipe_t{msg->pipe_diam, msg->pipe_thickness};
+    params =
+        pipe_t{static_cast<uint16_t>(msg.data), static_cast<uint8_t>(msg.data)};
+  }
+  pipe_t get_params() { return params; }
 };
 
 class ShoulderHandler {
