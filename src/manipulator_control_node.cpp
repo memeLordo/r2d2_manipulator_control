@@ -8,6 +8,7 @@ private:
   int test_number;
   ros::Publisher shoulder_publisher;
   ros::Subscriber shoulder_subscriber;
+  ros::Subscriber pipe_subscriber;
   ros::ServiceServer test_service;
 
 public:
@@ -17,14 +18,15 @@ public:
     shoulder_subscriber =
         node->subscribe("/manipulator/shoulder_input", 1000,
                         &ShoulderHandler::callback_shoulder, this);
-
+    pipe_subscriber = node->subscribe("/pipe_subscriber_node", 1000,
+                                      &ShoulderHandler::callback_pipe, this);
     shoulder_publisher =
         node->advertise<std_msgs::Int64>("/manipulator/shoulder_output", 10);
 
     test_service = node->advertiseService(
         "/test_service", &ShoulderHandler::callback_service, this);
   }
-
+  void callback_pipe(const std_msgs::Int64 &msg) {}
   void callback_shoulder(const std_msgs::Int64 &msg) {
     /**
      *  TODO:
