@@ -59,27 +59,6 @@ public:
         "/test_service", &ShoulderHandler::callback_service, this);
   }
   void callback_shoulder(const std_msgs::Int64 &msg) {
-    /**
-     *  TODO:
-     *  Управление длиной:
-     *  1.  Считывание сообщения с параметрами:
-     *        F_mn, r0;
-     *  2.  Задание ввода для:
-     *        omega (w) = omega_input (w_input)
-     *        D         = D_input,
-     *        s         = s_input,
-     *        r         = D / 2 - s;
-     *  3.  Рассчитать shoulder_calc и elbow_calc;
-     *  4.  Манипулятор зарблокирован?
-     *        Да: присвоить углы из shoulder_calc и elbow_calc;
-     *        Нет: присвоить углы из shoulder_input elbow_input;
-     *  5.  Опубликовать значения:
-     *        shoulder_angle_output               = shoulder_angle,
-     *        elbow_angle_output                  = elbow_angle,
-     *        omega_shoulder_output (w_s_output)  = omega (w);
-     *        omega_elbow (w_e_output)            = omega (w);
-     */
-
     // test_number += msg.data;
     // std_msgs::Int64 new_msg;
     // new_msg.data = test_number;
