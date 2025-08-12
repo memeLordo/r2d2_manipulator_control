@@ -2,11 +2,11 @@
 #include <std_msgs/Int64.h>
 #include <std_srvs/SetBool.h>
 
-int h_polynome(const std::vector<double> &coeff, double x) {
+double h_polynome(const std::vector<double> &coeff, double x) {
   if (coeff.empty())
     return 0;
 
-  int result = coeff.back();
+  double result = coeff.back();
   for (size_t i = coeff.size() - 1; i > 0; --i)
     result = result * x + coeff[i - 1];
   return result;
