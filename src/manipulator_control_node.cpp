@@ -46,11 +46,10 @@ private:
   ros::Publisher shoulder_publisher;
   ros::Subscriber shoulder_subscriber;
   ros::ServiceServer test_service;
+  const std::vector<double> coeffs{-0.00011, 0.341, -110.2};
 
 public:
   ShoulderHandler(ros::NodeHandle *node) {
-    test_number = 0;
-
     shoulder_subscriber =
         node->subscribe("/manipulator/shoulder_input", 1000,
                         &ShoulderHandler::callback_shoulder, this);
@@ -69,6 +68,7 @@ public:
   bool callback_service(std_srvs::SetBool::Request &req,
                         std_srvs::SetBool::Response &res) {
     // if (req.data) {
+
     //   test_number = 0;
     //   res.success = true;
     //   res.message = "Counter has been successfully reset";
