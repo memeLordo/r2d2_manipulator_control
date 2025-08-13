@@ -1,6 +1,7 @@
 #ifndef ELBOW_HANDLER_H
 #define ELBOW_HANDLER_H
 
+#include "PipeHandler.h"
 #include <ros/ros.h>
 #include <std_msgs/Int64.h>
 #include <std_srvs/SetBool.h>
@@ -11,11 +12,14 @@ class ElbowHandler {
 private:
   struct elbow_t {
   } params;
-  ros::Publisher elbow_publisher;
-  ros::Subscriber elbow_subscriber;
-  static const double coeffs[];
-  ros::ServiceServer test_service;
   // static const std::vector<double> coeffs;
+  static const double coeffs[];
+
+  PipeHandler pipeHandler;
+
+  ros::Publisher publisher;
+  ros::Subscriber subscriber;
+  ros::ServiceServer test_service;
 
 public:
   ElbowHandler(ros::NodeHandle *node);

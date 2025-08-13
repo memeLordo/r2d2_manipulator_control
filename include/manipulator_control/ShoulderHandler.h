@@ -10,12 +10,13 @@ class ShoulderHandler {
 private:
   struct shoulder_t {
   } params;
-  ros::Publisher shoulder_publisher;
-  ros::Subscriber shoulder_subscriber;
-  ros::ServiceServer test_service;
   static const double coeffs[];
 
   PipeHandler pipeHandler;
+
+  ros::Publisher publisher;
+  ros::Subscriber subscriber;
+  ros::ServiceServer test_service;
 
 public:
   ShoulderHandler(ros::NodeHandle *node);

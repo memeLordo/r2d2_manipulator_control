@@ -6,10 +6,9 @@
 const double ShoulderHandler::coeffs[]{-0.00011, 0.341, -110.2};
 
 ShoulderHandler::ShoulderHandler(ros::NodeHandle *node) : pipeHandler(node) {
-  shoulder_subscriber =
-      node->subscribe("/manipulator/shoulder_input", 1000,
-                      &ShoulderHandler::callback_shoulder, this);
-  shoulder_publisher =
+  subscriber = node->subscribe("/manipulator/shoulder_input", 1000,
+                               &ShoulderHandler::callback_shoulder, this);
+  publisher =
       node->advertise<std_msgs::Int64>("/manipulator/shoulder_output", 10);
 
   test_service = node->advertiseService(

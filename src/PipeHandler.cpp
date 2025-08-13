@@ -3,8 +3,8 @@
 #include <std_msgs/Int64.h>
 
 PipeHandler::PipeHandler(ros::NodeHandle *node) {
-  pipe_subscriber = node->subscribe("/pipe_subscriber_node", 1000,
-                                    &PipeHandler::callback_pipe, this);
+  subscriber = node->subscribe("/pipe_subscriber_node", 1000,
+                               &PipeHandler::callback_pipe, this);
 }
 void PipeHandler::callback_pipe(const std_msgs::Int64 &msg) {
   // params = pipe_t{msg->pipe_diam, msg->pipe_thickness};

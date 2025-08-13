@@ -11,7 +11,8 @@ private:
     uint8_t thickness;
     double radius() const { return (double)diameter / 2.0 - thickness; }
   } params{};
-  ros::Subscriber pipe_subscriber;
+
+  ros::Subscriber subscriber;
 
 public:
   PipeHandler(ros::NodeHandle *node);

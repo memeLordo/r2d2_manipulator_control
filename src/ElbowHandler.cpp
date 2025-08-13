@@ -5,11 +5,10 @@
 
 const double ElbowHandler::coeffs[]{0.00024, 0.142, 20.9};
 
-ElbowHandler::ElbowHandler(ros::NodeHandle *node) {
-  elbow_subscriber = node->subscribe("/manipulator/elbow_input", 1000,
-                                     &ElbowHandler::callback_elbow, this);
-  elbow_publisher =
-      node->advertise<std_msgs::Int64>("/manipulator/elbow_output", 10);
+ElbowHandler::ElbowHandler(ros::NodeHandle *node) : pipeHandler(node) {
+  subscriber = node->subscribe("/manipulator/elbow_input", 1000,
+                               &ElbowHandler::callback_elbow, this);
+  publisher = node->advertise<std_msgs::Int64>("/manipulator/elbow_output", 10);
 
   test_service = node->advertiseService("/test_service",
                                         &ElbowHandler::callback_service, this);
