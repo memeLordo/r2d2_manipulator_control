@@ -6,10 +6,10 @@
 #include <std_msgs/Int64.h>
 #include <std_srvs/SetBool.h>
 
-struct shoulder_t {};
-
 class ShoulderHandler {
 private:
+  struct shoulder_t {
+  } params;
   ros::Publisher shoulder_publisher;
   ros::Subscriber shoulder_subscriber;
   ros::ServiceServer test_service;

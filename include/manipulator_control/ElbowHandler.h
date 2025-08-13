@@ -5,11 +5,11 @@
 #include <std_msgs/Int64.h>
 #include <std_srvs/SetBool.h>
 
-struct elbow_t {};
-
 class ElbowHandler {
 
 private:
+  struct elbow_t {
+  } params;
   ros::Publisher elbow_publisher;
   ros::Subscriber elbow_subscriber;
   ros::ServiceServer test_service;
