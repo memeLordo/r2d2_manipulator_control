@@ -127,7 +127,6 @@ add_library(${PROJECT_NAME}
   src/PipeHandler.cpp
   src/ShoulderHandler.cpp
   src/ElbowHandler.cpp
-  src/HornerPolynome.cpp
 )
 
 ## Add cmake target dependencies of the library

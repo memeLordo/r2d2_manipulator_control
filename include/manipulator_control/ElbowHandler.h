@@ -1,7 +1,6 @@
 #ifndef ELBOW_HANDLER_H
 #define ELBOW_HANDLER_H
 
-#include "HornerPolynome.h"
 #include <ros/ros.h>
 #include <std_msgs/Int64.h>
 #include <std_srvs/SetBool.h>
