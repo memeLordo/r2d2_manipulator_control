@@ -2,6 +2,7 @@
 #define POLYNOME_H
 
 #include <cstddef>
+#include <vector>
 
 namespace Horner {
 
@@ -12,6 +13,16 @@ constexpr T polynome(const T (&coeffs)[N], T x) {
     return T{0};
   T result = coeffs[N - 1];
   for (size_t i = N - 1; i > 0; --i)
+    result = result * x + coeffs[i - 1];
+  return result;
+}
+
+template <typename T> T polynome(const std::vector<T> &coeffs, T x) {
+  if (coeffs.empty())
+    return T{0};
+
+  T result = coeffs.back();
+  for (size_t i = coeffs.size() - 1; i > 0; --i)
     result = result * x + coeffs[i - 1];
   return result;
 }
