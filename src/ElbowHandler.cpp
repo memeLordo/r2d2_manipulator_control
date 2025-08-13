@@ -3,6 +3,8 @@
 #include <std_msgs/Int64.h>
 #include <std_srvs/SetBool.h>
 
+const double ElbowHandler::coeffs[]{0.00024, 0.142, 20.9};
+
 ElbowHandler::ElbowHandler(ros::NodeHandle *node) {
   elbow_subscriber = node->subscribe("/manipulator/elbow_input", 1000,
                                      &ElbowHandler::callback_elbow, this);

@@ -13,6 +13,8 @@ private:
   ros::Publisher shoulder_publisher;
   ros::Subscriber shoulder_subscriber;
   ros::ServiceServer test_service;
+  static const double coeffs[];
+
   PipeHandler pipeHandler;
 
 public:

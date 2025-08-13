@@ -4,6 +4,7 @@
 #include <ros/ros.h>
 #include <std_msgs/Int64.h>
 #include <std_srvs/SetBool.h>
+// #include <vector>
 
 class ElbowHandler {
 
@@ -12,8 +13,9 @@ private:
   } params;
   ros::Publisher elbow_publisher;
   ros::Subscriber elbow_subscriber;
+  static const double coeffs[];
   ros::ServiceServer test_service;
-  const std::vector<double> coeffs{0.00024, 0.142, 20.9};
+  // static const std::vector<double> coeffs;
 
 public:
   ElbowHandler(ros::NodeHandle *node);

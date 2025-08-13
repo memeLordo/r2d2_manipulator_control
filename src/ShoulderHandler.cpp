@@ -3,6 +3,8 @@
 #include <std_msgs/Int64.h>
 #include <std_srvs/SetBool.h>
 
+const double ShoulderHandler::coeffs[]{-0.00011, 0.341, -110.2};
+
 ShoulderHandler::ShoulderHandler(ros::NodeHandle *node) : pipeHandler(node) {
   shoulder_subscriber =
       node->subscribe("/manipulator/shoulder_input", 1000,
