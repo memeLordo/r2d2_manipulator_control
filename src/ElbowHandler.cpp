@@ -39,5 +39,5 @@ public:
 
     return true;
   }
-  double get_angle(double radius) { return h_polynome(coeffs, radius); }
+  // double get_angle(double radius) { return h_polynome(coeffs, radius); }
 };

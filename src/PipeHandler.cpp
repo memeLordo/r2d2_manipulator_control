@@ -23,5 +23,5 @@ public:
     params =
         pipe_t{static_cast<uint16_t>(msg.data), static_cast<uint8_t>(msg.data)};
   }
-  double get_radius() { return params.radius(); }
+  // double get_radius() { return params.radius(); }
 };
