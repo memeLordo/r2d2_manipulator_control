@@ -14,6 +14,9 @@ ShoulderHandler::ShoulderHandler(ros::NodeHandle *node) : pipeHandler(node) {
 
   test_service = node->advertiseService(
       "/test_service", &ShoulderHandler::callback_service, this);
+  //
+  // TODO: Добавить обновление данных радиуса при инициализации
+  //
 }
 void ShoulderHandler::callback_shoulder(const std_msgs::Int64 &msg) {
   // test_number += msg.data;
@@ -36,5 +39,9 @@ bool ShoulderHandler::callback_service(std_srvs::SetBool::Request &req,
   return true;
 }
 double ShoulderHandler::get_angle() {
+  //
+  // TODO: Добавить проверку на данные радиуса
+  // Если (pipe.radius < H_min) -> обновить данные нв ноде PipeHandler
+  //
   return Horner::polynome(coeffs, pipeHandler.get_radius());
 }
