@@ -17,7 +17,8 @@ private:
 public:
   PipeHandler(ros::NodeHandle *node);
   void callback_pipe(const std_msgs::Int64 &msg);
-  const pipe_t &get_params() const { return params; }
+  // const pipe_t &get_params() const { return params; }
+  const double get_radius() const { return params.radius(); };
 };
 
 #endif // PIPE_HANDLER_H
