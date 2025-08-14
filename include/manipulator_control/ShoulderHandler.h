@@ -23,6 +23,7 @@ public:
   void callback_shoulder(const std_msgs::Int64 &msg);
   bool callback_service(std_srvs::SetBool::Request &req,
                         std_srvs::SetBool::Response &res);
+  double get_angle();
 };
 
 #endif // SHOULDER_HANDLER_H

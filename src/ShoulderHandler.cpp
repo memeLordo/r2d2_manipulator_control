@@ -1,4 +1,5 @@
 #include "ShoulderHandler.h"
+#include "Polynome.h"
 #include <ros/ros.h>
 #include <std_msgs/Int64.h>
 #include <std_srvs/SetBool.h>
@@ -34,4 +35,6 @@ bool ShoulderHandler::callback_service(std_srvs::SetBool::Request &req,
 
   return true;
 }
-// double get_angle(double radius) { return h_polynome(coeffs, radius); }
+double ShoulderHandler::get_angle() {
+  return Horner::polynome(coeffs, pipeHandler.get_radius());
+}
