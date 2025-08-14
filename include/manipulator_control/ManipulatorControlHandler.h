@@ -21,6 +21,7 @@ public:
   void callback_manipulator(const std_msgs::Int64 &msg);
   bool callback_service(std_srvs::SetBool::Request &req,
                         std_srvs::SetBool::Response &res);
+  void setup();
 };
 
 #endif // MANIPULATOR_CONTROL_HANDLER_H

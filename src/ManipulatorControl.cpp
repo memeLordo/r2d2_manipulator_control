@@ -9,7 +9,9 @@ ManipulatorControlHandler::ManipulatorControlHandler(ros::NodeHandle *node)
                       &ManipulatorControlHandler::callback_manipulator, this);
   publisher =
       node->advertise<std_msgs::Int64>("/manipulator/payload_output", 10);
+  setup();
 }
-
+void ManipulatorControlHandler::setup() {
+}
 void ManipulatorControlHandler::callback_manipulator(
     const std_msgs::Int64 &msg) {}
