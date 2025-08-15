@@ -23,7 +23,9 @@ private:
 
 public:
   ShoulderHandler(ros::NodeHandle *node);
-  void callback_shoulder(const r2d2_msg_pkg::DriverStateConstPtr &msg);
+  void callback_shoulder(const r2d2_msg_pkg::DriverStateConstPtr &msg) {
+    callback_params = shoulder_t{msg->omega, msg->theta};
+  };
   // void get_input_speed(const r2d2_msg_pkg::DriverCommandConstPtr &msg);
   // void get_input_angle(const r2d2_msg_pkg::DriverCommandConstPtr &msg);
   void update_speed(const double *omega = nullptr);

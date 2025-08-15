@@ -1,7 +1,5 @@
 #include "ShoulderHandler.h"
-#include "Polynome.h"
 #include "r2d2_msg_pkg/DriverCommand.h"
-#include "r2d2_msg_pkg/DriverState.h"
 #include <ros/ros.h>
 
 #define SHOULDER_INPUT_NODE "/manipulator/shoulder_input"
@@ -17,15 +15,4 @@ ShoulderHandler::ShoulderHandler(ros::NodeHandle *node) : pipe(node) {
   //
   // TODO: Добавить обновление данных радиуса при инициализации
   //
-}
-void ShoulderHandler::callback_shoulder(
-    const r2d2_msg_pkg::DriverState::ConstPtr &msg) {
-  callback_params = shoulder_t{msg->omega, msg->theta};
-}
-double ShoulderHandler::get_angle() {
-  //
-  // TODO: Добавить проверку на данные радиуса
-  // Если (pipe.radius < H_min) -> обновить данные нв ноде PipeHandler
-  //
-  return Horner::polynome(coeffs, pipe.get_radius());
 }
