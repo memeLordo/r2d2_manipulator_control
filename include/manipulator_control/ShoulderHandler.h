@@ -26,11 +26,11 @@ public:
   void callback_shoulder(const r2d2_msg_pkg::DriverCommandConstPtr &msg);
   // void get_input_speed(const r2d2_msg_pkg::DriverCommandConstPtr &msg);
   // void get_input_angle(const r2d2_msg_pkg::DriverCommandConstPtr &msg);
-  void update_speed();
-  void update_angle();
+  void update_speed(const double *omega = nullptr);
+  void update_angle(const double *theta = nullptr);
   double get_speed();
   double get_angle();
-  double calc_angle();
+  double calc_angle(const double *theta = nullptr);
 };
 
 #endif // SHOULDER_HANDLER_H
