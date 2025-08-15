@@ -3,7 +3,7 @@
 
 #include "ElbowHandler.h"
 #include "ShoulderHandler.h"
-#include "r2d2_msg_pkg/DriverCommand.h"
+#include "r2d2_msg_pkg/DriverState.h"
 #include <ros/ros.h>
 
 class ManipulatorControlHandler {
@@ -16,7 +16,7 @@ private:
 
 public:
   ManipulatorControlHandler(ros::NodeHandle *node);
-  void callback_manipulator(const r2d2_msg_pkg::DriverCommandConstPtr &msg);
+  void callback_manipulator(const r2d2_msg_pkg::DriverStateConstPtr &msg);
   void setup();
 };
 

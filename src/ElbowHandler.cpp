@@ -9,12 +9,13 @@
 const double ElbowHandler::coeffs[]{0.00024, 0.142, 20.9};
 
 ElbowHandler::ElbowHandler(ros::NodeHandle *node) : pipe(node) {
-  subscriber = node->subscribe(ELBOW_INPUT_NODE, 1000,
+  subscriber = node->subscribe(ELBOW_OUTPUT_NODE, 1000,
                                &ElbowHandler::callback_elbow, this);
-  publisher = node->advertise<r2d2_msg_pkg::DriverState>(ELBOW_OUTPUT_NODE, 10);
+  publisher =
+      node->advertise<r2d2_msg_pkg::DriverCommand>(ELBOW_INPUT_NODE, 10);
 }
 void ElbowHandler::callback_elbow(
-    const r2d2_msg_pkg::DriverCommand::ConstPtr &msg) {
+    const r2d2_msg_pkg::DriverState::ConstPtr &msg) {
   callback_params = elbow_t{msg->omega, msg->theta};
 }
 

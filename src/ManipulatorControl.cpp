@@ -9,10 +9,10 @@
 ManipulatorControlHandler::ManipulatorControlHandler(ros::NodeHandle *node)
     : elbow(node), shoulder(node) {
   subscriber =
-      node->subscribe(PAYLOAD_INPUT_NODE, 1000,
+      node->subscribe(PAYLOAD_OUTPUT_NODE, 1000,
                       &ManipulatorControlHandler::callback_manipulator, this);
   publisher =
-      node->advertise<r2d2_msg_pkg::DriverState>(PAYLOAD_OUTPUT_NODE, 10);
+      node->advertise<r2d2_msg_pkg::DriverCommand>(PAYLOAD_INPUT_NODE, 10);
   setup();
 }
 void ManipulatorControlHandler::setup() {
@@ -51,7 +51,7 @@ void ManipulatorControlHandler::setup() {
    */
 }
 void ManipulatorControlHandler::callback_manipulator(
-    const r2d2_msg_pkg::DriverCommandConstPtr &msg) {
+    const r2d2_msg_pkg::DriverStateConstPtr &msg) {
   /**
    * TODO:
    * 1. Проверка автоматического разжатия
