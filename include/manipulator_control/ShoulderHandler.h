@@ -24,7 +24,13 @@ private:
 public:
   ShoulderHandler(ros::NodeHandle *node);
   void callback_shoulder(const r2d2_msg_pkg::DriverCommandConstPtr &msg);
+  // void get_input_speed(const r2d2_msg_pkg::DriverCommandConstPtr &msg);
+  // void get_input_angle(const r2d2_msg_pkg::DriverCommandConstPtr &msg);
+  void update_speed();
+  void update_angle();
+  double get_speed();
   double get_angle();
+  double calc_angle();
 };
 
 #endif // SHOULDER_HANDLER_H
