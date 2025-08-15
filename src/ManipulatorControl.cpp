@@ -1,6 +1,7 @@
 #include "ManipulatorControlHandler.h"
+#include "r2d2_msg_pkg/DriverCommand.h"
+#include "r2d2_msg_pkg/DriverState.h"
 #include <ros/ros.h>
-#include <std_msgs/Int64.h>
 
 #define PAYLOAD_INPUT_NODE "/manupulator/payload_input"
 #define PAYLOAD_OUTPUT_NODE "/manupulator/payload_output"
@@ -10,7 +11,8 @@ ManipulatorControlHandler::ManipulatorControlHandler(ros::NodeHandle *node)
   subscriber =
       node->subscribe(PAYLOAD_INPUT_NODE, 1000,
                       &ManipulatorControlHandler::callback_manipulator, this);
-  publisher = node->advertise<std_msgs::Int64>(PAYLOAD_OUTPUT_NODE, 10);
+  publisher =
+      node->advertise<r2d2_msg_pkg::DriverState>(PAYLOAD_OUTPUT_NODE, 10);
   setup();
 }
 void ManipulatorControlHandler::setup() {
@@ -49,7 +51,7 @@ void ManipulatorControlHandler::setup() {
    */
 }
 void ManipulatorControlHandler::callback_manipulator(
-    const std_msgs::Int64 &msg) {
+    const r2d2_msg_pkg::DriverCommandConstPtr &msg) {
   /**
    * TODO:
    * 1. Проверка автоматического разжатия

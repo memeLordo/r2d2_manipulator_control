@@ -2,9 +2,9 @@
 #define SHOULDER_HANDLER_H
 
 #include "PipeHandler.h"
+#include "r2d2_msg_pkg/DriverCommand.h"
 #include <cstdint>
 #include <ros/ros.h>
-#include <std_msgs/Int64.h>
 
 class ShoulderHandler {
 private:
@@ -23,7 +23,7 @@ private:
 
 public:
   ShoulderHandler(ros::NodeHandle *node);
-  void callback_shoulder(const std_msgs::Int64 &msg);
+  void callback_shoulder(const r2d2_msg_pkg::DriverCommandConstPtr &msg);
   double get_angle();
 };
 
