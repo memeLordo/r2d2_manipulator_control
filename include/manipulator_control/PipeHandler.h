@@ -17,8 +17,9 @@ private:
 
 public:
   PipeHandler(ros::NodeHandle *node);
-  void callback_pipe(const r2d2_msg_pkg::PipeParametersConstPtr &msg);
-  // const pipe_t &get_params() const { return params; }
+  void callback_pipe(const r2d2_msg_pkg::PipeParametersConstPtr &msg) {
+    callback_params = pipe_t{msg->pipe_diam, msg->pipe_thickness};
+  };
   const double get_radius() const { return callback_params.radius(); };
 };
 

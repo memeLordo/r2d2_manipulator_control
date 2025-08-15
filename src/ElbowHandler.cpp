@@ -1,6 +1,5 @@
 #include "ElbowHandler.h"
 #include "r2d2_msg_pkg/DriverCommand.h"
-#include "r2d2_msg_pkg/DriverState.h"
 #include <ros/ros.h>
 
 #define ELBOW_INPUT_NODE "/manipulator/elbow_input"
@@ -14,9 +13,3 @@ ElbowHandler::ElbowHandler(ros::NodeHandle *node) : pipe(node) {
   publisher =
       node->advertise<r2d2_msg_pkg::DriverCommand>(ELBOW_INPUT_NODE, 10);
 }
-void ElbowHandler::callback_elbow(
-    const r2d2_msg_pkg::DriverState::ConstPtr &msg) {
-  callback_params = elbow_t{msg->omega, msg->theta};
-}
-
-// double get_angle(double radius) { return h_polynome(coeffs, radius); }

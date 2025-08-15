@@ -13,7 +13,9 @@ private:
 
 public:
   PayloadHandler(ros::NodeHandle *node);
-  void callback_payload(const r2d2_msg_pkg::DriverStateConstPtr &msg);
+  void callback_payload(const r2d2_msg_pkg::DriverStateConstPtr &msg) {
+    callback_force = msg->force;
+  }
 };
 
 #endif // PIPE_HANDLER_H
