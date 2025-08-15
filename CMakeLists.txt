@@ -10,7 +10,6 @@ project(manipulator_control)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
-  std_srvs
 )
 
 ## System dependencies are found with CMake's conventions
