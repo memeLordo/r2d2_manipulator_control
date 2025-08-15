@@ -123,6 +123,7 @@ include_directories(
 ## Declare a C++ library
 add_library(${PROJECT_NAME}
   # src/${PROJECT_NAME}/manipulator_control_node.cpp
+  src/PayloadHandler.cpp
   src/PipeHandler.cpp
   src/ShoulderHandler.cpp
   src/ElbowHandler.cpp
