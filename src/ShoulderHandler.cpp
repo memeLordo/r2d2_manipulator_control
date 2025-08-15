@@ -10,16 +10,16 @@
 const double ShoulderHandler::coeffs[]{-0.00011, 0.341, -110.2};
 
 ShoulderHandler::ShoulderHandler(ros::NodeHandle *node) : pipe(node) {
-  subscriber = node->subscribe(SHOULDER_INPUT_NODE, 1000,
+  subscriber = node->subscribe(SHOULDER_OUTPUT_NODE, 1000,
                                &ShoulderHandler::callback_shoulder, this);
   publisher =
-      node->advertise<r2d2_msg_pkg::DriverState>(SHOULDER_OUTPUT_NODE, 10);
+      node->advertise<r2d2_msg_pkg::DriverCommand>(SHOULDER_INPUT_NODE, 10);
   //
   // TODO: Добавить обновление данных радиуса при инициализации
   //
 }
 void ShoulderHandler::callback_shoulder(
-    const r2d2_msg_pkg::DriverCommand::ConstPtr &msg) {
+    const r2d2_msg_pkg::DriverState::ConstPtr &msg) {
   callback_params = shoulder_t{msg->omega, msg->theta};
 }
 double ShoulderHandler::get_angle() {
