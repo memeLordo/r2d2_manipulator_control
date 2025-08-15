@@ -5,7 +5,6 @@
 #include "ShoulderHandler.h"
 #include <ros/ros.h>
 #include <std_msgs/Int64.h>
-#include <std_srvs/SetBool.h>
 
 class ManipulatorControlHandler {
 private:
@@ -13,14 +12,11 @@ private:
   ShoulderHandler shoulder;
 
   ros::Subscriber subscriber;
-  ros::ServiceServer test_service;
   ros::Publisher publisher;
 
 public:
   ManipulatorControlHandler(ros::NodeHandle *node);
   void callback_manipulator(const std_msgs::Int64 &msg);
-  bool callback_service(std_srvs::SetBool::Request &req,
-                        std_srvs::SetBool::Response &res);
   void setup();
 };
 
