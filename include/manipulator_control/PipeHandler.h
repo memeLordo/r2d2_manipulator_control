@@ -20,7 +20,9 @@ public:
   void callback_pipe(const r2d2_msg_pkg::PipeParametersConstPtr &msg) {
     callback_params = pipe_t{msg->pipe_diam, msg->pipe_thickness};
   };
-  const double get_radius() const { return callback_params.radius(); };
+  template <typename T = double> const T get_radius() const {
+    return static_cast<T>(callback_params.radius());
+  };
 };
 
 #endif // PIPE_HANDLER_H

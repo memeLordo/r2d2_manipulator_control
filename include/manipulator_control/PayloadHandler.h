@@ -15,7 +15,10 @@ public:
   PayloadHandler(ros::NodeHandle *node);
   void callback_payload(const r2d2_msg_pkg::DriverStateConstPtr &msg) {
     callback_force = msg->force;
-  }
+  };
+  template <typename T = double> const T get_force() const {
+    return static_cast<T>(callback_force);
+  };
 };
 
 #endif // PIPE_HANDLER_H
