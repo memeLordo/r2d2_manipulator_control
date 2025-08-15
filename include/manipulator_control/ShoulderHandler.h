@@ -12,11 +12,11 @@ private:
   } params;
   static const double coeffs[];
 
-  PipeHandler pipeHandler;
+  PipeHandler pipe;
 
-  ros::Publisher publisher;
   ros::Subscriber subscriber;
   ros::ServiceServer test_service;
+  ros::Publisher publisher;
 
 public:
   ShoulderHandler(ros::NodeHandle *node);
