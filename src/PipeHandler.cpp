@@ -10,6 +10,5 @@ PipeHandler::PipeHandler(ros::NodeHandle *node) {
 }
 void PipeHandler::callback_pipe(
     const r2d2_msg_pkg::PipeParametersConstPtr &msg) {
-  // params = pipe_t{msg->pipe_diam, msg->pipe_thickness};
   callback_params = pipe_t{msg->pipe_diam, msg->pipe_thickness};
 }
