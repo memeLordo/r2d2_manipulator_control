@@ -11,7 +11,7 @@ private:
     uint16_t diameter{};
     uint8_t thickness{};
     double radius() const { return (double)diameter / 2.0 - thickness; }
-  } params{};
+  } callback_params{};
 
   ros::Subscriber subscriber;
 
@@ -19,7 +19,7 @@ public:
   PipeHandler(ros::NodeHandle *node);
   void callback_pipe(const std_msgs::Int64 &msg);
   // const pipe_t &get_params() const { return params; }
-  const double get_radius() const { return params.radius(); };
+  const double get_radius() const { return callback_params.radius(); };
 };
 
 #endif // PIPE_HANDLER_H

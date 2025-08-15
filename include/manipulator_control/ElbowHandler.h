@@ -16,6 +16,7 @@ private:
     int16_t omega{};
     int16_t theta{};
   } params;
+  elbow_t callback_params;
 
   PipeHandler pipe;
 

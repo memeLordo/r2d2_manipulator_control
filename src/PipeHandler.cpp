@@ -10,6 +10,6 @@ PipeHandler::PipeHandler(ros::NodeHandle *node) {
 }
 void PipeHandler::callback_pipe(const std_msgs::Int64 &msg) {
   // params = pipe_t{msg->pipe_diam, msg->pipe_thickness};
-  params =
+  callback_params =
       pipe_t{static_cast<uint16_t>(msg.data), static_cast<uint8_t>(msg.data)};
 }
