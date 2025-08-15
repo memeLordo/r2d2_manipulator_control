@@ -2,13 +2,15 @@
 #include <ros/ros.h>
 #include <std_msgs/Int64.h>
 
+#define PAYLOAD_INPUT_NODE "/manupulator/payload_input"
+#define PAYLOAD_OUTPUT_NODE "/manupulator/payload_output"
+
 ManipulatorControlHandler::ManipulatorControlHandler(ros::NodeHandle *node)
     : elbowHandler(node), shoulderHandler(node) {
   subscriber =
-      node->subscribe("/manupulator/payload_input", 1000,
+      node->subscribe(PAYLOAD_INPUT_NODE, 1000,
                       &ManipulatorControlHandler::callback_manipulator, this);
-  publisher =
-      node->advertise<std_msgs::Int64>("/manipulator/payload_output", 10);
+  publisher = node->advertise<std_msgs::Int64>(PAYLOAD_OUTPUT_NODE, 10);
   setup();
 }
 void ManipulatorControlHandler::setup() {

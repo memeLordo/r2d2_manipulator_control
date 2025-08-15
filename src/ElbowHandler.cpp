@@ -3,12 +3,15 @@
 #include <std_msgs/Int64.h>
 #include <std_srvs/SetBool.h>
 
+#define ELBOW_INPUT_NODE "/manipulator/elbow_input"
+#define ELBOW_OUTPUT_NODE "/manipulator/elbow_output"
+
 const double ElbowHandler::coeffs[]{0.00024, 0.142, 20.9};
 
 ElbowHandler::ElbowHandler(ros::NodeHandle *node) : pipeHandler(node) {
-  subscriber = node->subscribe("/manipulator/elbow_input", 1000,
+  subscriber = node->subscribe(ELBOW_INPUT_NODE, 1000,
                                &ElbowHandler::callback_elbow, this);
-  publisher = node->advertise<std_msgs::Int64>("/manipulator/elbow_output", 10);
+  publisher = node->advertise<std_msgs::Int64>(ELBOW_OUTPUT_NODE, 10);
 
   test_service = node->advertiseService("/test_service",
                                         &ElbowHandler::callback_service, this);
