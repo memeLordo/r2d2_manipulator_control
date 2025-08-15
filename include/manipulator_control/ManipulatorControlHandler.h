@@ -9,12 +9,12 @@
 
 class ManipulatorControlHandler {
 private:
-  ElbowHandler elbowHandler;
-  ShoulderHandler shoulderHandler;
+  ElbowHandler elbow;
+  ShoulderHandler shoulder;
 
-  ros::Publisher publisher;
   ros::Subscriber subscriber;
   ros::ServiceServer test_service;
+  ros::Publisher publisher;
 
 public:
   ManipulatorControlHandler(ros::NodeHandle *node);

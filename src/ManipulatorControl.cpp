@@ -6,7 +6,7 @@
 #define PAYLOAD_OUTPUT_NODE "/manupulator/payload_output"
 
 ManipulatorControlHandler::ManipulatorControlHandler(ros::NodeHandle *node)
-    : elbowHandler(node), shoulderHandler(node) {
+    : elbow(node), shoulder(node) {
   subscriber =
       node->subscribe(PAYLOAD_INPUT_NODE, 1000,
                       &ManipulatorControlHandler::callback_manipulator, this);
