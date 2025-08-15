@@ -1,7 +1,8 @@
 #include "ShoulderHandler.h"
 #include "Polynome.h"
+#include "r2d2_msg_pkg/DriverCommand.h"
+#include "r2d2_msg_pkg/DriverState.h"
 #include <ros/ros.h>
-#include <std_msgs/Int64.h>
 
 #define SHOULDER_INPUT_NODE "/manipulator/shoulder_input"
 #define SHOULDER_OUTPUT_NODE "/manipulator/shoulder_output"
@@ -11,17 +12,15 @@ const double ShoulderHandler::coeffs[]{-0.00011, 0.341, -110.2};
 ShoulderHandler::ShoulderHandler(ros::NodeHandle *node) : pipe(node) {
   subscriber = node->subscribe(SHOULDER_INPUT_NODE, 1000,
                                &ShoulderHandler::callback_shoulder, this);
-  publisher = node->advertise<std_msgs::Int64>(SHOULDER_OUTPUT_NODE, 10);
+  publisher =
+      node->advertise<r2d2_msg_pkg::DriverState>(SHOULDER_OUTPUT_NODE, 10);
   //
   // TODO: Добавить обновление данных радиуса при инициализации
   //
 }
-void ShoulderHandler::callback_shoulder(const std_msgs::Int64 &msg) {
-  // test_number += msg.data;
-  // std_msgs::Int64 new_msg;
-  // new_msg.data = test_number;
-  // pub.publish(new_msg);
-}
+void ShoulderHandler::callback_shoulder(
+    const r2d2_msg_pkg::DriverCommand::ConstPtr &msg) {
+  callback_params = shoulder_t{msg->omega, msg->theta};
 }
 double ShoulderHandler::get_angle() {
   //

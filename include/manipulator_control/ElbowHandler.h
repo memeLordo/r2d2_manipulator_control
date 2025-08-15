@@ -2,9 +2,9 @@
 #define ELBOW_HANDLER_H
 
 #include "PipeHandler.h"
+#include "r2d2_msg_pkg/DriverCommand.h"
 #include <cstdint>
 #include <ros/ros.h>
-#include <std_msgs/Int64.h>
 
 class ElbowHandler {
 
@@ -24,7 +24,7 @@ private:
 
 public:
   ElbowHandler(ros::NodeHandle *node);
-  void callback_elbow(const std_msgs::Int64 &msg);
+  void callback_elbow(const r2d2_msg_pkg::DriverCommandConstPtr &msg);
 };
 
 #endif // ELBOW_HANDLER_H
