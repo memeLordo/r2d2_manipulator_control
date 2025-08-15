@@ -24,7 +24,9 @@ private:
 
 public:
   ElbowHandler(ros::NodeHandle *node);
-  void callback_elbow(const r2d2_msg_pkg::DriverStateConstPtr &msg);
+  void callback_elbow(const r2d2_msg_pkg::DriverStateConstPtr &msg) {
+    callback_params = elbow_t{msg->omega, msg->theta};
+  };
   // void get_input_speed(const r2d2_msg_pkg::DriverCommandConstPtr &msg);
   // void get_input_angle(const r2d2_msg_pkg::DriverCommandConstPtr &msg);
   void update_speed(const double *omega = nullptr);
