@@ -4,13 +4,15 @@
 #include <std_msgs/Int64.h>
 #include <std_srvs/SetBool.h>
 
+#define SHOULDER_INPUT_NODE "/manipulator/shoulder_input"
+#define SHOULDER_OUTPUT_NODE "/manipulator/shoulder_output"
+
 const double ShoulderHandler::coeffs[]{-0.00011, 0.341, -110.2};
 
 ShoulderHandler::ShoulderHandler(ros::NodeHandle *node) : pipeHandler(node) {
-  subscriber = node->subscribe("/manipulator/shoulder_input", 1000,
+  subscriber = node->subscribe(SHOULDER_INPUT_NODE, 1000,
                                &ShoulderHandler::callback_shoulder, this);
-  publisher =
-      node->advertise<std_msgs::Int64>("/manipulator/shoulder_output", 10);
+  publisher = node->advertise<std_msgs::Int64>(SHOULDER_OUTPUT_NODE, 10);
 
   test_service = node->advertiseService(
       "/test_service", &ShoulderHandler::callback_service, this);
