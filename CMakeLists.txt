@@ -9,7 +9,7 @@ project(manipulator_control)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   roscpp
-  std_msgs
+  r2d2_msg_pkg 
 )
 
 ## System dependencies are found with CMake's conventions
@@ -67,10 +67,10 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs
-# )
+generate_messages(
+  DEPENDENCIES
+  r2d2_msg_pkg
+)
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
