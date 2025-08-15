@@ -5,7 +5,6 @@
 #include <cstdint>
 #include <ros/ros.h>
 #include <std_msgs/Int64.h>
-#include <std_srvs/SetBool.h>
 
 class ShoulderHandler {
 private:
@@ -20,14 +19,11 @@ private:
   PipeHandler pipe;
 
   ros::Subscriber subscriber;
-  ros::ServiceServer test_service;
   ros::Publisher publisher;
 
 public:
   ShoulderHandler(ros::NodeHandle *node);
   void callback_shoulder(const std_msgs::Int64 &msg);
-  bool callback_service(std_srvs::SetBool::Request &req,
-                        std_srvs::SetBool::Response &res);
   double get_angle();
 };
 
