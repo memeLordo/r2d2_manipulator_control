@@ -15,10 +15,7 @@ ElbowHandler::ElbowHandler(ros::NodeHandle *node) : pipe(node) {
 }
 void ElbowHandler::callback_elbow(
     const r2d2_msg_pkg::DriverCommand::ConstPtr &msg) {
-  // test_number += msg.data;
-  // std_msgs::Int64 new_msg;
-  // new_msg.data = test_number;
-  // pub.publish(new_msg);
+  callback_params = elbow_t{msg->omega, msg->theta};
 }
 
 // double get_angle(double radius) { return h_polynome(coeffs, radius); }
