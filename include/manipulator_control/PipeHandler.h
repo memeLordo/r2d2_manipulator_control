@@ -1,14 +1,15 @@
 #ifndef PIPE_HANDLER_H
 #define PIPE_HANDLER_H
 
+#include <cstdint>
 #include <ros/ros.h>
 #include <std_msgs/Int64.h>
 
 class PipeHandler {
 private:
   struct pipe_t {
-    uint16_t diameter;
-    uint8_t thickness;
+    uint16_t diameter{};
+    uint8_t thickness{};
     double radius() const { return (double)diameter / 2.0 - thickness; }
   } params{};
 

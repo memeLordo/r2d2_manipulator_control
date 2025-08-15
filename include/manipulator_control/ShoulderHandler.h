@@ -2,15 +2,19 @@
 #define SHOULDER_HANDLER_H
 
 #include "PipeHandler.h"
+#include <cstdint>
 #include <ros/ros.h>
 #include <std_msgs/Int64.h>
 #include <std_srvs/SetBool.h>
 
 class ShoulderHandler {
 private:
-  struct shoulder_t {
-  } params;
   static const double coeffs[];
+
+  struct shoulder_t {
+    int16_t omega{};
+    int16_t theta{};
+  } params;
 
   PipeHandler pipe;
 

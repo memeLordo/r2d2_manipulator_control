@@ -2,24 +2,26 @@
 #define ELBOW_HANDLER_H
 
 #include "PipeHandler.h"
+#include <cstdint>
 #include <ros/ros.h>
 #include <std_msgs/Int64.h>
 #include <std_srvs/SetBool.h>
-// #include <vector>
 
 class ElbowHandler {
 
 private:
-  struct elbow_t {
-  } params;
-  // static const std::vector<double> coeffs;
   static const double coeffs[];
+
+  struct elbow_t {
+    int16_t omega{};
+    int16_t theta{};
+  } params;
 
   PipeHandler pipe;
 
-  ros::Publisher publisher;
   ros::Subscriber subscriber;
   ros::ServiceServer test_service;
+  ros::Publisher publisher;
 
 public:
   ElbowHandler(ros::NodeHandle *node);
