@@ -8,7 +8,7 @@
 
 const double ElbowHandler::coeffs[]{0.00024, 0.142, 20.9};
 
-ElbowHandler::ElbowHandler(ros::NodeHandle *node) : pipeHandler(node) {
+ElbowHandler::ElbowHandler(ros::NodeHandle *node) : pipe(node) {
   subscriber = node->subscribe(ELBOW_INPUT_NODE, 1000,
                                &ElbowHandler::callback_elbow, this);
   publisher = node->advertise<std_msgs::Int64>(ELBOW_OUTPUT_NODE, 10);

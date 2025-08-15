@@ -15,7 +15,7 @@ private:
   // static const std::vector<double> coeffs;
   static const double coeffs[];
 
-  PipeHandler pipeHandler;
+  PipeHandler pipe;
 
   ros::Publisher publisher;
   ros::Subscriber subscriber;

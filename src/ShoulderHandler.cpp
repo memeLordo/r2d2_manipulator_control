@@ -9,7 +9,7 @@
 
 const double ShoulderHandler::coeffs[]{-0.00011, 0.341, -110.2};
 
-ShoulderHandler::ShoulderHandler(ros::NodeHandle *node) : pipeHandler(node) {
+ShoulderHandler::ShoulderHandler(ros::NodeHandle *node) : pipe(node) {
   subscriber = node->subscribe(SHOULDER_INPUT_NODE, 1000,
                                &ShoulderHandler::callback_shoulder, this);
   publisher = node->advertise<std_msgs::Int64>(SHOULDER_OUTPUT_NODE, 10);
@@ -45,5 +45,5 @@ double ShoulderHandler::get_angle() {
   // TODO: Добавить проверку на данные радиуса
   // Если (pipe.radius < H_min) -> обновить данные нв ноде PipeHandler
   //
-  return Horner::polynome(coeffs, pipeHandler.get_radius());
+  return Horner::polynome(coeffs, pipe.get_radius());
 }
