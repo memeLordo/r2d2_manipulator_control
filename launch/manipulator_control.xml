@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<launch>
+	<!-- Аргументы для конфигурации -->
+	<arg name="debug" default="false"/>
+	<arg name="rate"  default="50.0"/>
+
+	<!-- Основной узел манипулятора -->
+	<node pkg="manipulator_control" 
+        type="manipulator_control_node" 
+        name="manipulator_control_node" 
+        output="screen">
+
+		<!-- Параметры узла -->
+		<!-- <param name="control_rate" value="$(arg rate)"/> -->
+		<!-- <param name="debug_output" value="$(arg debug)"/> -->
+
+		<!-- Переназначение топиков -->
+		<remap from="manipulator_cmd" to="/robot/manipulator/command"/>
+		<remap from="manipulator_state" to="/robot/manipulator/state"/>
+	</node>
+</launch>
