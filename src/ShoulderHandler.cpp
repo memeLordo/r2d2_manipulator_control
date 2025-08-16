@@ -1,4 +1,5 @@
 #include "ShoulderHandler.h"
+#include "Polynome.h"
 #include "r2d2_msg_pkg/DriverCommand.h"
 #include <ros/ros.h>
 
@@ -15,4 +16,10 @@ ShoulderHandler::ShoulderHandler(ros::NodeHandle *node) : pipe(node) {
   //
   // TODO: Добавить обновление данных радиуса при инициализации
   //
+}
+auto ShoulderHandler::calc_angle() {
+  return Horner::polynome(coeffs, pipe.get_radius());
+}
+template <typename T = double> T ShoulderHandler::calc_angle(T theta) {
+  return Horner::polynome(coeffs, theta);
 }

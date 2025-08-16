@@ -2,17 +2,14 @@
 #define ELBOW_HANDLER_H
 
 #include "PipeHandler.h"
-#include "Polynome.h"
 #include "r2d2_msg_pkg/DriverState.h"
 #include <cstdint>
 #include <ros/ros.h>
 
-#define MAX_SIZE 3
-
 class ElbowHandler {
 
 private:
-  static const double coeffs[MAX_SIZE];
+  static const double coeffs[];
 
   struct elbow_t {
     int16_t omega{};
@@ -44,12 +41,8 @@ public:
   template <typename T = double> const T get_angle() const {
     return static_cast<T>(params.theta);
   };
-  template <typename T = double> constexpr T calc_angle() {
-    return Horner::polynome(coeffs, pipe.get_radius());
-  };
-  template <typename T = double> constexpr T calc_angle(T theta) {
-    return Horner::polynome(coeffs, theta);
-  }
+  auto calc_angle();
+  template <typename T> T calc_angle(T theta);
 };
 
 #endif // ELBOW_HANDLER_H
