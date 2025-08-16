@@ -2,6 +2,7 @@
 #define SHOULDER_HANDLER_H
 
 #include "PipeHandler.h"
+#include "r2d2_msg_pkg/DriverCommand.h"
 #include "r2d2_msg_pkg/DriverState.h"
 #include <cstdint>
 #include <ros/ros.h>
@@ -47,6 +48,13 @@ public:
   };
   template <typename T = double> T calc_angle();
   template <typename T = double> T calc_angle(T theta);
+  auto prepare_msg() const {
+    r2d2_msg_pkg::DriverCommand msg;
+    msg.omega = params.omega;
+    msg.theta = params.theta;
+    return msg;
+  };
+  void publish() { publisher.publish(prepare_msg()); };
 };
 
 #endif // SHOULDER_HANDLER_H
