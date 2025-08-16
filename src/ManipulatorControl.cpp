@@ -76,41 +76,44 @@ SETUP_MODE:
 }
 void ManipulatorControlHandler::callback_manipulator() {
   /**
-   * TODO:
+   * INFO:
    * 1. Проверка автоматического разжатия
-   *  if (!manipulator.is_auto())
-   *    setup();
-   * TODO:
    * 2. Проверка блокировки
-   *  if (manipulator.is_locked())
-   *   elbow.update_omega(0);
-   * TODO:
-   * 3. Проверка ограничения угла:
-   *  else{
-   *   if (|elbow.get_input_angle() - elbow.calc_angle(pipe) -5| < 5)
-   *   {
-   * TODO:
+   * 3. Проверка ограничения угла
    * 4. Обновить позицию плеча
-   *    shoulder.set_refresh(True)
-   *    shoulder.update_angle( shoulder.calc_angle(calc_radius(elbow, shoulder))
-   * )
-   *   }
-   * TODO:
    * 5. Проверка полученной нагрузки
-   *  input_force = get_input_force()
-   *  if input_force > manipulator.force_needed
-   *    elbow.update_omega(-elbow.get_input_omega())
-   *  elif input_force < manipulator.force_needed
-   *    elbow.update_omega()
-   *  else
-   *    elbow.update_omega(0)
-   * TODO:
    * 6. Опубликовать переменные
-   *
-   * TODO:
-   *  double calc_radius(ElbowHandler::elbow, ShoulderHandler::shoulder){
-   *     return shoulder.get_length(??) * sin(shoulder.get_input_angle())
-   * + elbow.get_length(??) * sin(elbow.get_input_angle());
-   *      }
    */
+SETUP_LOCALS:
+  bool refresh{false};
+  auto current_force = payload.get_force();
+
+CHECK_MODE:
+  if (!mode) {
+    setup();
+    return;
+  }
+
+CHECK_STATUS:
+  if (!status) {
+    elbow.update_speed(0);
+    goto PUBLISH;
+  }
+
+SET_VALUES:
+  if (abs(elbow.get_angle() - elbow.calc_angle() + 5.0) >= 5.0) {
+    refresh = true;
+    shoulder.update_angle(shoulder.calc_angle(calc_radius()));
+  }
+  if (current_force > get_force())
+    elbow.update_speed(-elbow.get_speed());
+  else if (current_force < get_force())
+    elbow.update_speed();
+  else
+    elbow.update_speed(0);
+
+PUBLISH:
+  elbow.publish();
+  if (refresh)
+    shoulder.publish();
 }
