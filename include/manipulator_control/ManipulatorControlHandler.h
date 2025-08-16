@@ -39,6 +39,17 @@ public:
   template <typename T> void set_mode(T value) {
     mode = static_cast<WorkMode>(value);
   };
+  void update();
+  void update_all();
+  auto get_nozzle() const { return nozzle; };
+  auto get_status() const { return status; };
+  auto get_mode() const { return mode; };
+  template <typename T = double> T get_force() const {
+    return static_cast<T>(params.force_needed);
+  };
+  template <typename T = double> T get_radius() const {
+    return static_cast<T>(params.r0);
+  }
 };
 
 #endif // MANIPULATOR_CONTROL_HANDLER_H
