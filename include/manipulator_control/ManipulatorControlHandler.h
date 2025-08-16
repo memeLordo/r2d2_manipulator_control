@@ -41,6 +41,7 @@ public:
   };
   void update();
   void update_all();
+  void publish_all();
   auto get_nozzle() const { return nozzle; };
   auto get_status() const { return status; };
   auto get_mode() const { return mode; };
