@@ -1,4 +1,6 @@
 #include "ManipulatorControlHandler.h"
+#include <cmath>
+#include <cstdlib>
 #include <ros/ros.h>
 
 void ManipulatorControlHandler::update() {
@@ -23,6 +25,11 @@ void ManipulatorControlHandler::publish_all() {
   elbow.publish();
   shoulder.publish();
 }
+auto ManipulatorControlHandler::calc_radius() {
+  return shoulder.get_length() * sin(shoulder.get_angle()) +
+         elbow.get_length() * sin(elbow.get_angle()) + get_radius();
+}
+
 ManipulatorControlHandler::ManipulatorControlHandler(ros::NodeHandle *node)
     : payload(node), elbow(node), shoulder(node) {
   setup();

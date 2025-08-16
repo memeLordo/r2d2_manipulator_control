@@ -50,7 +50,8 @@ public:
   };
   template <typename T = double> T get_radius() const {
     return static_cast<T>(params.r0);
-  }
+  };
+  auto calc_radius();
 };
 
 #endif // MANIPULATOR_CONTROL_HANDLER_H
