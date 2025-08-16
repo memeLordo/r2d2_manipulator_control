@@ -49,8 +49,8 @@ public:
   template <typename T = double> T get_length() const {
     return static_cast<T>(length);
   };
-  template <typename T = double> T calc_angle();
-  template <typename T = double> T calc_angle(T theta);
+  template <typename T = double> T calc_angle() { return 0; };
+  template <typename T = double> T calc_angle(T theta) { return 0; };
   auto prepare_msg() const {
     r2d2_msg_pkg::DriverCommand msg;
     msg.omega = params.omega;
