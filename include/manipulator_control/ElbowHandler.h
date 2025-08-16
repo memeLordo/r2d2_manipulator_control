@@ -10,6 +10,7 @@ class ElbowHandler {
 
 private:
   static const double coeffs[];
+  static const double length;
 
   struct elbow_t {
     int16_t omega{};
