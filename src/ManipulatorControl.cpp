@@ -1,4 +1,4 @@
-#include "ManipulatorControlHandler.h"
+#include "ManipulatorControl.h"
 #include <cmath>
 #include <cstdlib>
 #include <ros/ros.h>

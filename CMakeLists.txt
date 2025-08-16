@@ -124,7 +124,7 @@ include_directories(
 add_library(${PROJECT_NAME}
   # src/${PROJECT_NAME}/manipulator_control_node.cpp
   src/ElbowHandler.cpp
-  src/ManipulatorControlHandler.cpp
+  src/ManipulatorControl.cpp
   src/PayloadHandler.cpp
   src/PipeHandler.cpp
   src/ShoulderHandler.cpp
