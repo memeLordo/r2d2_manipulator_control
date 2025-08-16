@@ -36,6 +36,10 @@ public:
   template <typename T> void update_angle(T theta) {
     params.theta = static_cast<int16_t>(theta);
   };
+  void update() {
+    update_speed();
+    update_angle();
+  };
   template <typename T = double> T get_speed() const {
     return static_cast<T>(params.omega);
   };

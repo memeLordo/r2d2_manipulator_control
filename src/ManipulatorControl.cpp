@@ -12,6 +12,15 @@ auto ManipulatorControlHandler::get_type(NozzleType msg) {
     return manipulator_t{150, 331.0};
   }
 }
+void ManipulatorControlHandler::update_all() {
+  update();
+  elbow.update();
+  shoulder.update();
+}
+void ManipulatorControlHandler::publish_all() {
+  elbow.publish();
+  shoulder.publish();
+}
 ManipulatorControlHandler::ManipulatorControlHandler(ros::NodeHandle *node)
     : payload(node), elbow(node), shoulder(node) {
   setup();
