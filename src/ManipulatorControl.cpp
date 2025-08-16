@@ -1,7 +1,7 @@
 #include "ManipulatorControlHandler.h"
 #include <ros/ros.h>
 
-auto ManipulatorControlHandler::get_type(Type msg) {
+auto ManipulatorControlHandler::get_type(NozzleType msg) {
   switch (msg) {
   case NONE:
     // TODO: throw error
