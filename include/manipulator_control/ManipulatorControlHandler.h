@@ -9,7 +9,7 @@
 
 class ManipulatorControlHandler {
 private:
-  enum Type { NONE = 0, BRUSH, EMA };
+  enum NozzleType { NONE = 0, BRUSH, EMA };
   struct manipulator_t {
     int16_t force_needed{};
     double r0{};
@@ -27,7 +27,7 @@ public:
   ManipulatorControlHandler(ros::NodeHandle *node);
   void setup();
   void callback_manipulator();
-  auto get_type(Type msg);
+  auto get_type(NozzleType);
 };
 
 #endif // MANIPULATOR_CONTROL_HANDLER_H
