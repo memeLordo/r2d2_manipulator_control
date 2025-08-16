@@ -8,6 +8,12 @@
 
 class ManipulatorControlHandler {
 private:
+  struct manipulator_t {
+    int16_t force_needed{};
+    double r0{};
+  } params;
+  manipulator_t callback_params;
+
   ElbowHandler elbow;
   ShoulderHandler shoulder;
   PayloadHandler payload;
