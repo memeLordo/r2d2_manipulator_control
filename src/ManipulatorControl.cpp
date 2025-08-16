@@ -35,8 +35,6 @@ ManipulatorControlHandler::ManipulatorControlHandler(ros::NodeHandle *node)
   setup();
 }
 void ManipulatorControlHandler::setup() {
-
-SETUP_MODE:
   /**
    * INFO:
    * 0. Получить данные для манипулятора (и трубы)
@@ -46,20 +44,22 @@ SETUP_MODE:
    * 4. Обновить оставшиеся переменные
    * 5. Опкбликовать все переменные
    */
+SET_MODE:
   // TODO: добавить запрос, ожидание и проверку значений
   set_mode(AUTO);
-
   if (!mode)
-    goto SETUP_MODE;
+    goto SET_MODE;
 
+SET_NOZZLE:
   // TODO: добавить запросб ожидание и проверку значений
   set_nozzle(BRUSH);
-
   update_all();
 
+SET_LOCK:
   // TODO: добавить запросб ожидание и проверку значений
   set_lock(UNLOCKED);
 
+SET_VALUES:
   switch (status) {
   case UNLOCKED:
     elbow.update_angle(elbow.calc_angle());
@@ -72,6 +72,8 @@ SETUP_MODE:
   }
   elbow.update_speed();
   shoulder.update_speed();
+
+PUBLISH:
   publish_all();
 }
 void ManipulatorControlHandler::callback_manipulator() {
