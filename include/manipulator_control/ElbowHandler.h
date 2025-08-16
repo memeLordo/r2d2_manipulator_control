@@ -42,8 +42,8 @@ public:
   template <typename T = double> T get_angle() const {
     return static_cast<T>(params.theta);
   };
-  auto calc_angle();
-  template <typename T> T calc_angle(T theta);
+  template <typename T = double> T calc_angle();
+  template <typename T = double> T calc_angle(T theta);
 };
 
 #endif // ELBOW_HANDLER_H
