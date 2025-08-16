@@ -1,4 +1,5 @@
 #include "ElbowHandler.h"
+#include "Polynome.h"
 #include "r2d2_msg_pkg/DriverCommand.h"
 #include <ros/ros.h>
 
@@ -12,4 +13,10 @@ ElbowHandler::ElbowHandler(ros::NodeHandle *node) : pipe(node) {
                                &ElbowHandler::callback_elbow, this);
   publisher =
       node->advertise<r2d2_msg_pkg::DriverCommand>(ELBOW_INPUT_NODE, 10);
+}
+auto ElbowHandler::calc_angle() {
+  return Horner::polynome(coeffs, pipe.get_radius());
+}
+template <typename T = double> T ElbowHandler::calc_angle(T theta) {
+  return Horner::polynome(coeffs, theta);
 }
