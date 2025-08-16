@@ -2,16 +2,15 @@
 #define SHOULDER_HANDLER_H
 
 #include "PipeHandler.h"
-#include "Polynome.h"
+#include "r2d2_msg_pkg/DriverCommand.h"
 #include "r2d2_msg_pkg/DriverState.h"
 #include <cstdint>
 #include <ros/ros.h>
 
-#define MAX_SIZE 3
-
 class ShoulderHandler {
 private:
-  static const double coeffs[MAX_SIZE];
+  static const double coeffs[];
+  static const double length;
 
   struct shoulder_t {
     int16_t omega{};
@@ -26,7 +25,7 @@ private:
 
 public:
   ShoulderHandler(ros::NodeHandle *node);
-  void callback_shoulder(const r2d2_msg_pkg::DriverState::ConstPtr &msg) {
+  void callback_shoulder(const r2d2_msg_pkg::DriverStateConstPtr &msg) {
     callback_params = shoulder_t{msg->omega, msg->theta};
   };
   void update_speed() { params.omega = callback_params.omega; };
@@ -37,18 +36,28 @@ public:
   template <typename T> void update_angle(T theta) {
     params.theta = static_cast<int16_t>(theta);
   };
-  template <typename T = double> const T get_speed() const {
+  void update() {
+    update_speed();
+    update_angle();
+  };
+  template <typename T = double> T get_speed() const {
     return static_cast<T>(params.omega);
   };
-  template <typename T = double> const T get_angle() const {
+  template <typename T = double> T get_angle() const {
     return static_cast<T>(params.theta);
   };
-  template <typename T = double> constexpr T calc_angle() {
-    return Horner::polynome(coeffs, pipe.get_radius());
+  template <typename T = double> T get_length() const {
+    return static_cast<T>(length);
   };
-  template <typename T = double> constexpr T calc_angle(T theta) {
-    return Horner::polynome(coeffs, theta);
-  }
+  template <typename T = double> T calc_angle();
+  template <typename T = double> T calc_angle(T theta);
+  auto prepare_msg() const {
+    r2d2_msg_pkg::DriverCommand msg;
+    msg.omega = params.omega;
+    msg.theta = params.theta;
+    return msg;
+  };
+  void publish() { publisher.publish(prepare_msg()); };
 };
 
 #endif // SHOULDER_HANDLER_H
