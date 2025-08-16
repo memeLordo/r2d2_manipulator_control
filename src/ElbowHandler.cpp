@@ -7,6 +7,7 @@
 #define ELBOW_OUTPUT_NODE "/manipulator/elbow_output"
 
 const double ElbowHandler::coeffs[]{0.00024, 0.142, 20.9};
+const double ElbowHandler::length{5};
 
 ElbowHandler::ElbowHandler(ros::NodeHandle *node) : pipe(node) {
   subscriber = node->subscribe(ELBOW_OUTPUT_NODE, 1000,

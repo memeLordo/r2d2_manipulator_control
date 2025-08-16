@@ -7,6 +7,7 @@
 #define SHOULDER_OUTPUT_NODE "/manipulator/shoulder_output"
 
 const double ShoulderHandler::coeffs[]{-0.00011, 0.341, -110.2};
+const double ShoulderHandler::length{10};
 
 ShoulderHandler::ShoulderHandler(ros::NodeHandle *node) : pipe(node) {
   subscriber = node->subscribe(SHOULDER_OUTPUT_NODE, 1000,
