@@ -30,7 +30,15 @@ public:
   ManipulatorControlHandler(ros::NodeHandle *node);
   void setup();
   void callback_manipulator();
-  auto get_type(NozzleType);
+  template <typename T> void set_nozzle(T value) {
+    nozzle = static_cast<NozzleType>(value);
+  };
+  template <typename T> void set_lock(T value) {
+    status = static_cast<LockStatus>(value);
+  };
+  template <typename T> void set_mode(T value) {
+    mode = static_cast<WorkMode>(value);
+  };
 };
 
 #endif // MANIPULATOR_CONTROL_HANDLER_H
