@@ -3,8 +3,8 @@
 #include "r2d2_msg_pkg/DriverCommand.h"
 #include <ros/ros.h>
 
-#define SHOULDER_INPUT_NODE "/manipulator/shoulder_input"
-#define SHOULDER_OUTPUT_NODE "/manipulator/shoulder_output"
+#define SHOULDER_INPUT_NODE "/shoulder_input"
+#define SHOULDER_OUTPUT_NODE "/shoulder_output"
 
 const double ShoulderHandler::coeffs[]{-0.00011, 0.341, -110.2};
 const double ShoulderHandler::length{10};
