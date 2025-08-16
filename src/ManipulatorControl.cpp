@@ -1,6 +1,17 @@
 #include "ManipulatorControlHandler.h"
 #include <ros/ros.h>
 
+auto ManipulatorControlHandler::get_type(Type msg) {
+  switch (msg) {
+  case NONE:
+    // TODO: throw error
+    return manipulator_t{0, 0.0};
+  case BRUSH:
+    return manipulator_t{100, 347.0};
+  case EMA:
+    return manipulator_t{150, 331.0};
+  }
+}
 ManipulatorControlHandler::ManipulatorControlHandler(ros::NodeHandle *node)
     : payload(node), elbow(node), shoulder(node) {
   setup();
