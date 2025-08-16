@@ -1,15 +1,17 @@
 #include "ManipulatorControlHandler.h"
 #include <ros/ros.h>
 
-auto ManipulatorControlHandler::get_type(NozzleType msg) {
-  switch (msg) {
-  case NONE:
-    // TODO: throw error
-    return manipulator_t{0, 0.0};
+void ManipulatorControlHandler::update() {
+  switch (nozzle) {
   case BRUSH:
-    return manipulator_t{100, 347.0};
+    params = manipulator_t{100, 347.0};
+    break;
   case EMA:
-    return manipulator_t{150, 331.0};
+    params = manipulator_t{150, 331.0};
+    break;
+  default:
+    // TODO: throw error;
+    break;
   }
 }
 void ManipulatorControlHandler::update_all() {
