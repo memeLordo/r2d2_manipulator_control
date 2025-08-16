@@ -47,6 +47,9 @@ public:
   template <typename T = double> T get_angle() const {
     return static_cast<T>(params.theta);
   };
+  template <typename T = double> T get_length() const {
+    return static_cast<T>(length);
+  };
   template <typename T = double> T calc_angle();
   template <typename T = double> T calc_angle(T theta);
   auto prepare_msg() const {
