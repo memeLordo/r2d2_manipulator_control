@@ -1,8 +1,7 @@
 #include "ShoulderHandler.h"
 #include "Polynome.h"
 #include "r2d2_msg_pkg/DriverCommand.h"
-#include <ros/ros.h>
-#include <unistd.h>
+#include <ros/node_handle.h>
 
 #define SHOULDER_INPUT_NODE "/shoulder_input"
 #define SHOULDER_OUTPUT_NODE "/shoulder_output"
