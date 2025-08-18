@@ -1,7 +1,7 @@
 #include "PipeHandler.h"
 #include <ros/ros.h>
 
-#define PIPE_OUTPUT_NOD "/pipe_subscriber_node"
+#define PIPE_OUTPUT_NOD "/parameters/pipe"
 
 PipeHandler::PipeHandler(ros::NodeHandle *node) {
   subscriber =
