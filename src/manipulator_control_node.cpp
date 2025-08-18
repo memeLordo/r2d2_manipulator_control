@@ -6,7 +6,7 @@ int main(int argc, char **argv) {
   ros::init(argc, argv, "manipulator_control");
   ros::NodeHandle node;
   ros::Rate rate(10);
-  ManipulatorControlHandler mc(&node);
+  ManipulatorControlHandler<> mc(&node);
   // ShoulderHandler nc = ShoulderHandler(&nh);
   while (ros::ok()) {
     mc.callback_manipulator();
