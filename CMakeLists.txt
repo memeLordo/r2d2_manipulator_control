@@ -102,10 +102,10 @@ generate_messages(
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES manipulator_control
-#  CATKIN_DEPENDS roscpp std_msgs std_srvs
-#  DEPENDS system_lib
+ # INCLUDE_DIRS include
+ # LIBRARIES manipulator_control
+ # CATKIN_DEPENDS roscpp r2d2_msg_pkg
+ # DEPENDS system_lib
 )
 
 ###########
@@ -123,10 +123,11 @@ include_directories(
 ## Declare a C++ library
 add_library(${PROJECT_NAME}
   # src/${PROJECT_NAME}/manipulator_control_node.cpp
+  src/ElbowHandler.cpp
+  src/ManipulatorControl.cpp
   src/PayloadHandler.cpp
   src/PipeHandler.cpp
   src/ShoulderHandler.cpp
-  src/ElbowHandler.cpp
 )
 
 ## Add cmake target dependencies of the library
@@ -134,11 +135,25 @@ add_library(${PROJECT_NAME}
 ## either from message generation or dynamic reconfigure
 # add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
+# set(SOURCES
+#   include/${PROJECT_NAME}/ElbowHandler.h
+#   include/${PROJECT_NAME}/ManipulatorControlHandler.h
+#   include/${PROJECT_NAME}/PayloadHandler.h
+#   include/${PROJECT_NAME}/PipeHandler.h
+#   include/${PROJECT_NAME}/Polynome.h
+#   include/${PROJECT_NAME}/ShoulderHandler.h
+#   src/ElbowHandler.cpp
+#   src/ManipulatorControlHandler.cpp
+#   src/PayloadHandler.cpp
+#   src/PipeHandler.cpp
+#   src/ShoulderHandler.cpp
+# )
+
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(${PROJECT_NAME}_node 
-  src/manipulator_control_node.cpp
+  src/manipulator_control_node.cpp # ${SOURCES}
 )
 
 ## Rename C++ executable without prefix
@@ -173,9 +188,10 @@ target_link_libraries(${PROJECT_NAME}_node
 
 ## Mark executables for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_executables.html
-# install(TARGETS ${PROJECT_NAME}_node
-#   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
+install(FILES
+  launch/manipulator_control.launch
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch
+)
 
 ## Mark libraries for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_libraries.html

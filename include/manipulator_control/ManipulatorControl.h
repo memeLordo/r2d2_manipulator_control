@@ -1,5 +1,5 @@
-#ifndef MANIPULATOR_CONTROL_HANDLER_H
-#define MANIPULATOR_CONTROL_HANDLER_H
+#ifndef MANIPULATOR_CONTROL_H
+#define MANIPULATOR_CONTROL_H
 
 #include "ElbowHandler.h"
 #include "PayloadHandler.h"
@@ -54,4 +54,4 @@ public:
   auto calc_radius();
 };
 
-#endif // MANIPULATOR_CONTROL_HANDLER_H
+#endif // MANIPULATOR_CONTROL_H
