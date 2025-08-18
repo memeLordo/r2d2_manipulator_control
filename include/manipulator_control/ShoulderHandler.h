@@ -5,12 +5,12 @@
 #include "r2d2_msg_pkg/DriverCommand.h"
 #include "r2d2_msg_pkg/DriverState.h"
 #include <cstdint>
-#include <ros/ros.h>
+#include <ros/node_handle.h>
 
-class ShoulderHandler {
+template <typename T = double> class ShoulderHandler {
 private:
-  static const double coeffs[];
-  static const double length;
+  static const T coeffs[];
+  static const T length;
 
   struct shoulder_t {
     int16_t omega{};
@@ -18,39 +18,24 @@ private:
   } params;
   shoulder_t callback_params;
 
-  PipeHandler pipe;
+  PipeHandler<T> &pipe;
 
   ros::Subscriber subscriber;
   ros::Publisher publisher;
 
 public:
-  ShoulderHandler(ros::NodeHandle *node);
+  ShoulderHandler(ros::NodeHandle *node, PipeHandler<T> &pipePtr);
   void callback_shoulder(const r2d2_msg_pkg::DriverStateConstPtr &msg) {
     callback_params = shoulder_t{msg->omega, msg->theta};
   };
   void update_speed() { params.omega = callback_params.omega; };
   void update_angle() { params.theta = callback_params.theta; };
-  template <typename T> void update_speed(T omega) {
-    params.omega = static_cast<int16_t>(omega);
-  };
-  template <typename T> void update_angle(T theta) {
-    params.theta = static_cast<int16_t>(theta);
-  };
+  void update_speed(T omega) { params.omega = static_cast<int16_t>(omega); };
+  void update_angle(T theta) { params.theta = static_cast<int16_t>(theta); };
   void update() {
     update_speed();
     update_angle();
   };
-  template <typename T = double> T get_speed() const {
-    return static_cast<T>(params.omega);
-  };
-  template <typename T = double> T get_angle() const {
-    return static_cast<T>(params.theta);
-  };
-  template <typename T = double> T get_length() const {
-    return static_cast<T>(length);
-  };
-  template <typename T = double> T calc_angle();
-  template <typename T = double> T calc_angle(T theta);
   auto prepare_msg() const {
     r2d2_msg_pkg::DriverCommand msg;
     msg.omega = params.omega;
@@ -58,6 +43,11 @@ public:
     return msg;
   };
   void publish() { publisher.publish(prepare_msg()); };
+  T get_speed() const { return static_cast<T>(params.omega); };
+  T get_angle() const { return static_cast<T>(params.theta); };
+  T get_length() const { return static_cast<T>(length); };
+  T calc_angle();
+  T calc_angle(T theta);
 };
 
 #endif // SHOULDER_HANDLER_H

@@ -3,9 +3,9 @@
 
 #include "r2d2_msg_pkg/PipeParameters.h"
 #include <cstdint>
-#include <ros/ros.h>
+#include <ros/node_handle.h>
 
-class PipeHandler {
+template <typename T = double> class PipeHandler {
 private:
   struct pipe_t {
     uint16_t diameter{};
@@ -20,9 +20,7 @@ public:
   void callback_pipe(const r2d2_msg_pkg::PipeParametersConstPtr &msg) {
     callback_params = pipe_t{msg->pipe_diam, msg->pipe_thickness};
   };
-  template <typename T = double> T get_radius() const {
-    return static_cast<T>(callback_params.radius());
-  };
+  T get_radius() const { return static_cast<T>(callback_params.radius()); };
 };
 
 #endif // PIPE_HANDLER_H

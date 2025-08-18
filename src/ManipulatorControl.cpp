@@ -1,9 +1,10 @@
 #include "ManipulatorControl.h"
 #include <cmath>
 #include <cstdlib>
-#include <ros/ros.h>
 
-void ManipulatorControlHandler::update() {
+#define TIME 0.02 // s
+
+template <typename T> void ManipulatorControlHandler<T>::update() {
   switch (nozzle) {
   case BRUSH:
     params = manipulator_t{100, 347.0};
@@ -16,25 +17,29 @@ void ManipulatorControlHandler::update() {
     break;
   }
 }
-void ManipulatorControlHandler::update_all() {
+template <typename T> void ManipulatorControlHandler<T>::update_all() {
   update();
   elbow.update();
   shoulder.update();
 }
-void ManipulatorControlHandler::publish_all() {
+template <typename T> void ManipulatorControlHandler<T>::publish_all() {
   elbow.publish();
   shoulder.publish();
 }
-auto ManipulatorControlHandler::calc_radius() {
+template <typename T> auto ManipulatorControlHandler<T>::calc_radius() {
   return shoulder.get_length() * sin(shoulder.get_angle()) +
          elbow.get_length() * sin(elbow.get_angle()) + get_radius();
 }
 
-ManipulatorControlHandler::ManipulatorControlHandler(ros::NodeHandle *node)
-    : payload(node), elbow(node), shoulder(node) {
+template <typename T>
+ManipulatorControlHandler<T>::ManipulatorControlHandler(ros::NodeHandle *node)
+    : pipe(node), payload(node), elbow(node, pipe), shoulder(node, pipe) {
   setup();
+  timer = node->createTimer(ros::Duration(TIME),
+                            &ManipulatorControlHandler<T>::callback_manipulator,
+                            this);
 }
-void ManipulatorControlHandler::setup() {
+template <typename T> void ManipulatorControlHandler<T>::setup() {
   /**
    * INFO:
    * 0. Получить данные для манипулятора (и трубы)
@@ -76,7 +81,9 @@ SET_VALUES:
 PUBLISH:
   publish_all();
 }
-void ManipulatorControlHandler::callback_manipulator() {
+template <typename T>
+void ManipulatorControlHandler<T>::callback_manipulator(
+    const ros::TimerEvent &) {
   /**
    * INFO:
    * 1. Проверка автоматического разжатия
@@ -119,3 +126,5 @@ PUBLISH:
   if (refresh)
     shoulder.publish();
 }
+
+template class ManipulatorControlHandler<>;

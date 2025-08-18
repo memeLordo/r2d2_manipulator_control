@@ -3,9 +3,9 @@
 
 #include "r2d2_msg_pkg/DriverState.h"
 #include <cstdint>
-#include <ros/ros.h>
+#include <ros/node_handle.h>
 
-class PayloadHandler {
+template <typename T = double> class PayloadHandler {
 private:
   int16_t callback_force;
 
@@ -16,9 +16,7 @@ public:
   void callback_payload(const r2d2_msg_pkg::DriverStateConstPtr &msg) {
     callback_force = msg->force;
   };
-  template <typename T = double> T get_force() const {
-    return static_cast<T>(callback_force);
-  };
+  T get_force() const { return static_cast<T>(callback_force); };
 };
 
 #endif // PIPE_HANDLER_H
