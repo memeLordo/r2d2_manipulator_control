@@ -37,7 +37,7 @@ public:
   void update_all();
   void publish_all();
   auto get_nozzle() const { return nozzle; };
-  auto get_status() const { return status; };
+  auto get_lock() const { return status; };
   auto get_mode() const { return mode; };
   auto calc_radius();
   T get_force() const { return static_cast<T>(params.force_needed); };
