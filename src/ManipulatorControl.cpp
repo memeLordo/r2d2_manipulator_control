@@ -3,6 +3,8 @@
 #include <cstdlib>
 #include <ros/ros.h>
 
+#define TIME 0.02 // s
+
 template <typename T> void ManipulatorControlHandler<T>::update() {
   switch (nozzle) {
   case BRUSH:
@@ -30,6 +32,14 @@ template <typename T> auto ManipulatorControlHandler<T>::calc_radius() {
          elbow.get_length() * sin(elbow.get_angle()) + get_radius();
 }
 
+template <typename T>
+ManipulatorControlHandler<T>::ManipulatorControlHandler(ros::NodeHandle *node)
+    : pipe(node), payload(node), elbow(node, pipe), shoulder(node, pipe) {
+  setup();
+  timer = node->createTimer(ros::Duration(TIME),
+                            &ManipulatorControlHandler<T>::callback_manipulator,
+                            this);
+}
 template <typename T> void ManipulatorControlHandler<T>::setup() {
   /**
    * INFO:
@@ -73,7 +83,8 @@ PUBLISH:
   publish_all();
 }
 template <typename T>
-void ManipulatorControlHandler<T>::callback_manipulator() {
+void ManipulatorControlHandler<T>::callback_manipulator(
+    const ros::TimerEvent &) {
   /**
    * INFO:
    * 1. Проверка автоматического разжатия
