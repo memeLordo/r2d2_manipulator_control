@@ -1,7 +1,6 @@
 #include "ManipulatorControl.h"
 #include <cmath>
 #include <cstdlib>
-#include <ros/ros.h>
 
 #define TIME 0.02 // s
 

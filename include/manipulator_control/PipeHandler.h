@@ -3,7 +3,7 @@
 
 #include "r2d2_msg_pkg/PipeParameters.h"
 #include <cstdint>
-#include <ros/ros.h>
+#include <ros/node_handle.h>
 
 template <typename T = double> class PipeHandler {
 private:
