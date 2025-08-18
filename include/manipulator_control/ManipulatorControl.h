@@ -25,16 +25,14 @@ private:
   ShoulderHandler<T> shoulder;
   PayloadHandler<T> payload;
 
+  ros::Timer timer;
   ros::Subscriber subscriber;
   ros::Publisher publisher;
 
 public:
-  ManipulatorControlHandler(ros::NodeHandle *node)
-      : pipe(node), payload(node), elbow(node, pipe), shoulder(node, pipe) {
-    setup();
-  };
+  ManipulatorControlHandler(ros::NodeHandle *node);
   void setup();
-  void callback_manipulator();
+  void callback_manipulator(const ros::TimerEvent &);
   void set_nozzle(T value) { nozzle = static_cast<NozzleType>(value); };
   void set_lock(T value) { status = static_cast<LockStatus>(value); };
   void set_mode(T value) { mode = static_cast<WorkMode>(value); };
