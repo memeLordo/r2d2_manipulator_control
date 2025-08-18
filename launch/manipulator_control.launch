@@ -148,6 +148,4 @@
 		<remap from="/payload_input" 		to="/manipulator8/payload_input"/>
 		<remap from="/payload_output" 	to="/manipulator8/payload_output"/>
 	</node>
-
-	</node>
 </launch>
