@@ -19,13 +19,13 @@ private:
   } params;
   elbow_t callback_params;
 
-  PipeHandler<T> pipe;
+  PipeHandler<T> &pipe;
 
   ros::Subscriber subscriber;
   ros::Publisher publisher;
 
 public:
-  explicit ElbowHandler(ros::NodeHandle *node);
+  explicit ElbowHandler(ros::NodeHandle *node, PipeHandler<T> &pipePtr);
   void callback_elbow(const r2d2_msg_pkg::DriverStateConstPtr &msg) {
     callback_params = elbow_t{msg->omega, msg->theta};
   };

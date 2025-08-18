@@ -29,11 +29,7 @@ template <typename T> auto ManipulatorControlHandler<T>::calc_radius() {
   return shoulder.get_length() * sin(shoulder.get_angle()) +
          elbow.get_length() * sin(elbow.get_angle()) + get_radius();
 }
-template <typename T>
-ManipulatorControlHandler<T>::ManipulatorControlHandler(ros::NodeHandle *node)
-    : payload(node), elbow(node), shoulder(node) {
-  setup();
-}
+
 template <typename T> void ManipulatorControlHandler<T>::setup() {
   /**
    * INFO:
