@@ -1,5 +1,5 @@
 #include "PipeHandler.h"
-#include <ros/ros.h>
+#include <ros/node_handle.h>
 
 #define PIPE_OUTPUT_NOD "/parameters/pipe"
 

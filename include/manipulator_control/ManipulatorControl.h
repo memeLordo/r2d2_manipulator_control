@@ -6,7 +6,7 @@
 #include "PipeHandler.h"
 #include "ShoulderHandler.h"
 #include <cstdint>
-#include <ros/ros.h>
+#include <ros/node_handle.h>
 
 template <typename T = double> class ManipulatorControlHandler {
 private:

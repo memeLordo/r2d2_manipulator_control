@@ -1,5 +1,5 @@
 #include "PayloadHandler.h"
-#include <ros/ros.h>
+#include <ros/node_handle.h>
 
 #define PAYLOAD_OUTPUT_NODE "/payload_output"
 
