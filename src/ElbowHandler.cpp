@@ -5,6 +5,7 @@
 
 #define ELBOW_INPUT_NODE "/elbow_input"
 #define ELBOW_OUTPUT_NODE "/elbow_output"
+
 template <typename T> const T ElbowHandler<T>::coeffs[]{0.00024, 0.142, 20.9};
 template <typename T> const T ElbowHandler<T>::length{5};
 
