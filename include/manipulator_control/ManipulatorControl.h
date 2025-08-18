@@ -3,6 +3,7 @@
 
 #include "ElbowHandler.h"
 #include "PayloadHandler.h"
+#include "PipeHandler.h"
 #include "ShoulderHandler.h"
 #include <cstdint>
 #include <ros/ros.h>
@@ -19,6 +20,7 @@ private:
   } params;
   manipulator_t callback_params;
 
+  PipeHandler<T> pipe;
   ElbowHandler<T> elbow;
   ShoulderHandler<T> shoulder;
   PayloadHandler<T> payload;
@@ -27,7 +29,10 @@ private:
   ros::Publisher publisher;
 
 public:
-  ManipulatorControlHandler(ros::NodeHandle *node);
+  ManipulatorControlHandler(ros::NodeHandle *node)
+      : pipe(node), payload(node), elbow(node, pipe), shoulder(node, pipe) {
+    setup();
+  };
   void setup();
   void callback_manipulator();
   void set_nozzle(T value) { nozzle = static_cast<NozzleType>(value); };
