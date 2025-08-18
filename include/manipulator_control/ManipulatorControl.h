@@ -7,7 +7,7 @@
 #include <cstdint>
 #include <ros/ros.h>
 
-class ManipulatorControlHandler {
+template <typename T = double> class ManipulatorControlHandler {
 private:
   enum NozzleType : uint8_t { NONE = 0, BRUSH, EMA } nozzle{NONE};
   enum LockStatus : uint8_t { LOCKED = 0, UNLOCKED } status{LOCKED};
@@ -15,13 +15,13 @@ private:
 
   struct manipulator_t {
     int16_t force_needed{};
-    double r0{};
+    T r0{};
   } params;
   manipulator_t callback_params;
 
-  ElbowHandler elbow;
-  ShoulderHandler shoulder;
-  PayloadHandler payload;
+  ElbowHandler<T> elbow;
+  ShoulderHandler<T> shoulder;
+  PayloadHandler<T> payload;
 
   ros::Subscriber subscriber;
   ros::Publisher publisher;
@@ -30,28 +30,18 @@ public:
   ManipulatorControlHandler(ros::NodeHandle *node);
   void setup();
   void callback_manipulator();
-  template <typename T> void set_nozzle(T value) {
-    nozzle = static_cast<NozzleType>(value);
-  };
-  template <typename T> void set_lock(T value) {
-    status = static_cast<LockStatus>(value);
-  };
-  template <typename T> void set_mode(T value) {
-    mode = static_cast<WorkMode>(value);
-  };
+  void set_nozzle(T value) { nozzle = static_cast<NozzleType>(value); };
+  void set_lock(T value) { status = static_cast<LockStatus>(value); };
+  void set_mode(T value) { mode = static_cast<WorkMode>(value); };
   void update();
   void update_all();
   void publish_all();
   auto get_nozzle() const { return nozzle; };
   auto get_status() const { return status; };
   auto get_mode() const { return mode; };
-  template <typename T = double> T get_force() const {
-    return static_cast<T>(params.force_needed);
-  };
-  template <typename T = double> T get_radius() const {
-    return static_cast<T>(params.r0);
-  };
   auto calc_radius();
+  T get_force() const { return static_cast<T>(params.force_needed); };
+  T get_radius() const { return params.r0; };
 };
 
 #endif // MANIPULATOR_CONTROL_H
