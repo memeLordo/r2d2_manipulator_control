@@ -11,8 +11,8 @@ template <typename T> const T ElbowHandler<T>::length{5};
 
 template <typename T>
 ElbowHandler<T>::ElbowHandler(ros::NodeHandle *node,
-                              const PipeHandler<T> &pipePtr)
-    : pipe(pipePtr) {
+                              const PipeHandler<T> &pipeRef)
+    : pipe(pipeRef) {
   subscriber = node->subscribe(ELBOW_OUTPUT_NODE, 1000,
                                &ElbowHandler::callback_elbow, this);
   publisher =
