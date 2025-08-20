@@ -10,7 +10,8 @@ template <typename T> const T ElbowHandler<T>::coeffs[]{0.00024, 0.142, 20.9};
 template <typename T> const T ElbowHandler<T>::length{5};
 
 template <typename T>
-ElbowHandler<T>::ElbowHandler(ros::NodeHandle *node, PipeHandler<T> &pipePtr)
+ElbowHandler<T>::ElbowHandler(ros::NodeHandle *node,
+                              const PipeHandler<T> &pipePtr)
     : pipe(pipePtr) {
   subscriber = node->subscribe(ELBOW_OUTPUT_NODE, 1000,
                                &ElbowHandler::callback_elbow, this);
