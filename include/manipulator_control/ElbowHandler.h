@@ -37,7 +37,7 @@ public:
     update_speed();
     update_angle();
   };
-  auto prepare_msg() const {
+  r2d2_msg_pkg::DriverCommand prepare_msg() const {
     r2d2_msg_pkg::DriverCommand msg;
     msg.omega = params.omega;
     msg.theta = params.theta;
