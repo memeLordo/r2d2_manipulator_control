@@ -9,6 +9,7 @@
 #include <ros/node_handle.h>
 
 template <typename T = double> class ManipulatorControlHandler {
+
 private:
   enum NozzleType : uint8_t { NONE = 0, BRUSH, EMA } nozzle{NONE};
   enum LockStatus : uint8_t { LOCKED = 0, UNLOCKED } status{LOCKED};

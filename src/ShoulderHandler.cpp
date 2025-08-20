@@ -12,8 +12,8 @@ template <typename T> const T ShoulderHandler<T>::length{5};
 
 template <typename T>
 ShoulderHandler<T>::ShoulderHandler(ros::NodeHandle *node,
-                                    PipeHandler<T> &pipePtr)
-    : pipe(pipePtr) {
+                                    const PipeHandler<T> &pipeRef)
+    : pipe(pipeRef) {
   subscriber = node->subscribe(SHOULDER_OUTPUT_NODE, 1000,
                                &ShoulderHandler::callback_shoulder, this);
   publisher =
