@@ -27,13 +27,59 @@ template <typename T> auto ManipulatorControlHandler<T>::calc_radius() {
 }
 
 template <typename T>
-ManipulatorControlHandler<T>::ManipulatorControlHandler(ros::NodeHandle *node)
-    : pipe(node), payload(node), elbow(node, pipe), shoulder(node, pipe) {
-  setup();
-  timer = node->createTimer(ros::Duration(TIME),
-                            &ManipulatorControlHandler<T>::callback_manipulator,
-                            this);
+void ManipulatorControlHandler<T>::process_angle_control() {
+  static constexpr T ANGLE_THRESHOLD = 5.0;
+
+  const T angle_diff =
+      std::abs(elbow.get_angle() - elbow.calc_angle() + ANGLE_THRESHOLD);
+
+  if (angle_diff >= ANGLE_THRESHOLD) {
+    shoulder.update_angle(shoulder.calc_angle(calc_radius()));
+    shoulder.set_publish_pending();
+  }
 }
+template <typename T>
+void ManipulatorControlHandler<T>::process_force_control() {
+  const auto current_force = payload.get_force();
+  const auto target_force = get_force();
+
+  if (current_force > target_force) {
+    elbow.update_speed(-elbow.get_speed());
+  } else if (current_force < target_force) {
+    elbow.update_speed();
+  } else {
+    elbow.update_speed(0);
+  }
+}
+template <typename T> void ManipulatorControlHandler<T>::publish_results() {
+  elbow.publish();
+  if (shoulder.is_publish_pending()) {
+    shoulder.publish();
+    shoulder.clear_publish_pending();
+  }
+}
+
+template <typename T> void ManipulatorControlHandler<T>::update_all() {
+  switch (status) {
+  case UNLOCKED:
+    // Вычисляем углы для разблокированного состояния
+    elbow.update_angle(elbow.calc_angle());
+    shoulder.update_angle(shoulder.calc_angle());
+    break;
+  default:
+    // Используем текущие значения для заблокированного состояния
+    elbow.update_angle();
+    shoulder.update_angle();
+  }
+  // Обновляем скорости
+  elbow.update_speed();
+  shoulder.update_speed();
+}
+template <typename T> void ManipulatorControlHandler<T>::publish_all() {
+  elbow.publish();
+  shoulder.publish();
+}
+
 template <typename T> void ManipulatorControlHandler<T>::setup() {
   /**
    * INFO:
@@ -42,84 +88,50 @@ template <typename T> void ManipulatorControlHandler<T>::setup() {
    * 2. Приём типа насадки (Щётка/ЕМА)
    * 3. Проверка статуса блокировки
    * 4. Обновить оставшиеся переменные
-   * 5. Опкбликовать все переменные
+   * 5. Опубликовать все переменные
    */
-SET_MODE:
-  // TODO: добавить запрос, ожидание и проверку значений
-  set_mode(AUTO);
-  if (!mode)
-    goto SET_MODE;
-
-SET_NOZZLE:
-  // TODO: добавить запросб ожидание и проверку значений
-  set_nozzle(BRUSH);
-  update_all();
-
-SET_LOCK:
-  // TODO: добавить запросб ожидание и проверку значений
-  set_lock(UNLOCKED);
-
-SET_VALUES:
-  switch (status) {
-  case UNLOCKED:
-    elbow.update_angle(elbow.calc_angle());
-    shoulder.update_angle(shoulder.calc_angle());
-    break;
-  case LOCKED:
-    elbow.update_angle();
-    shoulder.update_angle();
-    break;
+  if (!init_mode()) {
+    ROS_ERROR("Failed to initialize manipulator mode");
+    return;
   }
-  elbow.update_speed();
-  shoulder.update_speed();
-
-PUBLISH:
+  if (!init_nozzle()) {
+    ROS_WARN("Failed to set nozzle, using default");
+  }
+  if (!init_lock()) {
+    ROS_WARN("Failed to set lock status, using default");
+  }
+  update_all();
   publish_all();
+  ROS_INFO("Manipulator setup completed");
 }
+
 template <typename T>
 void ManipulatorControlHandler<T>::callback_manipulator(
     const ros::TimerEvent &) {
-  /**
-   * INFO:
-   * 1. Проверка автоматического разжатия
-   * 2. Проверка блокировки
-   * 3. Проверка ограничения угла
-   * 4. Обновить позицию плеча
-   * 5. Проверка полученной нагрузки
-   * 6. Опубликовать переменные
-   */
-SETUP_LOCALS:
-  bool refresh{false};
-  auto current_force = payload.get_force();
-
-CHECK_MODE:
+  // Ранний выход при отключенном автоматическом режиме
   if (!mode) {
     setup();
     return;
   }
-
-CHECK_STATUS:
+  // Проверка блокировки
   if (!status) {
     elbow.update_speed(0);
-    goto PUBLISH;
+    elbow.publish();
+    return;
   }
+  // Основная логика управления
+  process_angle_control();
+  process_force_control();
+  publish_results();
+}
 
-SET_VALUES:
-  if (abs(elbow.get_angle() - elbow.calc_angle() + 5.0) >= 5.0) {
-    refresh = true;
-    shoulder.update_angle(shoulder.calc_angle(calc_radius()));
-  }
-  if (current_force > get_force())
-    elbow.update_speed(-elbow.get_speed());
-  else if (current_force < get_force())
-    elbow.update_speed();
-  else
-    elbow.update_speed(0);
-
-PUBLISH:
-  elbow.publish();
-  if (refresh)
-    shoulder.publish();
+template <typename T>
+ManipulatorControlHandler<T>::ManipulatorControlHandler(ros::NodeHandle *node)
+    : pipe(node), payload(node), elbow(node, pipe), shoulder(node, pipe) {
+  setup();
+  timer = node->createTimer(ros::Duration(TIME),
+                            &ManipulatorControlHandler<T>::callback_manipulator,
+                            this);
 }
 
 template class ManipulatorControlHandler<>;
