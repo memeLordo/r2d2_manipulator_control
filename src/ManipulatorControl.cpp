@@ -4,19 +4,6 @@
 
 #define TIME 0.02 // s
 
-template <typename T> void ManipulatorControlHandler<T>::update() {
-  switch (nozzle) {
-  case BRUSH:
-    params = manipulator_t{100, 347.0};
-    break;
-  case EMA:
-    params = manipulator_t{150, 331.0};
-    break;
-  default:
-    // TODO: throw error;
-    break;
-  }
-}
 template <typename T> void ManipulatorControlHandler<T>::update_all() {
   update();
   elbow.update();
