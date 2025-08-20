@@ -30,7 +30,7 @@ void ManipulatorControlHandler<T>::process_angle_control() {
   static constexpr T ANGLE_THRESHOLD = 5.0;
 
   const T angle_diff =
-      std::abs(elbow.get_angle() - elbow.calc_angle() + ANGLE_THRESHOLD);
+      std::abs(elbow.get_angle() - elbow.calc_angle() - ANGLE_THRESHOLD);
 
   if (angle_diff >= ANGLE_THRESHOLD) {
     shoulder.update_angle(shoulder.calc_angle(calc_radius()));
@@ -43,7 +43,7 @@ void ManipulatorControlHandler<T>::process_force_control() {
   const auto target_force = get_force();
 
   if (current_force > target_force) {
-    elbow.update_speed(-elbow.get_speed());
+    elbow.update_speed(-std::abs(elbow.get_speed()));
   } else if (current_force < target_force) {
     elbow.update_speed();
   } else {
@@ -126,8 +126,7 @@ void ManipulatorControlHandler<T>::callback_manipulator(
 
 template <typename T>
 ManipulatorControlHandler<T>::ManipulatorControlHandler(ros::NodeHandle *node)
-    : pipe(node), payload(node), elbow(node, pipe), shoulder(node, pipe) {
-  setup();
+    : payload(node), pipe(node), elbow(node, pipe), shoulder(node, pipe) {
   timer = node->createTimer(ros::Duration(TIME),
                             &ManipulatorControlHandler<T>::callback_manipulator,
                             this);
