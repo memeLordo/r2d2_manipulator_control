@@ -21,6 +21,17 @@ private:
   } params;
   manipulator_t callback_params;
 
+  constexpr manipulator_t get_nozzle_type(NozzleType nozzle) {
+    switch (nozzle) {
+    case BRUSH:
+      return {100, 347.0};
+    case EMA:
+      return {150, 331.0};
+    default:
+      return {0, 0.0};
+    }
+  }
+
   PipeHandler<T> pipe;
   ElbowHandler<T> elbow;
   ShoulderHandler<T> shoulder;
