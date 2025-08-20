@@ -11,7 +11,6 @@ template <typename T> bool ManipulatorControlHandler<T>::init_mode() {
 }
 template <typename T> bool ManipulatorControlHandler<T>::init_nozzle() {
   set_nozzle(BRUSH); // TODO: получать из параметра или сервиса
-  update_all();      // Обновляем параметры после смены насадки
   // TODO: добавить ожидание и проверку успешности установки
   return true; // Временно считаем всегда успешным
 }
