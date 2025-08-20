@@ -4,15 +4,23 @@
 
 #define TIME 0.02 // s
 
-template <typename T> void ManipulatorControlHandler<T>::update_all() {
-  update();
-  elbow.update();
-  shoulder.update();
+template <typename T> bool ManipulatorControlHandler<T>::init_mode() {
+  set_mode(AUTO); // TODO: получать из параметра или сервиса
+  // TODO: добавить ожидание и проверку успешности установки
+  return true; // Временно считаем всегда успешным
 }
-template <typename T> void ManipulatorControlHandler<T>::publish_all() {
-  elbow.publish();
-  shoulder.publish();
+template <typename T> bool ManipulatorControlHandler<T>::init_nozzle() {
+  set_nozzle(BRUSH); // TODO: получать из параметра или сервиса
+  update_all();      // Обновляем параметры после смены насадки
+  // TODO: добавить ожидание и проверку успешности установки
+  return true; // Временно считаем всегда успешным
 }
+template <typename T> bool ManipulatorControlHandler<T>::init_lock() {
+  set_lock(UNLOCKED); // TODO: добавить проверку с ros::ServiceServer()
+  // TODO: добавить ожидание и проверку статуса блокировки
+  return true; // Временно считаем всегда успешным
+}
+
 template <typename T> auto ManipulatorControlHandler<T>::calc_radius() {
   return shoulder.get_length() * sin(shoulder.get_angle()) +
          elbow.get_length() * sin(elbow.get_angle()) + get_radius();
