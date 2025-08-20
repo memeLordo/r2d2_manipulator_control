@@ -20,7 +20,7 @@ template <typename T> bool ManipulatorControlHandler<T>::init_lock() {
   return true; // Временно считаем всегда успешным
 }
 
-template <typename T> auto ManipulatorControlHandler<T>::calc_radius() {
+template <typename T> T ManipulatorControlHandler<T>::calc_radius() {
   return shoulder.get_length() * sin(shoulder.get_angle()) +
          elbow.get_length() * sin(elbow.get_angle()) + get_radius();
 }

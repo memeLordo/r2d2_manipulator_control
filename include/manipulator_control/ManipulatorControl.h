@@ -44,7 +44,7 @@ private:
   bool init_mode();
   bool init_nozzle();
   bool init_lock();
-  auto calc_radius();
+  T calc_radius();
   void process_angle_control();
   void process_force_control();
   void publish_results();
