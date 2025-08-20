@@ -41,22 +41,26 @@ private:
   ros::Subscriber subscriber;
   ros::Publisher publisher;
 
-public:
-  ManipulatorControlHandler(ros::NodeHandle *node);
+  bool init_mode();
+  bool init_nozzle();
+  bool init_lock();
+  auto calc_radius();
+  void process_angle_control();
+  void process_force_control();
+  void publish_results();
+  void update_all();
+  void publish_all();
   void setup();
   void callback_manipulator(const ros::TimerEvent &);
+
   void set_nozzle(T value) { nozzle = static_cast<NozzleType>(value); };
   void set_lock(T value) { status = static_cast<LockStatus>(value); };
   void set_mode(T value) { mode = static_cast<WorkMode>(value); };
-  void update();
-  void update_all();
-  void publish_all();
-  auto get_nozzle() const { return nozzle; };
-  auto get_lock() const { return status; };
-  auto get_mode() const { return mode; };
-  auto calc_radius();
   T get_force() const { return static_cast<T>(params.force_needed); };
   T get_radius() const { return params.r0; };
+
+public:
+  ManipulatorControlHandler(ros::NodeHandle *node);
 };
 
 #endif // MANIPULATOR_CONTROL_H
