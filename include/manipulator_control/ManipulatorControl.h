@@ -11,17 +11,16 @@
 template <typename T = double> class ManipulatorControlHandler {
 
 private:
+  enum WorkMode : uint8_t { MANUAL = 0, AUTO } mode{MANUAL};
   enum NozzleType : uint8_t { NONE = 0, BRUSH, EMA } nozzle{NONE};
   enum LockStatus : uint8_t { LOCKED = 0, UNLOCKED } status{LOCKED};
-  enum WorkMode : uint8_t { MANUAL = 0, AUTO } mode{MANUAL};
 
   struct manipulator_t {
     int16_t force_needed{};
     T r0{};
   } params;
-  manipulator_t callback_params;
 
-  constexpr manipulator_t get_nozzle_type(NozzleType nozzle) {
+  constexpr manipulator_t get_nozzle_type() {
     switch (nozzle) {
     case BRUSH:
       return {100, 347.0};
@@ -32,14 +31,12 @@ private:
     }
   }
 
+  PayloadHandler<T> payload;
   PipeHandler<T> pipe;
   ElbowHandler<T> elbow;
   ShoulderHandler<T> shoulder;
-  PayloadHandler<T> payload;
 
   ros::Timer timer;
-  ros::Subscriber subscriber;
-  ros::Publisher publisher;
 
   bool init_mode();
   bool init_nozzle();
