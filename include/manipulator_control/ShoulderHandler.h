@@ -18,13 +18,13 @@ private:
   } params;
   shoulder_t callback_params;
 
-  PipeHandler<T> &pipe;
+  const PipeHandler<T> &pipe;
 
   ros::Subscriber subscriber;
   ros::Publisher publisher;
 
 public:
-  ShoulderHandler(ros::NodeHandle *node, PipeHandler<T> &pipePtr);
+  ShoulderHandler(ros::NodeHandle *node, const PipeHandler<T> &pipePtr);
   void callback_shoulder(const r2d2_msg_pkg::DriverStateConstPtr &msg) {
     callback_params = shoulder_t{msg->omega, msg->theta};
   };
