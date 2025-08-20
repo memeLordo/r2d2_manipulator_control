@@ -10,7 +10,7 @@ private:
   struct pipe_t {
     uint16_t diameter{};
     uint8_t thickness{};
-    double radius() const { return (double)diameter / 2.0 - thickness; }
+    T radius() const { return (T)diameter / 2.0 - thickness; }
   } callback_params{};
 
   ros::Subscriber subscriber;
@@ -20,7 +20,7 @@ public:
   void callback_pipe(const r2d2_msg_pkg::PipeParametersConstPtr &msg) {
     callback_params = pipe_t{msg->pipe_diam, msg->pipe_thickness};
   };
-  T get_radius() const { return static_cast<T>(callback_params.radius()); };
+  T get_radius() const { return callback_params.radius(); };
 };
 
 #endif // PIPE_HANDLER_H
