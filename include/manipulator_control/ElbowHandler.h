@@ -33,10 +33,6 @@ public:
   void update_angle() { params.theta = callback_params.theta; };
   void update_speed(T omega) { params.omega = static_cast<int16_t>(omega); };
   void update_angle(T theta) { params.theta = static_cast<int16_t>(theta); };
-  void update() {
-    update_speed();
-    update_angle();
-  };
   r2d2_msg_pkg::DriverCommand prepare_msg() const {
     r2d2_msg_pkg::DriverCommand msg;
     msg.omega = params.omega;
