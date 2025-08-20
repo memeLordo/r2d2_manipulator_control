@@ -24,6 +24,8 @@ private:
   ros::Subscriber subscriber;
   ros::Publisher publisher;
 
+  bool needs_publish{false};
+
 public:
   ShoulderHandler(ros::NodeHandle *node, const PipeHandler<T> &);
   void callback_shoulder(const r2d2_msg_pkg::DriverStateConstPtr &msg) {
@@ -37,6 +39,8 @@ public:
     update_speed();
     update_angle();
   };
+  void set_publish_pending(bool pending = true) { needs_publish = pending; }
+  void clear_publish_pending() { needs_publish = false; }
   r2d2_msg_pkg::DriverCommand prepare_msg() const {
     r2d2_msg_pkg::DriverCommand msg;
     msg.omega = params.omega;
@@ -47,6 +51,7 @@ public:
   T get_speed() const { return static_cast<T>(params.omega); };
   T get_angle() const { return static_cast<T>(params.theta); };
   T get_length() const { return static_cast<T>(length); };
+  bool is_publish_pending() const { return needs_publish; }
   T calc_angle();
   T calc_angle(T theta);
 };

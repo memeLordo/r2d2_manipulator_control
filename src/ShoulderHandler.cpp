@@ -18,9 +18,6 @@ ShoulderHandler<T>::ShoulderHandler(ros::NodeHandle *node,
                                &ShoulderHandler::callback_shoulder, this);
   publisher =
       node->advertise<r2d2_msg_pkg::DriverCommand>(SHOULDER_INPUT_NODE, 10);
-  //
-  // TODO: Добавить обновление данных радиуса при инициализации
-  //
 }
 template <typename T> T ShoulderHandler<T>::calc_angle() {
   return static_cast<T>(Horner::polynome(coeffs, pipe.get_radius()));
