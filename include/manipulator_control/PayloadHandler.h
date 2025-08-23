@@ -8,6 +8,8 @@
 template <typename T = double> class PayloadHandler {
 private:
   int16_t callback_force;
+  // TODO: add omega -  раскрутка щёток
+  // считать желаемую скорость из manipulator_t
 
   ros::Subscriber subscriber;
 

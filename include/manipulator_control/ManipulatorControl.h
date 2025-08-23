@@ -11,9 +11,9 @@
 template <typename T = double> class ManipulatorControlHandler {
 
 private:
-  enum WorkMode : uint8_t { MANUAL = 0, AUTO } mode{MANUAL};
-  enum NozzleType : uint8_t { NONE = 0, BRUSH, EMA } nozzle{NONE};
-  enum LockStatus : uint8_t { LOCKED = 0, UNLOCKED } status{LOCKED};
+  enum WorkMode : uint8_t { MANUAL = 0, AUTO } mode{MANUAL};         // ???
+  enum NozzleType : uint8_t { NONE = 0, BRUSH, EMA } nozzle{NONE};   // setup
+  enum LockStatus : uint8_t { LOCKED = 0, UNLOCKED } status{LOCKED}; // callback
 
   struct manipulator_t {
     int16_t force_needed{};
