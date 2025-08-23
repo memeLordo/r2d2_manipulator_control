@@ -8,7 +8,7 @@
 
 template <typename T> const T ElbowHandler<T>::coeffs[]{0.00024, 0.142, 20.9};
 template <typename T> const T ElbowHandler<T>::length{5};
-
+// template<typename T> const T ElbowHandler<T>::angle_treshold{5};
 template <typename T>
 ElbowHandler<T>::ElbowHandler(ros::NodeHandle *node,
                               const PipeHandler<T> &pipeRef)
@@ -19,7 +19,8 @@ ElbowHandler<T>::ElbowHandler(ros::NodeHandle *node,
       node->advertise<r2d2_msg_pkg::DriverCommand>(ELBOW_INPUT_NODE, 10);
 }
 template <typename T> T ElbowHandler<T>::calc_angle() {
-  return static_cast<T>(Horner::polynome(coeffs, pipe.get_radius()));
+  return static_cast<T>(
+      Horner::polynome(coeffs, pipe.get_radius()) /* - angle_treshold*/);
 }
 template <typename T> T ElbowHandler<T>::calc_angle(T theta) {
   return static_cast<T>(Horner::polynome(coeffs, theta));

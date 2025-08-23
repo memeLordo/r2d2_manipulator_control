@@ -32,7 +32,7 @@ void ManipulatorControlHandler<T>::process_angle_control() {
   const T angle_diff =
       std::abs(elbow.get_angle() - elbow.calc_angle() - ANGLE_THRESHOLD);
 
-  if (angle_diff >= ANGLE_THRESHOLD) {
+  if (angle_diff >= ANGLE_THRESHOLD) { // TODO: fix to angle_threshold2
     shoulder.update_angle(shoulder.calc_angle(calc_radius()));
     shoulder.set_publish_pending();
   }
@@ -70,6 +70,7 @@ template <typename T> void ManipulatorControlHandler<T>::update_all() {
     elbow.update_angle();
     shoulder.update_angle();
   }
+  // TODO: Если заблокированиы - манипуляторы в 0
   // Обновляем скорости
   elbow.update_speed();
   shoulder.update_speed();
@@ -101,6 +102,8 @@ template <typename T> void ManipulatorControlHandler<T>::setup() {
   }
   update_all();
   publish_all();
+  // TODO: while проверка DriverState == DriverCommand
+  // exec wait... 0.1s
   ROS_INFO("Manipulator setup completed");
 }
 
@@ -108,6 +111,7 @@ template <typename T>
 void ManipulatorControlHandler<T>::callback_manipulator(
     const ros::TimerEvent &) {
   // Ранний выход при отключенном автоматическом режиме
+  // TODO: добавить проверку достижения желаемого угла
   if (!mode) {
     setup();
     return;
@@ -127,6 +131,7 @@ void ManipulatorControlHandler<T>::callback_manipulator(
 template <typename T>
 ManipulatorControlHandler<T>::ManipulatorControlHandler(ros::NodeHandle *node)
     : payload(node), pipe(node), elbow(node, pipe), shoulder(node, pipe) {
+  // setup();
   timer = node->createTimer(ros::Duration(TIME),
                             &ManipulatorControlHandler<T>::callback_manipulator,
                             this);
