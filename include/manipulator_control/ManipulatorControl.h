@@ -56,9 +56,9 @@ private:
   void setup();
   void callback_manipulator(const ros::TimerEvent &);
 
+  void set_mode(T value) { mode = static_cast<WorkMode>(value); };
   void set_nozzle(T value) { nozzle = static_cast<NozzleType>(value); };
   void set_lock(T value) { status = static_cast<LockStatus>(value); };
-  void set_mode(T value) { mode = static_cast<WorkMode>(value); };
   T get_force() const { return static_cast<T>(params.force_needed); };
   T get_radius() const { return params.r0; };
 
