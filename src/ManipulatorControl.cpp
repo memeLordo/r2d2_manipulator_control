@@ -99,8 +99,6 @@ void ManipulatorControlHandler<T>::callback_manipulator(
   switch (mode) {
   // Ранний выход при отключенном автоматическом режиме
   case WorkMode::AUTO:
-    // TODO: добавить проверку достижения желаемого угла
-    // check_angle()
     switch (status) {
     //  Проверка блокировки
     case LockStatus::UNLOCKED:

@@ -48,6 +48,7 @@ private:
   void setup();
   void callback_manipulator(const ros::TimerEvent &);
 
+public:
   void reset_mode() { mode = WorkMode::NONE; };
   void reset_nozzle() { nozzle = NozzleType::NONE; };
   void reset_lock() { status = LockStatus::NONE; };
@@ -62,7 +63,6 @@ private:
   T get_force() const { return static_cast<T>(params.force_needed); };
   T get_radius() const { return params.r0; };
 
-public:
   ManipulatorControlHandler(ros::NodeHandle *node);
 };
 
