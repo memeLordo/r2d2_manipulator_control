@@ -1,6 +1,9 @@
 #include "ManipulatorService.h"
-#include <cassert>
-#include <cstdint>
+#include "ManipulatorControl.h"
+
+using WorkMode = ManipulatorControlHandler<>::WorkMode;
+using NozzleType = ManipulatorControlHandler<>::NozzleType;
+using LockStatus = ManipulatorControlHandler<>::LockStatus;
 // #include <string>
 //
 // const std::string SERVICE_MODE = "set_mode";
@@ -17,59 +20,49 @@ ManipulatorServiceHandler::ManipulatorServiceHandler(ros::NodeHandle *node) {
 }
 
 bool ManipulatorServiceHandler::callback_mode_service(
-    manipulator_control::SetWorkMode::Request &req,
-    manipulator_control::SetWorkMode::Response &res) {
+    manipulator_control::ManipulatorCommand::Request &req,
+    manipulator_control::ManipulatorCommand::Response &res) {
   ROS_INFO("callback_mode_service::got request");
-  if (req.mode > 1) {
+  auto mode_ = static_cast<WorkMode>(req.work_mode);
+  switch (mode_) {
+  case WorkMode::MANUAL:
+  case WorkMode::AUTO:
+    // manipulator_control.set_mode(mode_);
+    res.success = true;
+  default:
     res.success = false;
-    res.message = "Invalid mode value. Must be 0 (MANUAL) or 1 (AUTO)";
-    return true;
   }
-  static_assert(std::is_same<decltype(req.mode), uint8_t>::value,
-                "Mode must be int");
-  auto mode_ = req.mode;
-  res.success = true;
-  res.message = (req.mode == 0) ? "Mode set to MANUAL" : "Mode set to AUTO";
-
-  ROS_INFO("Mode updated to %s", (mode_ == 0) ? "MANUAL" : "AUTO");
   return true;
 }
-
 bool ManipulatorServiceHandler::callback_nozzle_service(
-    manipulator_control::SetNozzleType::Request &req,
-    manipulator_control::SetNozzleType::Response &res) {
-  if (req.nozzle_type > 2) {
+    manipulator_control::ManipulatorCommand::Request &req,
+    manipulator_control::ManipulatorCommand::Response &res) {
+  ROS_INFO("callback_nozzle_service::got request");
+  auto nozzle_ = static_cast<NozzleType>(req.nozzle_type);
+  switch (nozzle_) {
+  case NozzleType::BRUSH:
+  case NozzleType::EMA:
+    // manipulator_control.set_nozzle(nozzle_);
+    res.success = true;
+  default:
     res.success = false;
-    res.message =
-        "Invalid nozzle type. Must be 0 (NONE), 1 (BRUSH), or 2 (EMA)";
-    return true;
   }
-
-  auto nozzle_ = req.nozzle_type;
-  res.success = true;
-
-  std::string nozzle_names[] = {"NONE", "BRUSH", "EMA"};
-  res.message = "Nozzle type set to " + nozzle_names[req.nozzle_type];
-
-  ROS_INFO("Nozzle type updated to %s", nozzle_names[nozzle_].c_str());
-  return res.success = true;
-}
-
-bool ManipulatorServiceHandler::callback_status_service(
-    manipulator_control::SetLockStatus::Request &req,
-    manipulator_control::SetLockStatus::Response &res) {
-  if (req.lock_status > 1) {
-    res.success = false;
-    res.message = "Invalid lock status. Must be 0 (LOCKED) or 1 (UNLOCKED)";
-    return true;
-  }
-
-  auto lock_status_ = req.lock_status;
-  res.success = true;
-  res.message = (req.lock_status == 0) ? "Status set to LOCKED"
-                                       : "Status set to UNLOCKED";
-
-  ROS_INFO("Lock status updated to %s",
-           (lock_status_ == 0) ? "LOCKED" : "UNLOCKED");
   return true;
 }
+bool ManipulatorServiceHandler::callback_status_service(
+    manipulator_control::ManipulatorCommand::Request &req,
+    manipulator_control::ManipulatorCommand::Response &res) {
+  ROS_INFO("callback_status_service::got request");
+  auto status_ = static_cast<LockStatus>(req.lock_status);
+  switch (status_) {
+  case LockStatus::LOCKED:
+  case LockStatus::UNLOCKED:
+    // manipulator_control.set_lock(status_);
+    res.success = true;
+  default:
+    res.success = false;
+  }
+  return true;
+}
+
+// template class ManipulatorServiceHandler<>;
