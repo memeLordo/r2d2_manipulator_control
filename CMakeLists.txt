@@ -17,9 +17,7 @@ find_package(catkin REQUIRED COMPONENTS
 # Generate services in the 'srv' folder
 add_service_files(
   FILES
-  SetLockStatus.srv
-  SetNozzleType.srv
-  SetWorkMode.srv
+  ManipulatorCommand.srv
 )
 generate_messages(
   DEPENDENCIES

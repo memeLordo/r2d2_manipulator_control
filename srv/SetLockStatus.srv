@@ -1,5 +1,0 @@
-# Установка блокировки манипулятора
-uint8 lock_status  # 0 - LOCKED, 1 - UNLOCKED
----
-bool success
-string message

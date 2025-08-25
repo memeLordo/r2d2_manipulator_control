@@ -1,8 +1,6 @@
 #ifndef MANIPULATOR_SERVICE_H
 #define MANIPULATOR_SERVICE_H
-#include "manipulator_control/SetLockStatus.h"
-#include "manipulator_control/SetNozzleType.h"
-#include "manipulator_control/SetWorkMode.h"
+#include "manipulator_control/ManipulatorCommand.h"
 
 #include "ros/node_handle.h"
 class ManipulatorServiceHandler {
@@ -18,13 +16,14 @@ private:
   // uint8_t lock_status_{0}; // LOCKED
 public:
   ManipulatorServiceHandler(ros::NodeHandle *node);
-  bool callback_mode_service(manipulator_control::SetWorkMode::Request &req,
-                             manipulator_control::SetWorkMode::Response &res);
   bool
-  callback_nozzle_service(manipulator_control::SetNozzleType::Request &req,
-                          manipulator_control::SetNozzleType::Response &res);
-  bool
-  callback_status_service(manipulator_control::SetLockStatus::Request &req,
-                          manipulator_control::SetLockStatus::Response &res);
+  callback_mode_service(manipulator_control::ManipulatorCommand::Request &req,
+                        manipulator_control::ManipulatorCommand::Response &res);
+  bool callback_nozzle_service(
+      manipulator_control::ManipulatorCommand::Request &req,
+      manipulator_control::ManipulatorCommand::Response &res);
+  bool callback_status_service(
+      manipulator_control::ManipulatorCommand::Request &req,
+      manipulator_control::ManipulatorCommand::Response &res);
 };
 #endif // MANIPULATOR_SERVICE_H

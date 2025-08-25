@@ -5,9 +5,6 @@
 #include "PayloadHandler.h"
 #include "PipeHandler.h"
 #include "ShoulderHandler.h"
-#include "manipulator_control/SetLockStatus.h"
-#include "manipulator_control/SetNozzleType.h"
-#include "manipulator_control/SetWorkMode.h"
 #include <cstdint>
 #include <ros/node_handle.h>
 
