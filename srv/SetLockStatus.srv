@@ -1,5 +1,5 @@
-# Установка типа насадки
-uint8 nozzle_type  # 0 - NONE, 1 - BRUSH, 2 - EMA
+# Установка блокировки манипулятора
+uint8 lock_status  # 0 - LOCKED, 1 - UNLOCKED
 ---
 bool success
 string message
