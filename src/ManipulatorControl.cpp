@@ -2,7 +2,7 @@
 #include <cmath>
 #include <cstdlib>
 
-#define TIME 0.02 // s
+constexpr double TIME = 0.02; // s
 
 template <typename T> bool ManipulatorControlHandler<T>::init_mode() {
   set_mode(AUTO); // TODO: получать из параметра или сервиса
