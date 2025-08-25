@@ -1,0 +1,6 @@
+# Установка типа насадки
+uint8 nozzle_type  # 0 - NONE, 1 - BRUSH, 2 - EMA
+---
+bool success
+string message
+

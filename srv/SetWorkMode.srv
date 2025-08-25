@@ -1,0 +1,5 @@
+# Установка режима работы
+uint8 mode  # 0 - MANUAL, 1 - AUTO
+---
+bool success
+string message
