@@ -243,16 +243,6 @@ template <typename T>
 ManipulatorControlHandler<T>::ManipulatorControlHandler(ros::NodeHandle *node)
     : payload(node), pipe(node), elbow(node, pipe), shoulder(node, pipe) {
   // setup();
-  // ros::service::waitForService("/set_mode");
-  mode_client_ =
-      node->serviceClient<manipulator_control::SetWorkMode>("/set_mode");
-  ROS_INFO("MOdeClient");
-  // ros::service::waitForService("/set_nozzle");
-  nozzle_client_ =
-      node->serviceClient<manipulator_control::SetNozzleType>("/set_nozzle");
-  // ros::service::waitForService("/set_status");
-  status_client_ =
-      node->serviceClient<manipulator_control::SetLockStatus>("/set_status");
   timer = node->createTimer(ros::Duration(1 / RATE),
                             &ManipulatorControlHandler<T>::callback_manipulator,
                             this);

@@ -36,17 +36,7 @@ private:
   ShoulderHandler<T> shoulder;
 
   ros::Timer timer;
-  ros::ServiceClient mode_client_;
-  ros::ServiceClient nozzle_client_;
-  ros::ServiceClient status_client_;
-  manipulator_control::SetWorkMode srv_mode;
-  manipulator_control::SetNozzleType srv_nozzle;
-  manipulator_control::SetLockStatus srv_status;
 
-  bool call_mode();
-  bool call_nozzle();
-  bool call_status();
-  bool check_angle(T margin = T{0});
   T calc_radius();
   void process_angle_control();
   void process_force_control();
