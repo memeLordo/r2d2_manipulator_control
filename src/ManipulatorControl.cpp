@@ -1,18 +1,16 @@
 #include "ManipulatorControl.h"
 #include <cmath>
 #include <cstdlib>
-
-constexpr double TIME = 1; // s
+constexpr double RATE = 1; // Hz
 
 template <typename T> bool ManipulatorControlHandler<T>::call_mode() {
-  ROS_INFO("call_mode");
   if (!mode_client_.exists()) {
     ROS_ERROR("set_mode service not available");
     return false;
   }
 
-  srv_mode.request.mode = mode;
-
+  srv_mode.request.mode = 0;
+  ROS_INFO("call_mode::sent request");
   if (mode_client_.call(srv_mode)) {
     ROS_INFO("call_mode if call");
     if (srv_mode.response.success) {
@@ -245,14 +243,17 @@ template <typename T>
 ManipulatorControlHandler<T>::ManipulatorControlHandler(ros::NodeHandle *node)
     : payload(node), pipe(node), elbow(node, pipe), shoulder(node, pipe) {
   // setup();
+  // ros::service::waitForService("/set_mode");
   mode_client_ =
-      node->serviceClient<manipulator_control::SetWorkMode>("set_mode");
+      node->serviceClient<manipulator_control::SetWorkMode>("/set_mode");
   ROS_INFO("MOdeClient");
+  // ros::service::waitForService("/set_nozzle");
   nozzle_client_ =
-      node->serviceClient<manipulator_control::SetNozzleType>("set_nozzle");
+      node->serviceClient<manipulator_control::SetNozzleType>("/set_nozzle");
+  // ros::service::waitForService("/set_status");
   status_client_ =
-      node->serviceClient<manipulator_control::SetLockStatus>("set_status");
-  timer = node->createTimer(ros::Duration(TIME),
+      node->serviceClient<manipulator_control::SetLockStatus>("/set_status");
+  timer = node->createTimer(ros::Duration(1 / RATE),
                             &ManipulatorControlHandler<T>::callback_manipulator,
                             this);
   ROS_INFO("ManipulatorControlHandler::ManipulatorControlHandler");

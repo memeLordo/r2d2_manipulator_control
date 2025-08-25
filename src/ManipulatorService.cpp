@@ -1,4 +1,6 @@
 #include "ManipulatorService.h"
+#include <cassert>
+#include <cstdint>
 // #include <string>
 //
 // const std::string SERVICE_MODE = "set_mode";
@@ -7,23 +9,24 @@
 //
 ManipulatorServiceHandler::ManipulatorServiceHandler(ros::NodeHandle *node) {
   mode_service_ = node->advertiseService(
-      "set_mode", &ManipulatorServiceHandler::callback_mode_service, this);
+      "/set_mode", &ManipulatorServiceHandler::callback_mode_service, this);
   nozzle_service_ = node->advertiseService(
-      "set_nozzle", &ManipulatorServiceHandler::callback_nozzle_service, this);
+      "/set_nozzle", &ManipulatorServiceHandler::callback_nozzle_service, this);
   status_service_ = node->advertiseService(
-      "set_status", &ManipulatorServiceHandler::callback_status_service, this);
-  ROS_INFO("ManipulatorServiceHandler::ManipulatorServiceHandler");
+      "/set_status", &ManipulatorServiceHandler::callback_status_service, this);
 }
 
 bool ManipulatorServiceHandler::callback_mode_service(
     manipulator_control::SetWorkMode::Request &req,
     manipulator_control::SetWorkMode::Response &res) {
+  ROS_INFO("callback_mode_service::got request");
   if (req.mode > 1) {
     res.success = false;
     res.message = "Invalid mode value. Must be 0 (MANUAL) or 1 (AUTO)";
     return true;
   }
-
+  static_assert(std::is_same<decltype(req.mode), uint8_t>::value,
+                "Mode must be int");
   auto mode_ = req.mode;
   res.success = true;
   res.message = (req.mode == 0) ? "Mode set to MANUAL" : "Mode set to AUTO";
