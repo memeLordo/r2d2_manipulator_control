@@ -2,23 +2,107 @@
 #include <cmath>
 #include <cstdlib>
 
-constexpr double TIME = 0.02; // s
+constexpr double TIME = 1; // s
 
-template <typename T> bool ManipulatorControlHandler<T>::init_mode() {
-  set_mode(AUTO); // TODO: получать из параметра или сервиса
-  // TODO: добавить ожидание и проверку успешности установки
-  return true; // Временно считаем всегда успешным
+template <typename T> bool ManipulatorControlHandler<T>::call_mode() {
+  ROS_INFO("call_mode");
+  if (!mode_client_.exists()) {
+    ROS_ERROR("set_mode service not available");
+    return false;
+  }
+
+  srv_mode.request.mode = mode;
+
+  if (mode_client_.call(srv_mode)) {
+    ROS_INFO("call_mode if call");
+    if (srv_mode.response.success) {
+      ROS_INFO("Mode service call successful: %s",
+               srv_mode.response.message.c_str());
+      // Обновление локального состояния
+      set_mode(mode);
+      return true;
+    } else {
+      ROS_ERROR("Mode service call failed: %s",
+                srv_mode.response.message.c_str());
+      return false;
+    }
+  } else {
+    ROS_ERROR("Failed to call set_mode service");
+    return false;
+  }
 }
-template <typename T> bool ManipulatorControlHandler<T>::init_nozzle() {
-  set_nozzle(BRUSH); // TODO: получать из параметра или сервиса
-  // TODO: добавить ожидание и проверку успешности установки
-  return true; // Временно считаем всегда успешным
+
+template <typename T> bool ManipulatorControlHandler<T>::call_nozzle() {
+  // if (!nozzle_client_.exists()) {
+  //   ROS_ERROR("set_nozzle service not available");
+  //   return false;
+  // }
+  //
+  // srv_nozzle.request.nozzle_type = nozzle;
+  //
+  // if (nozzle_client_.call(srv_nozzle)) {
+  //   if (srv_nozzle.response.success) {
+  //     ROS_INFO("Nozzle service call successful: %s",
+  //              srv_nozzle.response.message.c_str());
+  //     // Обновление локального состояния
+  //     set_nozzle(nozzle);
+  //     return true;
+  //   } else {
+  //     ROS_ERROR("Nozzle service call failed: %s",
+  //               srv_nozzle.response.message.c_str());
+  //     return false;
+  //   }
+  // } else {
+  //   ROS_ERROR("Failed to call set_nozzle service");
+  //   return false;
+  // }
+  set_nozzle(BRUSH);
+  return true;
 }
-template <typename T> bool ManipulatorControlHandler<T>::init_lock() {
-  set_lock(UNLOCKED); // TODO: добавить проверку с ros::ServiceServer()
-  // TODO: добавить ожидание и проверку статуса блокировки
-  return true; // Временно считаем всегда успешным
+
+template <typename T> bool ManipulatorControlHandler<T>::call_status() {
+  // if (!status_client_.exists()) {
+  //   ROS_ERROR("set_status service not available");
+  //   return false;
+  // }
+  //
+  // srv_status.request.lock_status = status;
+  //
+  // if (status_client_.call(srv_status)) {
+  //   if (srv_status.response.success) {
+  //     ROS_INFO("Status service call successful: %s",
+  //              srv_status.response.message.c_str());
+  //     // Обновление локального состояния
+  //     set_lock(status);
+  //     return true;
+  //   } else {
+  //     ROS_ERROR("Status service call failed: %s",
+  //               srv_status.response.message.c_str());
+  //     return false;
+  //   }
+  // } else {
+  //   ROS_ERROR("Failed to call set_status service");
+  //   return false;
+  // }
+  set_lock(LOCKED);
+  return true;
 }
+
+// template <typename T> bool ManipulatorControlHandler<T>::init_mode() {
+//   set_mode(AUTO); // TODO: получать из параметра или сервиса
+//   // TODO: добавить ожидание и проверку успешности установки
+//   return true; // Временно считаем всегда успешным
+// }
+// template <typename T> bool ManipulatorControlHandler<T>::init_nozzle() {
+//   set_nozzle(BRUSH); // TODO: получать из параметра или сервиса
+//   // TODO: добавить ожидание и проверку успешности установки
+//   return true; // Временно считаем всегда успешным
+// }
+// template <typename T> bool ManipulatorControlHandler<T>::init_lock() {
+//   set_lock(UNLOCKED); // TODO: добавить проверку с ros::ServiceServer()
+//   // TODO: добавить ожидание и проверку статуса блокировки
+//   return true; // Временно считаем всегда успешным
+// }
 
 template <typename T> T ManipulatorControlHandler<T>::calc_radius() {
   return shoulder.get_length() * sin(shoulder.get_angle()) +
@@ -90,16 +174,16 @@ template <typename T> void ManipulatorControlHandler<T>::setup() {
    * 4. Обновить оставшиеся переменные
    * 5. Опубликовать все переменные
    */
-  if (!init_mode()) {
+  if (!call_mode()) {
     ROS_ERROR("Failed to initialize manipulator mode");
     return;
   }
-  if (!init_nozzle()) {
-    ROS_WARN("Failed to set nozzle, using default");
-  }
-  if (!init_lock()) {
-    ROS_WARN("Failed to set lock status, using default");
-  }
+  // if (!call_nozzle()) {
+  //   ROS_WARN("Failed to set nozzle, using default");
+  // }
+  // if (!call_status()) {
+  //   ROS_WARN("Failed to set lock status, using default");
+  // }
   update_all();
   publish_all();
   // TODO: while проверка DriverState == DriverCommand
@@ -161,9 +245,17 @@ template <typename T>
 ManipulatorControlHandler<T>::ManipulatorControlHandler(ros::NodeHandle *node)
     : payload(node), pipe(node), elbow(node, pipe), shoulder(node, pipe) {
   // setup();
+  mode_client_ =
+      node->serviceClient<manipulator_control::SetWorkMode>("set_mode");
+  ROS_INFO("MOdeClient");
+  nozzle_client_ =
+      node->serviceClient<manipulator_control::SetNozzleType>("set_nozzle");
+  status_client_ =
+      node->serviceClient<manipulator_control::SetLockStatus>("set_status");
   timer = node->createTimer(ros::Duration(TIME),
                             &ManipulatorControlHandler<T>::callback_manipulator,
                             this);
+  ROS_INFO("ManipulatorControlHandler::ManipulatorControlHandler");
 }
 
 template class ManipulatorControlHandler<>;

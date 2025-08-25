@@ -5,6 +5,9 @@
 #include "PayloadHandler.h"
 #include "PipeHandler.h"
 #include "ShoulderHandler.h"
+#include "manipulator_control/SetLockStatus.h"
+#include "manipulator_control/SetNozzleType.h"
+#include "manipulator_control/SetWorkMode.h"
 #include <cstdint>
 #include <ros/node_handle.h>
 
@@ -14,7 +17,6 @@ private:
   enum WorkMode : uint8_t { MANUAL = 0, AUTO } mode{MANUAL};         // ???
   enum NozzleType : uint8_t { NONE = 0, BRUSH, EMA } nozzle{NONE};   // setup
   enum LockStatus : uint8_t { LOCKED = 0, UNLOCKED } status{LOCKED}; // callback
-
   struct manipulator_t {
     int16_t force_needed{};
     T r0{};
@@ -37,10 +39,16 @@ private:
   ShoulderHandler<T> shoulder;
 
   ros::Timer timer;
+  ros::ServiceClient mode_client_;
+  ros::ServiceClient nozzle_client_;
+  ros::ServiceClient status_client_;
+  manipulator_control::SetWorkMode srv_mode;
+  manipulator_control::SetNozzleType srv_nozzle;
+  manipulator_control::SetLockStatus srv_status;
 
-  bool init_mode();
-  bool init_nozzle();
-  bool init_lock();
+  bool call_mode();
+  bool call_nozzle();
+  bool call_status();
   bool check_angle(T margin = T{0});
   T calc_radius();
   void process_angle_control();
