@@ -110,22 +110,46 @@ template <typename T> void ManipulatorControlHandler<T>::setup() {
 template <typename T>
 void ManipulatorControlHandler<T>::callback_manipulator(
     const ros::TimerEvent &) {
+  switch (mode) {
   // Ранний выход при отключенном автоматическом режиме
-  // TODO: добавить проверку достижения желаемого угла
-  if (!mode) {
+  case AUTO:
+    // TODO: добавить проверку достижения желаемого угла
+    // check_angle()
+    switch (status) {
+    //  Проверка блокировки
+    case UNLOCKED:
+      // Основная логика управления
+      process_angle_control();
+      process_force_control();
+      publish_results();
+      return;
+    case LOCKED:
+      elbow.update_speed(0);
+      elbow.publish();
+      return;
+    }
+    break;
+
+  case MANUAL:
     setup();
     return;
   }
   // Проверка блокировки
-  if (!status) {
-    elbow.update_speed(0);
-    elbow.publish();
-    return;
-  }
-  // Основная логика управления
-  process_angle_control();
-  process_force_control();
-  publish_results();
+  // Ранний выход при отключенном автоматическом режиме
+  // if (!mode) {
+  //   setup();
+  //   return;
+  // }
+  // Проверка блокировки
+  // if (!status) {
+  //   elbow.update_speed(0);
+  //   elbow.publish();
+  //   return;
+  // }
+  // // Основная логика управления
+  // process_angle_control();
+  // process_force_control();
+  // publish_results();
 }
 
 template <typename T>
