@@ -41,6 +41,7 @@ private:
   bool init_mode();
   bool init_nozzle();
   bool init_lock();
+  bool check_angle(T margin = T{0});
   T calc_radius();
   void process_angle_control();
   void process_force_control();

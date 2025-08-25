@@ -46,6 +46,8 @@ public:
   void publish() { publisher.publish(prepare_msg()); };
   T get_speed() const { return static_cast<T>(params.omega); };
   T get_angle() const { return static_cast<T>(params.theta); };
+  T get_current_angle() const { return static_cast<T>(callback_params.theta); };
+  T get_current_speed() const { return static_cast<T>(callback_params.omega); };
   T get_length() const { return static_cast<T>(length); };
   bool is_publish_pending() const { return needs_publish; }
   T calc_angle();
