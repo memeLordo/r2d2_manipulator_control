@@ -43,8 +43,8 @@ private:
   void process_angle_control();
   void process_force_control();
   void publish_results();
-  void update_all();
-  void publish_all();
+  void update_joint_state();
+  void publish_joint_state();
   void setup();
   void callback_manipulator(const ros::TimerEvent &);
 
