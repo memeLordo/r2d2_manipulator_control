@@ -20,6 +20,8 @@
   <build_export_depend>r2d2_msg_pkg</build_export_depend>
   <exec_depend>roscpp</exec_depend>
   <exec_depend>r2d2_msg_pkg</exec_depend>
+  <build_depend>message_generation</build_depend>
+  <exec_depend>message_runtime</exec_depend>
 
   <export></export>
 </package>
