@@ -10,7 +10,7 @@ private:
   struct pipe_t {
     uint16_t diameter{};
     uint8_t thickness{};
-    T radius() const { return T{diameter} / T{2} - thickness; };
+    T radius() const { return (T)diameter / T{2} - thickness; };
   } callback_params{};
 
   ros::Subscriber subscriber;
