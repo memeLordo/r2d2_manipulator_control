@@ -106,7 +106,9 @@ template <typename T> void ManipulatorControlHandler<T>::setup() {
   // exec wait... 0.1s
   ROS_INFO("Manipulator setup completed");
 }
-
+template <typename T> bool ManipulatorControlHandler<T>::check_angle(T margin) {
+  return std::abs(shoulder.get_angle() - shoulder.get_current_angle()) < margin;
+}
 template <typename T>
 void ManipulatorControlHandler<T>::callback_manipulator(
     const ros::TimerEvent &) {
@@ -115,6 +117,9 @@ void ManipulatorControlHandler<T>::callback_manipulator(
   case AUTO:
     // TODO: добавить проверку достижения желаемого угла
     // check_angle()
+    if (check_angle(T{1})) {
+      return;
+    }
     switch (status) {
     //  Проверка блокировки
     case UNLOCKED:
