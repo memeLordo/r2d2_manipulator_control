@@ -142,7 +142,7 @@ template <typename T> void ManipulatorControlHandler<T>::publish_results() {
 
 template <typename T> void ManipulatorControlHandler<T>::update_all() {
   switch (status) {
-  case UNLOCKED:
+  case LockStatus::UNLOCKED:
     // Вычисляем углы для разблокированного состояния
     elbow.update_angle(elbow.calc_angle());
     shoulder.update_angle(shoulder.calc_angle());
@@ -196,7 +196,7 @@ void ManipulatorControlHandler<T>::callback_manipulator(
     const ros::TimerEvent &) {
   switch (mode) {
   // Ранний выход при отключенном автоматическом режиме
-  case AUTO:
+  case WorkMode::AUTO:
     // TODO: добавить проверку достижения желаемого угла
     // check_angle()
     if (check_angle(T{1})) {
@@ -204,21 +204,24 @@ void ManipulatorControlHandler<T>::callback_manipulator(
     }
     switch (status) {
     //  Проверка блокировки
-    case UNLOCKED:
+    case LockStatus::UNLOCKED:
       // Основная логика управления
       process_angle_control();
       process_force_control();
       publish_results();
       return;
-    case LOCKED:
+    default:
       elbow.update_speed(0);
       elbow.publish();
       return;
     }
     break;
 
-  case MANUAL:
+  case WorkMode::MANUAL:
     setup();
+    return;
+
+  default:
     return;
   }
   // Проверка блокировки
