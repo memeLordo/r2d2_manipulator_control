@@ -4,6 +4,7 @@
 	<arg name="debug" default="false"/>
 	<arg name="rate"  default="50.0"/>
 
+  <param name="control_rate" value="$(arg rate)"/>
 	<!-- Основной узел манипулятора -->
 	<node pkg="manipulator_control" 
         type="manipulator_control_node" 
@@ -11,18 +12,19 @@
         output="screen">
 
 		<!-- Параметры узла -->
-		<!-- <param name="control_rate" value="$(arg rate)"/> -->
 		<!-- <param name="debug_output" value="$(arg debug)"/> -->
 
 		<!-- Переназначение топиков -->
-		<remap from="/elbow_input"      to="/manipulator1/elbow_input"/>
-		<remap from="/elbow_output"     to="/manipulator1/elbow_output"/>
-		<remap from="/shoulder_input"   to="/manipulator1/shoulder_input"/>
-		<remap from="/shoulder_output"  to="/manipulator1/shoulder_output"/>
-		<remap from="/payload_input"    to="/manipulator1/payload_input"/>
-		<remap from="/payload_output"   to="/manipulator1/payload_output"/>
+		<remap from="/pipe_output"         to="/parameters/pipe"/>
+		<remap from="/elbow_input"         to="/manipulator1/elbow_input"/>
+		<remap from="/elbow_output"        to="/manipulator1/elbow_output"/>
+		<remap from="/shoulder_input"      to="/manipulator1/shoulder_input"/>
+		<remap from="/shoulder_output"     to="/manipulator1/shoulder_output"/>
+		<remap from="/payload_output"      to="/manipulator1/payload_output"/>
+		<remap from="/manipulator_command" to="/manipulator1/manipulator_command"/>
 	</node>
-
+		
+	<!-- Второй узел манипулятора -->
 	<node pkg="manipulator_control" 
         type="manipulator_control_node" 
         name="manipulator_control_node_2" 
@@ -33,14 +35,16 @@
 		<!-- <param name="debug_output" value="$(arg debug)"/> -->
 
 		<!-- Переназначение топиков -->
-		<remap from="/elbow_input"      to="/manipulator2/elbow_input"/>
-		<remap from="/elbow_output"     to="/manipulator2/elbow_output"/>
-		<remap from="/shoulder_input"   to="/manipulator2/shoulder_input"/>
-		<remap from="/shoulder_output"  to="/manipulator2/shoulder_output"/>
-		<remap from="/payload_input"    to="/manipulator2/payload_input"/>
-		<remap from="/payload_output"   to="/manipulator2/payload_output"/>
+		<remap from="/pipe_output"         to="/parameters/pipe"/>
+		<remap from="/elbow_input"         to="/manipulator2/elbow_input"/>
+		<remap from="/elbow_output"        to="/manipulator2/elbow_output"/>
+		<remap from="/shoulder_input"      to="/manipulator2/shoulder_input"/>
+		<remap from="/shoulder_output"     to="/manipulator2/shoulder_output"/>
+		<remap from="/payload_output"      to="/manipulator2/payload_output"/>
+		<remap from="/manipulator_command" to="/manipulator2/manipulator_command"/>
 	</node>
-
+		
+	<!-- Третий узел манипулятора -->
 	<node pkg="manipulator_control" 
         type="manipulator_control_node" 
         name="manipulator_control_node_3" 
@@ -51,14 +55,16 @@
 		<!-- <param name="debug_output" value="$(arg debug)"/> -->
 
 		<!-- Переназначение топиков -->
-		<remap from="/elbow_input"      to="/manipulator3/elbow_input"/>
-		<remap from="/elbow_output"     to="/manipulator3/elbow_output"/>
-		<remap from="/shoulder_input"   to="/manipulator3/shoulder_input"/>
-		<remap from="/shoulder_output"  to="/manipulator3/shoulder_output"/>
-		<remap from="/payload_input"    to="/manipulator3/payload_input"/>
-		<remap from="/payload_output"   to="/manipulator3/payload_output"/>
+		<remap from="/pipe_output"         to="/parameters/pipe"/>
+		<remap from="/elbow_input"         to="/manipulator3/elbow_input"/>
+		<remap from="/elbow_output"        to="/manipulator3/elbow_output"/>
+		<remap from="/shoulder_input"      to="/manipulator3/shoulder_input"/>
+		<remap from="/shoulder_output"     to="/manipulator3/shoulder_output"/>
+		<remap from="/payload_output"      to="/manipulator3/payload_output"/>
+		<remap from="/manipulator_command" to="/manipulator3/manipulator_command"/>
 	</node>
-
+		
+	<!-- Четвертый узел манипулятора -->
 	<node pkg="manipulator_control" 
         type="manipulator_control_node" 
         name="manipulator_control_node_4" 
@@ -69,83 +75,92 @@
 		<!-- <param name="debug_output" value="$(arg debug)"/> -->
 
 		<!-- Переназначение топиков -->
-		<remap from="/elbow_input"      to="/manipulator4/elbow_input"/>
-		<remap from="/elbow_output"     to="/manipulator4/elbow_output"/>
-		<remap from="/shoulder_input"   to="/manipulator4/shoulder_input"/>
-		<remap from="/shoulder_output"  to="/manipulator4/shoulder_output"/>
-		<remap from="/payload_input"    to="/manipulator4/payload_input"/>
-		<remap from="/payload_output"   to="/manipulator4/payload_output"/>
+		<remap from="/pipe_output"         to="/parameters/pipe"/>
+		<remap from="/elbow_input"         to="/manipulator4/elbow_input"/>
+		<remap from="/elbow_output"        to="/manipulator4/elbow_output"/>
+		<remap from="/shoulder_input"      to="/manipulator4/shoulder_input"/>
+		<remap from="/shoulder_output"     to="/manipulator4/shoulder_output"/>
+		<remap from="/payload_output"      to="/manipulator4/payload_output"/>
+		<remap from="/manipulator_command" to="/manipulator4/manipulator_command"/>
 	</node>
 
+	<!-- Пятый узел манипулятора -->
 	<node pkg="manipulator_control" 
         type="manipulator_control_node" 
         name="manipulator_control_node_5" 
         output="screen">
-
+        
 		<!-- Параметры узла -->
 		<!-- <param name="control_rate" value="$(arg rate)"/> -->
 		<!-- <param name="debug_output" value="$(arg debug)"/> -->
-
+		
 		<!-- Переназначение топиков -->
-		<remap from="/elbow_input"      to="/manipulator5/elbow_input"/>
-		<remap from="/elbow_output"     to="/manipulator5/elbow_output"/>
-		<remap from="/shoulder_input"   to="/manipulator5/shoulder_input"/>
-		<remap from="/shoulder_output"  to="/manipulator5/shoulder_output"/>
-		<remap from="/payload_input"    to="/manipulator5/payload_input"/>
-		<remap from="/payload_output"   to="/manipulator5/payload_output"/>
+		<remap from="/pipe_output"         to="/parameters/pipe"/>
+		<remap from="/elbow_input"         to="/manipulator5/elbow_input"/>
+		<remap from="/elbow_output"        to="/manipulator5/elbow_output"/>
+		<remap from="/shoulder_input"      to="/manipulator5/shoulder_input"/>
+		<remap from="/shoulder_output"     to="/manipulator5/shoulder_output"/>
+		<remap from="/payload_output"      to="/manipulator5/payload_output"/>
+		<remap from="/manipulator_command" to="/manipulator5/manipulator_command"/>
 	</node>
-
+		
+	<!-- Шестой узел манипулятора -->
 	<node pkg="manipulator_control" 
         type="manipulator_control_node" 
         name="manipulator_control_node_6" 
         output="screen">
-
+        
 		<!-- Параметры узла -->
 		<!-- <param name="control_rate" value="$(arg rate)"/> -->
 		<!-- <param name="debug_output" value="$(arg debug)"/> -->
-
+		
 		<!-- Переназначение топиков -->
-		<remap from="/elbow_input"      to="/manipulator6/elbow_input"/>
-		<remap from="/elbow_output"     to="/manipulator6/elbow_output"/>
-		<remap from="/shoulder_input"   to="/manipulator6/shoulder_input"/>
-		<remap from="/shoulder_output"  to="/manipulator6/shoulder_output"/>
-		<remap from="/payload_input"    to="/manipulator6/payload_input"/>
-		<remap from="/payload_output"   to="/manipulator6/payload_output"/>
+		<remap from="/pipe_output"         to="/parameters/pipe"/>
+		<remap from="/elbow_input"         to="/manipulator6/elbow_input"/>
+		<remap from="/elbow_output"        to="/manipulator6/elbow_output"/>
+		<remap from="/shoulder_input"      to="/manipulator6/shoulder_input"/>
+		<remap from="/shoulder_output"     to="/manipulator6/shoulder_output"/>
+		<remap from="/payload_output"      to="/manipulator6/payload_output"/>
+		<remap from="/manipulator_command" to="/manipulator6/manipulator_command"/>
 	</node>
-
+		
+	<!-- Седьмой узел манипулятора -->
 	<node pkg="manipulator_control" 
         type="manipulator_control_node" 
         name="manipulator_control_node_7" 
         output="screen">
-
+        
 		<!-- Параметры узла -->
 		<!-- <param name="control_rate" value="$(arg rate)"/> -->
 		<!-- <param name="debug_output" value="$(arg debug)"/> -->
-
+		
 		<!-- Переназначение топиков -->
-		<remap from="/elbow_input"      to="/manipulator7/elbow_input"/>
-		<remap from="/elbow_output"     to="/manipulator7/elbow_output"/>
-		<remap from="/shoulder_input"   to="/manipulator7/shoulder_input"/>
-		<remap from="/shoulder_output"  to="/manipulator7/shoulder_output"/>
-		<remap from="/payload_input"    to="/manipulator7/payload_input"/>
-		<remap from="/payload_output"   to="/manipulator7/payload_output"/>
+		<remap from="/pipe_output"         to="/parameters/pipe"/>
+		<remap from="/elbow_input"         to="/manipulator7/elbow_input"/>
+		<remap from="/elbow_output"        to="/manipulator7/elbow_output"/>
+		<remap from="/shoulder_input"      to="/manipulator7/shoulder_input"/>
+		<remap from="/shoulder_output"     to="/manipulator7/shoulder_output"/>
+		<remap from="/payload_output"      to="/manipulator7/payload_output"/>
+		<remap from="/manipulator_command" to="/manipulator7/manipulator_command"/>
 	</node>
-
+		
+	<!-- Восьмой узел манипулятора -->
 	<node pkg="manipulator_control" 
         type="manipulator_control_node" 
         name="manipulator_control_node_8" 
         output="screen">
-
+        
 		<!-- Параметры узла -->
 		<!-- <param name="control_rate" value="$(arg rate)"/> -->
 		<!-- <param name="debug_output" value="$(arg debug)"/> -->
-
+		
 		<!-- Переназначение топиков -->
-		<remap from="/elbow_input"      to="/manipulator8/elbow_input"/>
-		<remap from="/elbow_output"     to="/manipulator8/elbow_output"/>
-		<remap from="/shoulder_input"   to="/manipulator8/shoulder_input"/>
-		<remap from="/shoulder_output"  to="/manipulator8/shoulder_output"/>
-		<remap from="/payload_input"    to="/manipulator8/payload_input"/>
-		<remap from="/payload_output"   to="/manipulator8/payload_output"/>
+		<remap from="/pipe_output"         to="/parameters/pipe"/>
+		<remap from="/elbow_input"         to="/manipulator8/elbow_input"/>
+		<remap from="/elbow_output"        to="/manipulator8/elbow_output"/>
+		<remap from="/shoulder_input"      to="/manipulator8/shoulder_input"/>
+		<remap from="/shoulder_output"     to="/manipulator8/shoulder_output"/>
+		<remap from="/payload_output"      to="/manipulator8/payload_output"/>
+		<remap from="/manipulator_command" to="/manipulator8/manipulator_command"/>
 	</node>
 </launch>

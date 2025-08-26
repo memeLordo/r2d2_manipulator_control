@@ -5,8 +5,8 @@ add_compile_options(-std=c++14)
 
 find_package(catkin REQUIRED COMPONENTS
   roscpp
+  roslib
   std_msgs
-  message_generation
   r2d2_msg_pkg 
 )
 
@@ -14,11 +14,6 @@ find_package(catkin REQUIRED COMPONENTS
 ## Declare ROS messages, services and actions ##
 ################################################
 
-# Generate services in the 'srv' folder
-add_service_files(
-  FILES
-  ManipulatorCommand.srv
-)
 generate_messages(
   DEPENDENCIES
   std_msgs
@@ -31,16 +26,13 @@ generate_messages(
 include_directories(
   include
   include/${PROJECT_NAME}
+  # include/${PROJECT_NAME}/utils
   ${catkin_INCLUDE_DIRS}
 )
 
 add_library(${PROJECT_NAME}
-  src/ElbowHandler.cpp
+  src/IConfigJson.cpp
   src/ManipulatorControl.cpp
-  src/ManipulatorService.cpp
-  src/PayloadHandler.cpp
-  src/PipeHandler.cpp
-  src/ShoulderHandler.cpp
 )
 
 add_executable(${PROJECT_NAME}_node 

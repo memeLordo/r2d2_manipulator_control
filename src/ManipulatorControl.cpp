@@ -1,70 +1,25 @@
-#include "ManipulatorControl.h"
-#include <cmath>
-#include <cstdlib>
+#include "ManipulatorControl.hpp"
 
-constexpr double RATE = 1; // Hz
-
-template <typename T> T ManipulatorControlHandler<T>::calc_radius() {
-  return shoulder.get_length() * sin(shoulder.get_angle()) +
-         elbow.get_length() * sin(elbow.get_angle()) + get_radius();
-}
+using namespace r2d2_state;
+using namespace r2d2_type;
 
 template <typename T>
-void ManipulatorControlHandler<T>::process_angle_control() {
-  static constexpr T ANGLE_THRESHOLD = 5.0;
-
-  const T angle_diff =
-      std::abs(elbow.get_angle() - elbow.calc_angle() - ANGLE_THRESHOLD);
-
-  if (angle_diff >= ANGLE_THRESHOLD) { // TODO: fix to angle_threshold2
-    shoulder.update_angle(shoulder.calc_angle(calc_radius()));
-    shoulder.set_publish_pending();
-  }
+ManipulatorControlHandler<T>::ManipulatorControlHandler(ros::NodeHandle *node)
+    : ManipulatorConfig<T>{},
+      m_pipe{node},
+      m_payload{node},
+      m_elbow{node},
+      m_shoulder{node} {
+  const double RATE = node->param<T>("control_rate", 20);
+  ROS_DEBUG_STREAM("Set RATE: " << RATE);
+  m_timer = node->createTimer(
+      ros::Duration(1 / RATE),
+      &ManipulatorControlHandler<T>::callbackManipulator, this);
 }
 template <typename T>
-void ManipulatorControlHandler<T>::process_force_control() {
-  const auto current_force = payload.get_force();
-  const auto target_force = get_force();
-
-  if (current_force > target_force) {
-    elbow.update_speed(-std::abs(elbow.get_speed()));
-  } else if (current_force < target_force) {
-    elbow.update_speed();
-  } else {
-    elbow.update_speed(0);
-  }
-}
-template <typename T> void ManipulatorControlHandler<T>::publish_results() {
-  elbow.publish();
-  if (shoulder.is_publish_pending()) {
-    shoulder.publish();
-    shoulder.clear_publish_pending();
-  }
-}
-
-template <typename T> void ManipulatorControlHandler<T>::update_joint_state() {
-  switch (status) {
-  case LockStatus::UNLOCKED:
-    // Вычисляем углы для разблокированного состояния
-    elbow.update_angle(elbow.calc_angle());
-    shoulder.update_angle(shoulder.calc_angle());
-    break;
-  default:
-    // Используем текущие значения для заблокированного состояния
-    elbow.update_angle();
-    shoulder.update_angle();
-  }
-  // TODO: Если заблокированиы - манипуляторы в 0
-  // Обновляем скорости
-  elbow.update_speed();
-  shoulder.update_speed();
-}
-template <typename T> void ManipulatorControlHandler<T>::publish_joint_state() {
-  elbow.publish();
-  shoulder.publish();
-}
-
-template <typename T> void ManipulatorControlHandler<T>::setup() {
+void ManipulatorControlHandler<T>::callbackManipulator(
+    const ros::TimerEvent &) {
+  ROS_DEBUG_STREAM("\ncallbackManipulator()");
   /**
    * INFO:
    * 0. Получить данные для манипулятора (и трубы)
@@ -74,82 +29,77 @@ template <typename T> void ManipulatorControlHandler<T>::setup() {
    * 4. Обновить оставшиеся переменные
    * 5. Опубликовать все переменные
    */
-  // if (!call_nozzle()) {
-  //   ROS_WARN("Failed to set nozzle, using default");
-  // }
-  // if (!call_status()) {
-  //   ROS_WARN("Failed to set lock status, using default");
-  // }
-  update_joint_state();
-  T current_angle[]{elbow.get_angle(), shoulder.get_angle()};
-  publish_joint_state();
-
-  // TODO: while проверка DriverState == DriverCommand
-  // exec wait... 0.1s
-  // TODO: creaate async task for timer to wait
-  // wait_for_state(elbow_state, shoulder_state);
-  ROS_INFO("Manipulator setup completed");
-}
-// template <typename T> bool ManipulatorControlHandler<T>::check_angle(T
-// margin) {
-//   return std::abs(shoulder.get_angle() - shoulder.get_current_angle()) <
-//   margin;
-// }
-template <typename T>
-void ManipulatorControlHandler<T>::callback_manipulator(
-    const ros::TimerEvent &) {
-  switch (mode) {
-  // Ранний выход при отключенном автоматическом режиме
-  case WorkMode::AUTO:
-    switch (status) {
-    //  Проверка блокировки
-    case LockStatus::UNLOCKED:
-      // Основная логика управления
-      process_angle_control();
-      process_force_control();
-      publish_results();
+  switch (m_workMode.type) {
+    case WorkMode::AUTO:
+      ROS_DEBUG_STREAM(YELLOW("WorkMode::AUTO"));
+      processControl(m_pipe.getRadius(), m_payload.getForce());
       return;
+
+    case WorkMode::STOP:
+      ROS_DEBUG_STREAM(YELLOW("WorkMode::STOP"));
+      processStop(getRadius());
+      return;
+
+    case WorkMode::MANUAL:
+      ROS_DEBUG_STREAM(YELLOW("WorkMode::MANUAL"));
+      this->resetMode();
+      return;
+
     default:
-      elbow.update_speed(0);
-      elbow.publish();
+      ROS_DEBUG_STREAM(YELLOW("Pending mode"));
       return;
-    }
-    break;
-
-  case WorkMode::MANUAL:
-    setup();
-    reset_mode();
-    return;
-
-  default:
-    return;
   }
-  // Проверка блокировки
-  // Ранний выход при отключенном автоматическом режиме
-  // if (!mode) {
-  //   setup();
-  //   return;
-  // }
-  // Проверка блокировки
-  // if (!status) {
-  //   elbow.update_speed(0);
-  //   elbow.publish();
-  //   return;
-  // }
-  // // Основная логика управления
-  // process_angle_control();
-  // process_force_control();
-  // publish_results();
 }
-
 template <typename T>
-ManipulatorControlHandler<T>::ManipulatorControlHandler(ros::NodeHandle *node)
-    : payload(node), pipe(node), elbow(node, pipe), shoulder(node, pipe) {
-  // setup();
-  timer = node->createTimer(ros::Duration(1 / RATE),
-                            &ManipulatorControlHandler<T>::callback_manipulator,
-                            this);
-  ROS_INFO("ManipulatorControlHandler::ManipulatorControlHandler");
+void ManipulatorControlHandler<T>::checkSetup(const T radius) {
+  if (m_needsSetup) {
+    ROS_DEBUG_STREAM(MAGENTA("\ncheckSetup()"));
+    const bool hasRadiusReached_{getCurrentRadius() >= radius};
+    ROS_DEBUG_STREAM(CYAN("hasRadiusReached_ = " << hasRadiusReached_));
+    if (hasRadiusReached_) {
+      m_elbow.enableTolerance();
+      m_shoulder.stopRefresh();
+      m_needsSetup &= false;
+    }
+    ROS_DEBUG_STREAM(RED("\nend") << MAGENTA("::checkSetup()"));
+  } else
+    ROS_DEBUG_STREAM(CYAN("Control radius reached!"));
+}
+template <typename T>
+void ManipulatorControlHandler<T>::processStop(const T radius) {
+  ROS_DEBUG_STREAM(YELLOW("WorkMode::STOP"));
+  processAngleControl(radius);
+  publishResults();
+}
+template <typename T>
+void ManipulatorControlHandler<T>::processControl(const T radius,
+                                                  const T force) {
+  switch (m_lockStatus.type) {
+    case LockStatus::UNLOCKED:
+      ROS_DEBUG_STREAM(YELLOW("LockStatus::UNLOCKED"));
+      checkSetup(radius);
+      processAngleControl(radius);
+      processForceControl(force);
+      break;
+    default:
+      break;
+  }
+  publishResults();
+}
+template <typename T>
+void ManipulatorControlHandler<T>::processAngleControl(const T radius) {
+  ROS_DEBUG_STREAM(MAGENTA("\nprocessRadiusControl()"));
+  m_shoulder.updateAngleByRadius(radius);
+  m_elbow.updateAngleByRadius(radius);
+  ROS_DEBUG_STREAM(RED("\nend") << MAGENTA("::processRadiusControl()"));
+}
+template <typename T>
+void ManipulatorControlHandler<T>::processForceControl(const T force) {
+  if (!m_needsSetup) {
+    ROS_DEBUG_STREAM(MAGENTA("\nprocessForceControl()"));
+    m_elbow.updateAngleByDiff(checkForceDiff(force));
+    ROS_DEBUG_STREAM(RED("\nend") << MAGENTA("::processForceControl()"));
+  }
 }
 
 template class ManipulatorControlHandler<>;
