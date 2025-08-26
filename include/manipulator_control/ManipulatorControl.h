@@ -11,61 +11,61 @@
 template <typename T = double> class ManipulatorControlHandler {
 
 public:
-  enum class WorkMode : uint8_t { NONE = 0, MANUAL, AUTO } work_mode{};
-  enum class NozzleType : uint8_t { NONE = 0, BRUSH, EMA } nozzle_type{};
-  enum class LockStatus : uint8_t { NONE = 0, LOCKED, UNLOCKED } lock_status{};
+  enum class WorkMode : uint8_t { NONE = 0, MANUAL, AUTO } m_workMode{};
+  enum class NozzleType : uint8_t { NONE = 0, BRUSH, EMA } m_nozzleType{};
+  enum class LockStatus : uint8_t { NONE = 0, LOCKED, UNLOCKED } m_lockStatus{};
 
 private:
   struct manipulator_t {
     int16_t force_needed{};
     T r0{};
-  } params{};
+  } m_params{};
 
-  PayloadHandler<T> payload;
-  PipeHandler<T> pipe;
-  ElbowHandler<T> elbow;
-  ShoulderHandler<T> shoulder;
+  PayloadHandler<T> m_payload;
+  PipeHandler<T> m_pipe;
+  ElbowHandler<T> m_elbow;
+  ShoulderHandler<T> m_shoulder;
 
-  ros::Timer timer;
+  ros::Timer m_timer;
 
 public:
   ManipulatorControlHandler(ros::NodeHandle *node);
 
 private:
-  void callback_manipulator(const ros::TimerEvent &);
+  void callbackManipulator(const ros::TimerEvent &);
   void setup();
-  T calc_radius();
-  void process_angle_control();
-  void process_force_control();
-  void publish_results();
-  void update_joint_state();
-  void publish_joint_state();
+  T calcRadius();
+  void processAngleControl();
+  void processForceControl();
+  void publishResults();
+  void updateJointState();
+  void publishJointState();
 
-  void update_nozzle_type() {
-    switch (nozzle_type) {
+  void updateNozzleType() {
+    switch (m_nozzleType) {
     case NozzleType::BRUSH:
-      params = manipulator_t{100, 347.0};
+      m_params = manipulator_t{100, 347.0};
       return;
     case NozzleType::EMA:
-      params = manipulator_t{150, 331.0};
+      m_params = manipulator_t{150, 331.0};
       return;
     }
   };
 
 public:
-  void reset_mode() { work_mode = WorkMode::NONE; };
-  void reset_nozzle() { nozzle_type = NozzleType::NONE; };
-  void reset_lock() { lock_status = LockStatus::NONE; };
+  void resetMode() { m_workMode = WorkMode::NONE; };
+  void resetNozzle() { m_nozzleType = NozzleType::NONE; };
+  void resetLock() { m_lockStatus = LockStatus::NONE; };
 
-  void set_mode(WorkMode value) { work_mode = value; };
-  void set_nozzle(NozzleType value) { nozzle_type = value; };
-  void set_lock(LockStatus value) { lock_status = value; };
-  void set_mode(T value) { work_mode = static_cast<WorkMode>(value); };
-  void set_nozzle(T value) { nozzle_type = static_cast<NozzleType>(value); };
-  void set_lock(T value) { lock_status = static_cast<LockStatus>(value); };
+  void setMode(WorkMode value) { m_workMode = value; };
+  void setNozzle(NozzleType value) { m_nozzleType = value; };
+  void setLock(LockStatus value) { m_lockStatus = value; };
+  void setMode(T value) { m_workMode = static_cast<WorkMode>(value); };
+  void setNozzle(T value) { m_nozzleType = static_cast<NozzleType>(value); };
+  void setLock(T value) { m_lockStatus = static_cast<LockStatus>(value); };
 
-  T get_force() const { return static_cast<T>(params.force_needed); };
-  T get_radius() const { return params.r0; };
+  T getForce() const { return static_cast<T>(m_params.force_needed); };
+  T getRadius() const { return m_params.r0; };
 };
 
 #endif // MANIPULATOR_CONTROL_H

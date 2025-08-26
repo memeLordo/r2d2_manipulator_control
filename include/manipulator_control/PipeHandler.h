@@ -11,20 +11,20 @@ private:
     uint16_t diameter{};
     uint8_t thickness{};
     T radius() const { return (T)diameter / T{2} - thickness; };
-  } callback_params{};
+  } m_callbackParams{};
 
-  ros::Subscriber subscriber;
+  ros::Subscriber m_subscriber;
 
 public:
   PipeHandler(ros::NodeHandle *node);
 
 private:
-  void callback_pipe(const r2d2_msg_pkg::PipeParametersConstPtr &msg) {
-    callback_params = pipe_t{msg->pipe_diam, msg->pipe_thickness};
+  void callbackPipe(const r2d2_msg_pkg::PipeParametersConstPtr &msg) {
+    m_callbackParams = pipe_t{msg->pipe_diam, msg->pipe_thickness};
   };
 
 public:
-  T get_radius() const { return callback_params.radius(); };
+  T getRadius() const { return m_callbackParams.radius(); };
 };
 
 #endif // PIPE_HANDLER_H

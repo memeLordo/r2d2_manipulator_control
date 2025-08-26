@@ -8,20 +8,20 @@ constexpr const char *MANIPULATOR_SERVICE_MODE = "/manipulator_command";
 
 ManipulatorServiceHandler::ManipulatorServiceHandler(
     ros::NodeHandle *node, ManipulatorControlHandler<> &manipulator_controlRef)
-    : manipulator_control(manipulator_controlRef) {
-  manipulator_service = node->advertiseService(
-      MANIPULATOR_SERVICE_MODE, &ManipulatorServiceHandler::callback_service,
-      this);
+    : m_manipulatorControl(manipulator_controlRef) {
+  m_manipulatorService =
+      node->advertiseService(MANIPULATOR_SERVICE_MODE,
+                             &ManipulatorServiceHandler::callbackService, this);
 }
-bool ManipulatorServiceHandler::callback_service(
+bool ManipulatorServiceHandler::callbackService(
     manipulator_control::ManipulatorCommand::Request &req,
     manipulator_control::ManipulatorCommand::Response &res) {
   res.success = true;
-  return callback_mode_service(req, res) && callback_nozzle_service(req, res) &&
-         callback_status_service(req, res);
+  return callbackModeService(req, res) && callbackNozzleService(req, res) &&
+         callbackStatusService(req, res);
 }
 
-bool ManipulatorServiceHandler::callback_mode_service(
+bool ManipulatorServiceHandler::callbackModeService(
     manipulator_control::ManipulatorCommand::Request &req,
     manipulator_control::ManipulatorCommand::Response &res) {
   ROS_INFO("callback_mode_service::got request, work_mode: %d", req.work_mode);
@@ -29,7 +29,7 @@ bool ManipulatorServiceHandler::callback_mode_service(
   switch (work_mode_) {
   case WorkMode::MANUAL:
   case WorkMode::AUTO:
-    manipulator_control.set_mode(work_mode_);
+    m_manipulatorControl.setMode(work_mode_);
     break;
   default:
     ROS_ERROR("Got unknown work mode");
@@ -37,7 +37,7 @@ bool ManipulatorServiceHandler::callback_mode_service(
   }
   return true;
 }
-bool ManipulatorServiceHandler::callback_nozzle_service(
+bool ManipulatorServiceHandler::callbackNozzleService(
     manipulator_control::ManipulatorCommand::Request &req,
     manipulator_control::ManipulatorCommand::Response &res) {
   ROS_INFO("callback_nozzle_service::got request, nozzle_type: %d",
@@ -46,7 +46,7 @@ bool ManipulatorServiceHandler::callback_nozzle_service(
   switch (nozzle_type_) {
   case NozzleType::BRUSH:
   case NozzleType::EMA:
-    manipulator_control.set_nozzle(nozzle_type_);
+    m_manipulatorControl.setNozzle(nozzle_type_);
     break;
   default:
     ROS_ERROR("Got unknown nozzle type");
@@ -54,7 +54,7 @@ bool ManipulatorServiceHandler::callback_nozzle_service(
   }
   return true;
 }
-bool ManipulatorServiceHandler::callback_status_service(
+bool ManipulatorServiceHandler::callbackStatusService(
     manipulator_control::ManipulatorCommand::Request &req,
     manipulator_control::ManipulatorCommand::Response &res) {
   ROS_INFO("callback_status_service::got request %d", req.lock_status);
@@ -62,7 +62,7 @@ bool ManipulatorServiceHandler::callback_status_service(
   switch (lock_status_) {
   case LockStatus::LOCKED:
   case LockStatus::UNLOCKED:
-    manipulator_control.set_lock(lock_status_);
+    m_manipulatorControl.setLock(lock_status_);
     break;
   default:
     ROS_ERROR("Got unknown lock status");

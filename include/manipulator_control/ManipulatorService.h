@@ -6,25 +6,25 @@
 #include "ros/node_handle.h"
 class ManipulatorServiceHandler {
 private:
-  ManipulatorControlHandler<> &manipulator_control;
+  ManipulatorControlHandler<> &m_manipulatorControl;
 
-  ros::ServiceServer manipulator_service;
+  ros::ServiceServer m_manipulatorService;
 
 public:
   ManipulatorServiceHandler(ros::NodeHandle *node,
                             ManipulatorControlHandler<> &);
 
 private:
-  bool callback_service(manipulator_control::ManipulatorCommand::Request &req,
+  bool callbackService(manipulator_control::ManipulatorCommand::Request &req,
+                       manipulator_control::ManipulatorCommand::Response &res);
+  bool
+  callbackModeService(manipulator_control::ManipulatorCommand::Request &req,
+                      manipulator_control::ManipulatorCommand::Response &res);
+  bool
+  callbackNozzleService(manipulator_control::ManipulatorCommand::Request &req,
                         manipulator_control::ManipulatorCommand::Response &res);
   bool
-  callback_mode_service(manipulator_control::ManipulatorCommand::Request &req,
+  callbackStatusService(manipulator_control::ManipulatorCommand::Request &req,
                         manipulator_control::ManipulatorCommand::Response &res);
-  bool callback_nozzle_service(
-      manipulator_control::ManipulatorCommand::Request &req,
-      manipulator_control::ManipulatorCommand::Response &res);
-  bool callback_status_service(
-      manipulator_control::ManipulatorCommand::Request &req,
-      manipulator_control::ManipulatorCommand::Response &res);
 };
 #endif // MANIPULATOR_SERVICE_H

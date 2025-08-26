@@ -6,37 +6,38 @@ constexpr double RATE = 50; // Hz
 
 template <typename T>
 ManipulatorControlHandler<T>::ManipulatorControlHandler(ros::NodeHandle *node)
-    : payload(node), pipe(node), elbow(node, pipe), shoulder(node, pipe) {
-  set_mode(WorkMode::MANUAL);
-  timer = node->createTimer(ros::Duration(1 / RATE),
-                            &ManipulatorControlHandler<T>::callback_manipulator,
-                            this);
+    : m_payload(node), m_pipe(node), m_elbow(node, m_pipe),
+      m_shoulder(node, m_pipe) {
+  setMode(WorkMode::MANUAL);
+  m_timer = node->createTimer(
+      ros::Duration(1 / RATE),
+      &ManipulatorControlHandler<T>::callbackManipulator, this);
 }
 template <typename T>
-void ManipulatorControlHandler<T>::callback_manipulator(
+void ManipulatorControlHandler<T>::callbackManipulator(
     const ros::TimerEvent &) {
-  switch (work_mode) {
+  switch (m_workMode) {
   // Ранний выход при отключенном автоматическом режиме
   case WorkMode::AUTO:
-    switch (lock_status) {
+    switch (m_lockStatus) {
     //  Проверка блокировки
     case LockStatus::UNLOCKED:
       // Основная логика управления
       // ROS_INFO("Calculating angles");
-      process_angle_control();
-      process_force_control();
-      publish_results();
+      processAngleControl();
+      processForceControl();
+      publishResults();
       return;
     default:
-      elbow.update_speed(0);
-      elbow.publish();
+      m_elbow.updateSpeed(0);
+      m_elbow.publish();
       return;
     }
     break;
 
   case WorkMode::MANUAL:
     setup();
-    reset_mode();
+    resetMode();
     return;
 
   default:
@@ -53,9 +54,9 @@ template <typename T> void ManipulatorControlHandler<T>::setup() {
    * 4. Обновить оставшиеся переменные
    * 5. Опубликовать все переменные
    */
-  update_nozzle_type();
-  update_joint_state();
-  publish_joint_state();
+  updateNozzleType();
+  updateJointState();
+  publishJointState();
 
   // T current_angle[]{elbow.get_angle(), shoulder.get_angle()};
   // while ((elbow.get_state() - elbow.get_input_angle()) > 0.1 &&
@@ -69,63 +70,61 @@ template <typename T> void ManipulatorControlHandler<T>::setup() {
   ROS_INFO("Manipulator Setup completed");
 }
 
-template <typename T> T ManipulatorControlHandler<T>::calc_radius() {
-  return shoulder.get_length() * sin(shoulder.get_angle()) +
-         elbow.get_length() * sin(elbow.get_angle()) + get_radius();
+template <typename T> T ManipulatorControlHandler<T>::calcRadius() {
+  return m_shoulder.getLength() * sin(m_shoulder.getAngle()) +
+         m_elbow.getLength() * sin(m_elbow.getAngle()) + getRadius();
 }
-template <typename T>
-void ManipulatorControlHandler<T>::process_angle_control() {
+template <typename T> void ManipulatorControlHandler<T>::processAngleControl() {
   static constexpr T ANGLE_THRESHOLD = 5.0;
 
   const T angle_diff =
-      abs(elbow.get_angle() - elbow.calc_angle() - ANGLE_THRESHOLD);
+      abs(m_elbow.getAngle() - m_elbow.calcAngle() - ANGLE_THRESHOLD);
 
   if (angle_diff >= ANGLE_THRESHOLD) { // TODO: fix to angle_threshold2
-    shoulder.update_angle(shoulder.calc_angle(calc_radius()));
-    shoulder.set_publish_pending();
+    m_shoulder.updateAngle(m_shoulder.calcAngle(calcRadius()));
+    m_shoulder.setPublishPending();
   }
 }
-template <typename T>
-void ManipulatorControlHandler<T>::process_force_control() {
-  const auto current_force = payload.get_force();
-  const auto target_force = get_force();
+template <typename T> void ManipulatorControlHandler<T>::processForceControl() {
+  const auto current_force = m_payload.getForce();
+  const auto target_force = getForce();
 
   if (current_force > target_force) {
-    elbow.update_speed(-abs(elbow.get_speed()));
+    m_elbow.updateSpeed(-abs(m_elbow.getSpeed()));
   } else if (current_force < target_force) {
-    elbow.update_speed();
+    m_elbow.updateSpeed();
   } else {
-    elbow.update_speed(0);
+    m_elbow.updateSpeed(0);
   }
 }
-template <typename T> void ManipulatorControlHandler<T>::publish_results() {
-  elbow.publish();
-  if (shoulder.is_publish_pending()) {
-    shoulder.publish();
-    shoulder.clear_publish_pending();
+template <typename T> void ManipulatorControlHandler<T>::publishResults() {
+  m_elbow.publish();
+  if (m_shoulder.isPublishPending()) {
+    m_shoulder.publish();
+    m_shoulder.clearPublishPending();
   }
 }
 
-template <typename T> void ManipulatorControlHandler<T>::update_joint_state() {
-  switch (lock_status) {
+template <typename T> void ManipulatorControlHandler<T>::updateJointState() {
+  switch (m_lockStatus) {
   case LockStatus::UNLOCKED:
     // Вычисляем углы для разблокированного состояния
-    elbow.update_angle(elbow.calc_angle());
-    shoulder.update_angle(shoulder.calc_angle());
+    m_elbow.updateAngle(m_elbow.calcAngle());
+    m_shoulder.updateAngle(m_shoulder.calcAngle());
     break;
   default:
     // Используем текущие значения для заблокированного состояния
-    elbow.update_angle();
-    shoulder.update_angle();
+    m_elbow.updateAngle();
+    m_shoulder.updateAngle();
   }
   // TODO: Если заблокированиы - манипуляторы в 0
   // Обновляем скорости
-  elbow.update_speed();
-  shoulder.update_speed();
+  m_elbow.updateSpeed();
+  m_shoulder.updateSpeed();
 }
-template <typename T> void ManipulatorControlHandler<T>::publish_joint_state() {
-  elbow.publish();
-  shoulder.publish();
+template <typename T> void ManipulatorControlHandler<T>::publishJointState() {
+  m_elbow.publish();
+  m_shoulder.publish();
 }
 
 template class ManipulatorControlHandler<>;
