@@ -7,7 +7,7 @@ constexpr const char *SHOULDER_INPUT_NODE = "/shoulder_input";
 constexpr const char *SHOULDER_OUTPUT_NODE = "/shoulder_output";
 
 template <typename T>
-const T ShoulderHandler<T>::m_coeffs[]{-0.00011, 0.341, -110.2};
+const T ShoulderHandler<T>::m_coeffs[]{0.00024, 0.142, 20.9};
 template <typename T> const T ShoulderHandler<T>::m_length{363}; // mm
 
 template <typename T>

@@ -6,7 +6,8 @@
 constexpr const char *ELBOW_INPUT_NODE = "/elbow_input";
 constexpr const char *ELBOW_OUTPUT_NODE = "/elbow_output";
 
-template <typename T> const T ElbowHandler<T>::m_coeffs[]{0.00024, 0.142, 20.9};
+template <typename T>
+const T ElbowHandler<T>::m_coeffs[]{-0.00011, 0.341, -105.2};
 template <typename T> const T ElbowHandler<T>::m_length{180}; // mm
 // template<typename T> const T ElbowHandler<T>::angle_treshold{5};
 template <typename T>
