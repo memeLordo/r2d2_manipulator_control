@@ -42,23 +42,52 @@ private:
   };
 
 public:
-  void updateSpeed() { m_params.omega = m_callbackParams.omega; };
-  void updateAngle() { m_params.theta = m_callbackParams.theta; };
-  void updateSpeed(T omega) { m_params.omega = static_cast<int16_t>(omega); };
+  void updateSpeed() {
+    ROS_INFO("Update callback shoulder | omega : %f", m_callbackParams.omega);
+    m_params.omega = m_callbackParams.omega;
+  };
+  void updateAngle() {
+    ROS_INFO("Update callback shoulder | theta : %f", m_callbackParams.theta);
+    m_params.theta = m_callbackParams.theta;
+  };
+  void updateSpeed(T omega) {
+    ROS_INFO("Update callback shoulder | omega : %f", omega);
+    m_params.omega = static_cast<int16_t>(omega);
+  };
   void updateAngle(T theta) { m_params.theta = static_cast<int16_t>(theta); };
 
-  void setPublishPending(bool pending = true) { m_needsPublish = pending; }
-  void clearPublishPending() { m_needsPublish = false; }
+  void setPublishPending(bool pending = true) {
+    ROS_INFO("Set publish pending to %d", pending);
+    m_needsPublish = pending;
+  }
+  void clearPublishPending() {
+    ROS_INFO("Clear publish pending");
+    m_needsPublish = false;
+  }
 
   void publish() {
-    if (m_params.omega > 0 || m_params.theta > 0)
+    if (m_params.omega > 0 || m_params.theta > 0) {
+      ROS_INFO("Publish shoulder");
       m_publisher.publish(prepareMsg());
+    }
   };
-  bool isPublishPending() const { return m_needsPublish; }
+  bool isPublishPending() const {
+    ROS_INFO("Get publish pending");
+    return m_needsPublish;
+  }
 
-  T getSpeed() const { return static_cast<T>(m_params.omega); };
-  T getAngle() const { return static_cast<T>(m_params.theta); };
-  T getLength() const { return m_length; };
+  T getSpeed() const {
+    ROS_INFO("Get shoulder | speed : %f", m_params.omega);
+    return static_cast<T>(m_params.omega);
+  };
+  T getAngle() const {
+    ROS_INFO("Get shoulder | angle : %f", m_params.theta);
+    return static_cast<T>(m_params.theta);
+  };
+  T getLength() const {
+    ROS_INFO("Get shoulder | length : %f", m_length);
+    return m_length;
+  };
 
   T calcAngle();
   T calcAngle(T theta);

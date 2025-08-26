@@ -44,15 +44,39 @@ private:
   void updateNozzleType();
 
 public:
-  void resetMode() { m_workMode = WorkMode::NONE; };
-  void resetNozzle() { m_nozzleType = NozzleType::NONE; };
-  void resetLock() { m_lockStatus = LockStatus::NONE; };
+  void resetMode() {
+    ROS_INFO("Reset mode");
+    m_workMode = WorkMode::NONE;
+  };
+  void resetNozzle() {
+    ROS_INFO("Reset nozzle");
+    m_nozzleType = NozzleType::NONE;
+  };
+  void resetLock() {
+    ROS_INFO("Reset lock");
+    m_lockStatus = LockStatus::NONE;
+  };
 
-  void setMode(WorkMode value) { m_workMode = value; };
-  void setNozzle(NozzleType value) { m_nozzleType = value; };
-  void setLock(LockStatus value) { m_lockStatus = value; };
-  void setMode(T value) { m_workMode = static_cast<WorkMode>(value); };
-  void setNozzle(T value) { m_nozzleType = static_cast<NozzleType>(value); };
+  void setMode(WorkMode value) {
+    ROS_INFO("Set mode | mode : %f", value);
+    m_workMode = value;
+  };
+  void setNozzle(NozzleType value) {
+    ROS_INFO("Set nozzle | nozzle : %f", value);
+    m_nozzleType = value;
+  };
+  void setLock(LockStatus value) {
+    ROS_INFO("Set lock | lock : %f", value);
+    m_lockStatus = value;
+  };
+  void setMode(T value) {
+    ROS_INFO("Set mode | mode : %f", value);
+    m_workMode = static_cast<WorkMode>(value);
+  };
+  void setNozzle(T value) {
+    ROS_INFO("Set nozzle | nozzle : %f", value);
+    m_nozzleType = static_cast<NozzleType>(value);
+  };
   void setLock(T value) { m_lockStatus = static_cast<LockStatus>(value); };
 
   T getForce() const { return static_cast<T>(m_params.force_needed); };

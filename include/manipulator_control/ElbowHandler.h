@@ -4,6 +4,7 @@
 #include "PipeHandler.h"
 #include "r2d2_msg_pkg/DriverCommand.h"
 #include "r2d2_msg_pkg/DriverState.h"
+#include "ros/console.h"
 #include <cstdint>
 #include <ros/node_handle.h>
 
@@ -33,6 +34,8 @@ private:
   };
 
   r2d2_msg_pkg::DriverCommand prepareMsg() const {
+    ROS_INFO("Prepare elbow msg | omeha : %f  theta : %f", m_params.omega,
+             m_params.theta);
     r2d2_msg_pkg::DriverCommand msg;
     msg.omega = m_params.omega;
     msg.theta = m_params.theta;
@@ -40,19 +43,42 @@ private:
   };
 
 public:
-  void updateSpeed() { m_params.omega = m_callbackParams.omega; };
-  void updateAngle() { m_params.theta = m_callbackParams.theta; };
-  void updateSpeed(T omega) { m_params.omega = static_cast<int16_t>(omega); };
-  void updateAngle(T theta) { m_params.theta = static_cast<int16_t>(theta); };
-
-  void publish() {
-    if (m_params.omega > 0 || m_params.theta > 0)
-      m_publisher.publish(prepareMsg());
+  void updateSpeed() {
+    ROS_INFO("Update callback elbow | omega : %f", m_callbackParams.omega);
+    m_params.omega = m_callbackParams.omega;
+  };
+  void updateAngle() {
+    ROS_INFO("Update callback elbow | theta : %f", m_callbackParams.theta);
+    m_params.theta = m_callbackParams.theta;
+  };
+  void updateSpeed(T omega) {
+    ROS_INFO("Update callback elbow | omega : %f", omega);
+    m_params.omega = static_cast<int16_t>(omega);
+  };
+  void updateAngle(T theta) {
+    ROS_INFO("Update callback elbow | theta : %f", theta);
+    m_params.theta = static_cast<int16_t>(theta);
   };
 
-  T getSpeed() const { return static_cast<T>(m_params.omega); };
-  T getAngle() const { return static_cast<T>(m_params.theta); };
-  T getLength() const { return static_cast<T>(m_length); };
+  void publish() {
+    if (m_params.omega > 0 || m_params.theta > 0) {
+      ROS_INFO("Publish elbow");
+      m_publisher.publish(prepareMsg());
+    }
+  };
+
+  T getSpeed() const {
+    ROS_INFO("Get elbow | omega : %f", m_params.omega);
+    return static_cast<T>(m_params.omega);
+  };
+  T getAngle() const {
+    ROS_INFO("Get elbow | theta : %f", m_params.theta);
+    return static_cast<T>(m_params.theta);
+  };
+  T getLength() const {
+    ROS_INFO("Get elbow | length : %f", m_length);
+    return static_cast<T>(m_length);
+  };
 
   T calcAngle();
   T calcAngle(T theta);

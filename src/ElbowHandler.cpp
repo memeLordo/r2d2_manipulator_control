@@ -20,11 +20,16 @@ ElbowHandler<T>::ElbowHandler(ros::NodeHandle *node,
                                                              QUEUE_SIZE);
 }
 template <typename T> T ElbowHandler<T>::calcAngle() {
-  return static_cast<T>(
+
+  T res = static_cast<T>(
       Horner::polynome(m_coeffs, m_pipe.getRadius()) /* - angle_treshold*/);
+  ROS_INFO("Calc elbow | angle : %f", res);
+  return res;
 }
 template <typename T> T ElbowHandler<T>::calcAngle(T theta) {
-  return static_cast<T>(Horner::polynome(m_coeffs, theta));
+  T res = static_cast<T>(Horner::polynome(m_coeffs, theta));
+  ROS_INFO("Calc elbow | angle : %f", res);
+  return res;
 }
 
 template class ElbowHandler<>;
