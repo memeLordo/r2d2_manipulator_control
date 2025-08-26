@@ -8,6 +8,9 @@ template <typename T>
 ManipulatorControlHandler<T>::ManipulatorControlHandler(ros::NodeHandle *node)
     : m_payload(node), m_pipe(node), m_elbow(node, m_pipe),
       m_shoulder(node, m_pipe) {
+
+  const T RATE = node->param<T>("control_rate", 20);
+
   setMode(WorkMode::MANUAL);
   m_timer = node->createTimer(
       ros::Duration(1 / RATE),
