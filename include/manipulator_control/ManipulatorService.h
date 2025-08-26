@@ -7,14 +7,9 @@
 class ManipulatorServiceHandler {
 private:
   ManipulatorControlHandler<> &manipulator_control;
-  ros::ServiceServer mode_service_;
-  ros::ServiceServer nozzle_service_;
-  ros::ServiceServer status_service_;
 
-  // // Внутреннее состояние
-  // uint8_t mode_{0};        // MANUAL
-  // uint8_t nozzle_{0};      // NONE
-  // uint8_t lock_status_{0}; // LOCKED
+  ros::ServiceServer mode_service_;
+
 public:
   ManipulatorServiceHandler(ros::NodeHandle *node,
                             ManipulatorControlHandler<> &);

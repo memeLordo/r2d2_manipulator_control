@@ -3,12 +3,6 @@
 using WorkMode = ManipulatorControlHandler<>::WorkMode;
 using NozzleType = ManipulatorControlHandler<>::NozzleType;
 using LockStatus = ManipulatorControlHandler<>::LockStatus;
-// #include <string>
-//
-// const std::string SERVICE_MODE = "set_mode";
-// const std::string SERVICE_NOZZLE = "set_nozzle";
-// const std::string SERVICE_STATUS = "set_status";
-//
 ManipulatorServiceHandler::ManipulatorServiceHandler(
     ros::NodeHandle *node, ManipulatorControlHandler<> &manipulator_controlRef)
     : manipulator_control(manipulator_controlRef) {
