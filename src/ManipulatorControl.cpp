@@ -104,7 +104,6 @@ template <typename T> void ManipulatorControlHandler<T>::publishResults() {
     m_shoulder.clearPublishPending();
   }
 }
-
 template <typename T> void ManipulatorControlHandler<T>::updateJointState() {
   switch (m_lockStatus) {
   case LockStatus::UNLOCKED:
