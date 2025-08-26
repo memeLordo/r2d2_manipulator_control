@@ -1,5 +1,6 @@
 #include "ElbowHandler.h"
 #include "r2d2_msg_pkg/DriverCommand.h"
+#include "utils/Math.h"
 #include "utils/Polynome.h"
 #include <ros/node_handle.h>
 
@@ -21,16 +22,14 @@ ElbowHandler<T>::ElbowHandler(ros::NodeHandle *node,
                                                              QUEUE_SIZE);
 }
 template <typename T> T ElbowHandler<T>::calcAngle() {
-
-  T res = static_cast<T>(
-      horner::polynome(m_coeffs, m_pipe.getRadius()) /* - angle_treshold*/);
+  T res = horner::polynome(m_coeffs, m_pipe.getRadius()) /* - angle_treshold*/;
   ROS_INFO("Calc elbow | angle : %f", res);
-  return res;
+  return rtk_math::max<T>(res, 0);
 }
 template <typename T> T ElbowHandler<T>::calcAngle(T theta) {
-  T res = static_cast<T>(horner::polynome(m_coeffs, theta));
+  T res = horner::polynome(m_coeffs, theta);
   ROS_INFO("Calc elbow | angle : %f", res);
-  return res;
+  return rtk_math::max<T>(res, 0);
 }
 
 template class ElbowHandler<>;

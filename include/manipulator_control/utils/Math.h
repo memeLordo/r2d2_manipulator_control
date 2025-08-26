@@ -5,21 +5,28 @@
 #include <cmath>
 #include <cstdlib>
 
-namespace math {
+namespace rtk_math {
 
-template <typename T> constexpr const T &deg2rad(const T a) {
-  return a * M_PI / 180;
-};
-template <typename T> constexpr const T &abs(const T a) { return std::abs(a); };
-template <typename T> constexpr const T &min(const T a, const T b) {
+template <typename T> constexpr T deg2rad(const T a) { return a * M_PI / 180; };
+template <typename T> constexpr T abs(const T a) { return std::abs(a); };
+template <typename T> constexpr T min(const T a, const T b) {
   return std::min<T>(a, b);
 };
-template <typename T> constexpr const T &max(const T a, const T b) {
+template <typename T> constexpr T max(const T a, const T b) {
   return std::max<T>(a, b);
 };
-template <typename T> constexpr const T &sin(const T thetha) {
+template <typename T> constexpr T sin(const T thetha) {
   return std::sin(deg2rad(thetha));
 };
 
-} // namespace math
+} // namespace rtk_math
+
+namespace rtk_process {
+
+constexpr int K = -100;
+template <typename T> constexpr T wrap(T a) { return a /= K; };
+template <typename T> constexpr T unwrap(T a) { return a *= K; };
+
+} // namespace rtk_process
+
 #endif // MATH_H_

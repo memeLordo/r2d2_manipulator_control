@@ -1,7 +1,5 @@
 #include "ManipulatorControl.h"
-#include <cmath>
-#include <cstdlib>
-
+#include "utils/Math.h"
 constexpr double RATE = 20; // Hz
 
 template <typename T>
@@ -86,8 +84,8 @@ template <typename T> void ManipulatorControlHandler<T>::updateNozzleType() {
   }
 };
 template <typename T> T ManipulatorControlHandler<T>::calcRadius() {
-  return m_shoulder.getLength() * sin(m_shoulder.getAngle()) +
-         m_elbow.getLength() * sin(m_elbow.getAngle()) + getRadius();
+  return m_shoulder.getLength() * rtk_math::sin(m_shoulder.getAngle()) +
+         m_elbow.getLength() * rtk_math::sin(m_elbow.getAngle()) + getRadius();
 }
 template <typename T> void ManipulatorControlHandler<T>::processAngleControl() {
   static constexpr T ANGLE_THRESHOLD = 5.0;
