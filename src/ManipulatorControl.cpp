@@ -105,6 +105,7 @@ void ManipulatorControlHandler<T>::callback_manipulator(
     //  Проверка блокировки
     case LockStatus::UNLOCKED:
       // Основная логика управления
+      ROS_INFO("Calculating angles");
       process_angle_control();
       process_force_control();
       publish_results();
