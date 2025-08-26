@@ -32,6 +32,7 @@ bool ManipulatorServiceHandler::callback_mode_service(
   case WorkMode::AUTO:
     manipulator_control.set_mode(mode_);
     res.success = true;
+    break;
   default:
     ROS_ERROR("Got unknown work mode");
     res.success = false;
@@ -49,6 +50,7 @@ bool ManipulatorServiceHandler::callback_nozzle_service(
   case NozzleType::EMA:
     manipulator_control.set_nozzle(nozzle_);
     res.success = true;
+    break;
   default:
     ROS_ERROR("Got unknown nozzle type");
     res.success = false;
@@ -65,6 +67,7 @@ bool ManipulatorServiceHandler::callback_status_service(
   case LockStatus::UNLOCKED:
     manipulator_control.set_lock(status_);
     res.success = true;
+    break;
   default:
     ROS_ERROR("Got unknown lock status");
     res.success = false;
