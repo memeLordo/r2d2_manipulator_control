@@ -70,6 +70,18 @@ template <typename T> void ManipulatorControlHandler<T>::setup() {
   ROS_INFO("Manipulator Setup completed");
 }
 
+template <typename T> void ManipulatorControlHandler<T>::updateNozzleType() {
+  switch (m_nozzleType) {
+  case NozzleType::BRUSH:
+    m_params = manipulator_t{100, 347.0};
+    return;
+  case NozzleType::EMA:
+    m_params = manipulator_t{150, 331.0};
+    return;
+  default:
+    return;
+  }
+};
 template <typename T> T ManipulatorControlHandler<T>::calcRadius() {
   return m_shoulder.getLength() * sin(m_shoulder.getAngle()) +
          m_elbow.getLength() * sin(m_elbow.getAngle()) + getRadius();

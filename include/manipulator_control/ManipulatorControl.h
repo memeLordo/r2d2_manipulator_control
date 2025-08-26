@@ -41,16 +41,7 @@ private:
   void updateJointState();
   void publishJointState();
 
-  void updateNozzleType() {
-    switch (m_nozzleType) {
-    case NozzleType::BRUSH:
-      m_params = manipulator_t{100, 347.0};
-      return;
-    case NozzleType::EMA:
-      m_params = manipulator_t{150, 331.0};
-      return;
-    }
-  };
+  void updateNozzleType();
 
 public:
   void resetMode() { m_workMode = WorkMode::NONE; };
