@@ -15,9 +15,13 @@ private:
 
 public:
   PayloadHandler(ros::NodeHandle *node);
+
+private:
   void callback_payload(const r2d2_msg_pkg::DriverStateConstPtr &msg) {
     callback_force = msg->force;
   };
+
+public:
   T get_force() const { return static_cast<T>(callback_force); };
 };
 

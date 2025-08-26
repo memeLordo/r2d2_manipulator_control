@@ -11,9 +11,9 @@
 template <typename T = double> class ManipulatorControlHandler {
 
 public:
-  enum class WorkMode : uint8_t { NONE = 0, MANUAL, AUTO } mode{};
-  enum class NozzleType : uint8_t { NONE = 0, BRUSH, EMA } nozzle{};
-  enum class LockStatus : uint8_t { NONE = 0, LOCKED, UNLOCKED } status{};
+  enum class WorkMode : uint8_t { NONE = 0, MANUAL, AUTO } work_mode{};
+  enum class NozzleType : uint8_t { NONE = 0, BRUSH, EMA } nozzle_type{};
+  enum class LockStatus : uint8_t { NONE = 0, LOCKED, UNLOCKED } lock_status{};
 
 private:
   struct manipulator_t {
@@ -39,31 +39,44 @@ private:
 
   ros::Timer timer;
 
+public:
+  ManipulatorControlHandler(ros::NodeHandle *node);
+
+private:
+  void callback_manipulator(const ros::TimerEvent &);
+  void setup();
   T calc_radius();
   void process_angle_control();
   void process_force_control();
   void publish_results();
   void update_joint_state();
   void publish_joint_state();
-  void setup();
-  void callback_manipulator(const ros::TimerEvent &);
+
+  void update_nozzle_type() {
+    switch (nozzle_type) {
+    case NozzleType::BRUSH:
+      params = manipulator_t{100, 347.0};
+      return;
+    case NozzleType::EMA:
+      params = manipulator_t{150, 331.0};
+      return;
+    }
+  };
 
 public:
-  void reset_mode() { mode = WorkMode::NONE; };
-  void reset_nozzle() { nozzle = NozzleType::NONE; };
-  void reset_lock() { status = LockStatus::NONE; };
+  void reset_mode() { work_mode = WorkMode::NONE; };
+  void reset_nozzle() { nozzle_type = NozzleType::NONE; };
+  void reset_lock() { lock_status = LockStatus::NONE; };
 
-  void set_mode(WorkMode value) { mode = value; };
-  void set_nozzle(NozzleType value) { nozzle = value; };
-  void set_lock(LockStatus value) { status = value; };
-  void set_mode(T value) { mode = static_cast<WorkMode>(value); };
-  void set_nozzle(T value) { nozzle = static_cast<NozzleType>(value); };
-  void set_lock(T value) { status = static_cast<LockStatus>(value); };
+  void set_mode(WorkMode value) { work_mode = value; };
+  void set_nozzle(NozzleType value) { nozzle_type = value; };
+  void set_lock(LockStatus value) { lock_status = value; };
+  void set_mode(T value) { work_mode = static_cast<WorkMode>(value); };
+  void set_nozzle(T value) { nozzle_type = static_cast<NozzleType>(value); };
+  void set_lock(T value) { lock_status = static_cast<LockStatus>(value); };
 
   T get_force() const { return static_cast<T>(params.force_needed); };
   T get_radius() const { return params.r0; };
-
-  ManipulatorControlHandler(ros::NodeHandle *node);
 };
 
 #endif // MANIPULATOR_CONTROL_H

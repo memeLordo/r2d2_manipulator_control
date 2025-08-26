@@ -4,11 +4,75 @@
 
 constexpr double RATE = 50; // Hz
 
+template <typename T>
+ManipulatorControlHandler<T>::ManipulatorControlHandler(ros::NodeHandle *node)
+    : payload(node), pipe(node), elbow(node, pipe), shoulder(node, pipe) {
+  set_mode(WorkMode::MANUAL);
+  timer = node->createTimer(ros::Duration(1 / RATE),
+                            &ManipulatorControlHandler<T>::callback_manipulator,
+                            this);
+}
+template <typename T>
+void ManipulatorControlHandler<T>::callback_manipulator(
+    const ros::TimerEvent &) {
+  switch (work_mode) {
+  // Ранний выход при отключенном автоматическом режиме
+  case WorkMode::AUTO:
+    switch (lock_status) {
+    //  Проверка блокировки
+    case LockStatus::UNLOCKED:
+      // Основная логика управления
+      // ROS_INFO("Calculating angles");
+      process_angle_control();
+      process_force_control();
+      publish_results();
+      return;
+    default:
+      elbow.update_speed(0);
+      elbow.publish();
+      return;
+    }
+    break;
+
+  case WorkMode::MANUAL:
+    setup();
+    reset_mode();
+    return;
+
+  default:
+    return;
+  }
+}
+template <typename T> void ManipulatorControlHandler<T>::setup() {
+  /**
+   * INFO:
+   * 0. Получить данные для манипулятора (и трубы)
+   * 1. Проверка автоматического разжатия
+   * 2. Приём типа насадки (Щётка/ЕМА)
+   * 3. Проверка статуса блокировки
+   * 4. Обновить оставшиеся переменные
+   * 5. Опубликовать все переменные
+   */
+  update_nozzle_type();
+  update_joint_state();
+  publish_joint_state();
+
+  // T current_angle[]{elbow.get_angle(), shoulder.get_angle()};
+  // while ((elbow.get_state() - elbow.get_input_angle()) > 0.1 &&
+  //        abs(shoulder.get_state() - shoulder.get_input_angle()) > 0.1) {
+  //   ros::Duration(0.1).sleep();
+  // }
+  // TODO: while проверка DriverState == DriverCommand
+  // exec wait... 0.1s
+  // TODO: creaate async task for timer to wait
+  // wait_for_state(elbow_state, shoulder_state);
+  ROS_INFO("Manipulator Setup completed");
+}
+
 template <typename T> T ManipulatorControlHandler<T>::calc_radius() {
   return shoulder.get_length() * sin(shoulder.get_angle()) +
          elbow.get_length() * sin(elbow.get_angle()) + get_radius();
 }
-
 template <typename T>
 void ManipulatorControlHandler<T>::process_angle_control() {
   static constexpr T ANGLE_THRESHOLD = 5.0;
@@ -43,7 +107,7 @@ template <typename T> void ManipulatorControlHandler<T>::publish_results() {
 }
 
 template <typename T> void ManipulatorControlHandler<T>::update_joint_state() {
-  switch (status) {
+  switch (lock_status) {
   case LockStatus::UNLOCKED:
     // Вычисляем углы для разблокированного состояния
     elbow.update_angle(elbow.calc_angle());
@@ -62,72 +126,6 @@ template <typename T> void ManipulatorControlHandler<T>::update_joint_state() {
 template <typename T> void ManipulatorControlHandler<T>::publish_joint_state() {
   elbow.publish();
   shoulder.publish();
-}
-
-template <typename T> void ManipulatorControlHandler<T>::setup() {
-  /**
-   * INFO:
-   * 0. Получить данные для манипулятора (и трубы)
-   * 1. Проверка автоматического разжатия
-   * 2. Приём типа насадки (Щётка/ЕМА)
-   * 3. Проверка статуса блокировки
-   * 4. Обновить оставшиеся переменные
-   * 5. Опубликовать все переменные
-   */
-  update_nozzle_type();
-  update_joint_state();
-  publish_joint_state();
-
-  // T current_angle[]{elbow.get_angle(), shoulder.get_angle()};
-  // while ((elbow.get_state() - elbow.get_input_angle()) > 0.1 &&
-  //        abs(shoulder.get_state() - shoulder.get_input_angle()) > 0.1) {
-  //   ros::Duration(0.1).sleep();
-  // }
-  // TODO: while проверка DriverState == DriverCommand
-  // exec wait... 0.1s
-  // TODO: creaate async task for timer to wait
-  // wait_for_state(elbow_state, shoulder_state);
-  ROS_INFO("Manipulator Setup completed");
-}
-template <typename T>
-void ManipulatorControlHandler<T>::callback_manipulator(
-    const ros::TimerEvent &) {
-  switch (mode) {
-  // Ранний выход при отключенном автоматическом режиме
-  case WorkMode::AUTO:
-    switch (status) {
-    //  Проверка блокировки
-    case LockStatus::UNLOCKED:
-      // Основная логика управления
-      // ROS_INFO("Calculating angles");
-      process_angle_control();
-      process_force_control();
-      publish_results();
-      return;
-    default:
-      elbow.update_speed(0);
-      elbow.publish();
-      return;
-    }
-    break;
-
-  case WorkMode::MANUAL:
-    setup();
-    reset_mode();
-    return;
-
-  default:
-    return;
-  }
-}
-
-template <typename T>
-ManipulatorControlHandler<T>::ManipulatorControlHandler(ros::NodeHandle *node)
-    : payload(node), pipe(node), elbow(node, pipe), shoulder(node, pipe) {
-  set_mode(WorkMode::MANUAL);
-  timer = node->createTimer(ros::Duration(1 / RATE),
-                            &ManipulatorControlHandler<T>::callback_manipulator,
-                            this);
 }
 
 template class ManipulatorControlHandler<>;

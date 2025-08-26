@@ -8,11 +8,13 @@ class ManipulatorServiceHandler {
 private:
   ManipulatorControlHandler<> &manipulator_control;
 
-  ros::ServiceServer mode_service_;
+  ros::ServiceServer manipulator_service;
 
 public:
   ManipulatorServiceHandler(ros::NodeHandle *node,
                             ManipulatorControlHandler<> &);
+
+private:
   bool callback_service(manipulator_control::ManipulatorCommand::Request &req,
                         manipulator_control::ManipulatorCommand::Response &res);
   bool
