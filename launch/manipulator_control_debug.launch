@@ -4,16 +4,16 @@
 	<arg name="debug" default="true"/>
 	<arg name="rate"  default="1.0"/>
 
+  <!-- <param name="logger_level" value="DEBUG"/> -->
+  <param name="control_rate" value="$(arg rate)"/>
+
 	<!-- Основной узел манипулятора -->
 	<node pkg="manipulator_control" 
         type="manipulator_control_node" 
         name="manipulator_control_node_1" 
     		output="screen">
     		
-
 		<!-- Параметры узла -->
-		<param name="debug_output" value="$(arg debug)"/>
-		<param name="control_rate" value="$(arg rate)"/>
 		<!-- <param name="rosconsole_logger_level" value="DEBUG"/> -->
 		<!-- Переназначение топиков -->
 		<remap from="/elbow_input"         to="/manipulator1/elbow_input"/>

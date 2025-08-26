@@ -1,11 +1,12 @@
 #include "ManipulatorControl.h"
 #include "ManipulatorService.h"
+#include "utils/Debug.h"
 #include <ros/node_handle.h>
 
 int main(int argc, char **argv) {
   ros::init(argc, argv, "manipulator_control");
   ros::NodeHandle node;
-
+  rkt_debug::checkLogging(&node);
   // ros::AsyncSpinner spinner(2);
   // spinner.start();
   ManipulatorControlHandler<> mc(&node);
