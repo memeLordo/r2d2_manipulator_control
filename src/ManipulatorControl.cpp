@@ -2,23 +2,7 @@
 #include <cmath>
 #include <cstdlib>
 
-constexpr double TIME = 0.02; // s
-
-template <typename T> bool ManipulatorControlHandler<T>::init_mode() {
-  set_mode(AUTO); // TODO: получать из параметра или сервиса
-  // TODO: добавить ожидание и проверку успешности установки
-  return true; // Временно считаем всегда успешным
-}
-template <typename T> bool ManipulatorControlHandler<T>::init_nozzle() {
-  set_nozzle(BRUSH); // TODO: получать из параметра или сервиса
-  // TODO: добавить ожидание и проверку успешности установки
-  return true; // Временно считаем всегда успешным
-}
-template <typename T> bool ManipulatorControlHandler<T>::init_lock() {
-  set_lock(UNLOCKED); // TODO: добавить проверку с ros::ServiceServer()
-  // TODO: добавить ожидание и проверку статуса блокировки
-  return true; // Временно считаем всегда успешным
-}
+constexpr double RATE = 1; // Hz
 
 template <typename T> T ManipulatorControlHandler<T>::calc_radius() {
   return shoulder.get_length() * sin(shoulder.get_angle()) +
@@ -58,9 +42,9 @@ template <typename T> void ManipulatorControlHandler<T>::publish_results() {
   }
 }
 
-template <typename T> void ManipulatorControlHandler<T>::update_all() {
+template <typename T> void ManipulatorControlHandler<T>::update_joint_state() {
   switch (status) {
-  case UNLOCKED:
+  case LockStatus::UNLOCKED:
     // Вычисляем углы для разблокированного состояния
     elbow.update_angle(elbow.calc_angle());
     shoulder.update_angle(shoulder.calc_angle());
@@ -75,7 +59,7 @@ template <typename T> void ManipulatorControlHandler<T>::update_all() {
   elbow.update_speed();
   shoulder.update_speed();
 }
-template <typename T> void ManipulatorControlHandler<T>::publish_all() {
+template <typename T> void ManipulatorControlHandler<T>::publish_joint_state() {
   elbow.publish();
   shoulder.publish();
 }
@@ -90,53 +74,54 @@ template <typename T> void ManipulatorControlHandler<T>::setup() {
    * 4. Обновить оставшиеся переменные
    * 5. Опубликовать все переменные
    */
-  if (!init_mode()) {
-    ROS_ERROR("Failed to initialize manipulator mode");
-    return;
-  }
-  if (!init_nozzle()) {
-    ROS_WARN("Failed to set nozzle, using default");
-  }
-  if (!init_lock()) {
-    ROS_WARN("Failed to set lock status, using default");
-  }
-  update_all();
-  publish_all();
+  // if (!call_nozzle()) {
+  //   ROS_WARN("Failed to set nozzle, using default");
+  // }
+  // if (!call_status()) {
+  //   ROS_WARN("Failed to set lock status, using default");
+  // }
+  update_joint_state();
+  T current_angle[]{elbow.get_angle(), shoulder.get_angle()};
+  publish_joint_state();
+
   // TODO: while проверка DriverState == DriverCommand
   // exec wait... 0.1s
+  // TODO: creaate async task for timer to wait
+  // wait_for_state(elbow_state, shoulder_state);
   ROS_INFO("Manipulator setup completed");
 }
-template <typename T> bool ManipulatorControlHandler<T>::check_angle(T margin) {
-  return std::abs(shoulder.get_angle() - shoulder.get_current_angle()) < margin;
-}
+// template <typename T> bool ManipulatorControlHandler<T>::check_angle(T
+// margin) {
+//   return std::abs(shoulder.get_angle() - shoulder.get_current_angle()) <
+//   margin;
+// }
 template <typename T>
 void ManipulatorControlHandler<T>::callback_manipulator(
     const ros::TimerEvent &) {
   switch (mode) {
   // Ранний выход при отключенном автоматическом режиме
-  case AUTO:
-    // TODO: добавить проверку достижения желаемого угла
-    // check_angle()
-    if (check_angle(T{1})) {
-      return;
-    }
+  case WorkMode::AUTO:
     switch (status) {
     //  Проверка блокировки
-    case UNLOCKED:
+    case LockStatus::UNLOCKED:
       // Основная логика управления
       process_angle_control();
       process_force_control();
       publish_results();
       return;
-    case LOCKED:
+    default:
       elbow.update_speed(0);
       elbow.publish();
       return;
     }
     break;
 
-  case MANUAL:
+  case WorkMode::MANUAL:
     setup();
+    reset_mode();
+    return;
+
+  default:
     return;
   }
   // Проверка блокировки
@@ -161,9 +146,10 @@ template <typename T>
 ManipulatorControlHandler<T>::ManipulatorControlHandler(ros::NodeHandle *node)
     : payload(node), pipe(node), elbow(node, pipe), shoulder(node, pipe) {
   // setup();
-  timer = node->createTimer(ros::Duration(TIME),
+  timer = node->createTimer(ros::Duration(1 / RATE),
                             &ManipulatorControlHandler<T>::callback_manipulator,
                             this);
+  ROS_INFO("ManipulatorControlHandler::ManipulatorControlHandler");
 }
 
 template class ManipulatorControlHandler<>;

@@ -10,11 +10,12 @@
 
 template <typename T = double> class ManipulatorControlHandler {
 
-private:
-  enum WorkMode : uint8_t { MANUAL = 0, AUTO } mode{MANUAL};         // ???
-  enum NozzleType : uint8_t { NONE = 0, BRUSH, EMA } nozzle{NONE};   // setup
-  enum LockStatus : uint8_t { LOCKED = 0, UNLOCKED } status{LOCKED}; // callback
+public:
+  enum class WorkMode : uint8_t { NONE = 0, MANUAL, AUTO } mode{};
+  enum class NozzleType : uint8_t { NONE = 0, BRUSH, EMA } nozzle{};
+  enum class LockStatus : uint8_t { NONE = 0, LOCKED, UNLOCKED } status{};
 
+private:
   struct manipulator_t {
     int16_t force_needed{};
     T r0{};
@@ -22,9 +23,9 @@ private:
 
   constexpr manipulator_t get_nozzle_type() {
     switch (nozzle) {
-    case BRUSH:
+    case NozzleType::BRUSH:
       return {100, 347.0};
-    case EMA:
+    case NozzleType::NONE:
       return {150, 331.0};
     default:
       return {0, 0.0};
@@ -38,26 +39,30 @@ private:
 
   ros::Timer timer;
 
-  bool init_mode();
-  bool init_nozzle();
-  bool init_lock();
-  bool check_angle(T margin = T{0});
   T calc_radius();
   void process_angle_control();
   void process_force_control();
   void publish_results();
-  void update_all();
-  void publish_all();
+  void update_joint_state();
+  void publish_joint_state();
   void setup();
   void callback_manipulator(const ros::TimerEvent &);
 
+public:
+  void reset_mode() { mode = WorkMode::NONE; };
+  void reset_nozzle() { nozzle = NozzleType::NONE; };
+  void reset_lock() { status = LockStatus::NONE; };
+
+  void set_mode(WorkMode value) { mode = value; };
+  void set_nozzle(NozzleType value) { nozzle = value; };
+  void set_lock(LockStatus value) { status = value; };
+  void set_mode(T value) { mode = static_cast<WorkMode>(value); };
   void set_nozzle(T value) { nozzle = static_cast<NozzleType>(value); };
   void set_lock(T value) { status = static_cast<LockStatus>(value); };
-  void set_mode(T value) { mode = static_cast<WorkMode>(value); };
+
   T get_force() const { return static_cast<T>(params.force_needed); };
   T get_radius() const { return params.r0; };
 
-public:
   ManipulatorControlHandler(ros::NodeHandle *node);
 };
 
