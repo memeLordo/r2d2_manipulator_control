@@ -2,7 +2,7 @@
 #include <cmath>
 #include <cstdlib>
 
-constexpr double RATE = 50; // Hz
+constexpr double RATE = 20; // Hz
 
 template <typename T>
 ManipulatorControlHandler<T>::ManipulatorControlHandler(ros::NodeHandle *node)
