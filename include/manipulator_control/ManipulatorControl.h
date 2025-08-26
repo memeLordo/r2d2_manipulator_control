@@ -19,16 +19,16 @@ private:
   struct manipulator_t {
     int16_t force_needed{};
     T r0{};
-  } params;
+  } params{};
 
-  constexpr manipulator_t get_nozzle_type() {
+  void update_nozzle_type() {
     switch (nozzle) {
     case NozzleType::BRUSH:
-      return {100, 347.0};
-    case NozzleType::NONE:
-      return {150, 331.0};
-    default:
-      return {0, 0.0};
+      params = manipulator_t{100, 347.0};
+      return;
+    case NozzleType::EMA:
+      params = manipulator_t{150, 331.0};
+      return;
     }
   }
 

@@ -74,6 +74,7 @@ template <typename T> void ManipulatorControlHandler<T>::setup() {
    * 4. Обновить оставшиеся переменные
    * 5. Опубликовать все переменные
    */
+  update_nozzle_type();
   update_joint_state();
   publish_joint_state();
 
