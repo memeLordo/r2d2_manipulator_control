@@ -45,7 +45,10 @@ public:
   void updateSpeed(T omega) { m_params.omega = static_cast<int16_t>(omega); };
   void updateAngle(T theta) { m_params.theta = static_cast<int16_t>(theta); };
 
-  void publish() { m_publisher.publish(prepareMsg()); };
+  void publish() {
+    if (m_params.omega > 0 || m_params.theta > 0)
+      m_publisher.publish(prepareMsg());
+  };
 
   T getSpeed() const { return static_cast<T>(m_params.omega); };
   T getAngle() const { return static_cast<T>(m_params.theta); };

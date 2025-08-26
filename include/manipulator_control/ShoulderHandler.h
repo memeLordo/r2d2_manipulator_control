@@ -50,7 +50,10 @@ public:
   void setPublishPending(bool pending = true) { m_needsPublish = pending; }
   void clearPublishPending() { m_needsPublish = false; }
 
-  void publish() { m_publisher.publish(prepareMsg()); };
+  void publish() {
+    if (m_params.omega > 0 || m_params.theta > 0)
+      m_publisher.publish(prepareMsg());
+  };
   bool isPublishPending() const { return m_needsPublish; }
 
   T getSpeed() const { return static_cast<T>(m_params.omega); };
