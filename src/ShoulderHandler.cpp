@@ -21,13 +21,13 @@ ShoulderHandler<T>::ShoulderHandler(ros::NodeHandle *node,
       SHOULDER_INPUT_NODE, QUEUE_SIZE);
 }
 template <typename T> T ShoulderHandler<T>::calcAngle() {
-  T res = static_cast<T>(Horner::polynome(m_coeffs, m_pipe.getRadius()));
+  T res = static_cast<T>(horner::polynome(m_coeffs, m_pipe.getRadius()));
   ROS_INFO("Calc shoulder | angle : %f", res);
   return res;
 }
 template <typename T> T ShoulderHandler<T>::calcAngle(T theta) {
   // return static_cast<T>(Horner::polynome(m_coeffs, theta));
-  T res = static_cast<T>(Horner::polynome(m_coeffs, theta));
+  T res = static_cast<T>(horner::polynome(m_coeffs, theta));
   ROS_INFO("Calc shoulder | angle : %f", res);
   return res;
 }

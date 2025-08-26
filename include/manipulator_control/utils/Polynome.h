@@ -4,7 +4,7 @@
 #include <cstddef>
 // #include <vector>
 
-namespace Horner {
+namespace horner {
 
 template <typename T, typename T2, size_t N>
 constexpr T polynome(const T (&coeffs)[N], T2 x) {
@@ -30,5 +30,5 @@ constexpr T polynome(const T (&coeffs)[N], T2 x) {
 //   return result;
 // }
 
-} // namespace Horner
+} // namespace horner
 #endif // POLYNOME_SAFE_H
