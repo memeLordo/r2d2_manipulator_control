@@ -3,11 +3,14 @@
 using WorkMode = ManipulatorControlHandler<>::WorkMode;
 using NozzleType = ManipulatorControlHandler<>::NozzleType;
 using LockStatus = ManipulatorControlHandler<>::LockStatus;
+
+constexpr const char *SERVICE_MODE = "/set_mode";
+
 ManipulatorServiceHandler::ManipulatorServiceHandler(
     ros::NodeHandle *node, ManipulatorControlHandler<> &manipulator_controlRef)
     : manipulator_control(manipulator_controlRef) {
   mode_service_ = node->advertiseService(
-      "/set_mode", &ManipulatorServiceHandler::callback_service, this);
+      SERVICE_MODE, &ManipulatorServiceHandler::callback_service, this);
 }
 bool ManipulatorServiceHandler::callback_service(
     manipulator_control::ManipulatorCommand::Request &req,
