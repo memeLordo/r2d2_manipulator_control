@@ -124,6 +124,7 @@ void ManipulatorControlHandler<T>::callback_manipulator(
 template <typename T>
 ManipulatorControlHandler<T>::ManipulatorControlHandler(ros::NodeHandle *node)
     : payload(node), pipe(node), elbow(node, pipe), shoulder(node, pipe) {
+  set_mode(WorkMode::MANUAL);
   timer = node->createTimer(ros::Duration(1 / RATE),
                             &ManipulatorControlHandler<T>::callback_manipulator,
                             this);
