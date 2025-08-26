@@ -31,6 +31,7 @@ generate_messages(
 include_directories(
   include
   include/${PROJECT_NAME}
+  # include/${PROJECT_NAME}/utils
   ${catkin_INCLUDE_DIRS}
 )
 
