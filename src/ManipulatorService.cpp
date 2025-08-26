@@ -15,10 +15,11 @@ ManipulatorServiceHandler::ManipulatorServiceHandler(
 bool ManipulatorServiceHandler::callback_service(
     manipulator_control::ManipulatorCommand::Request &req,
     manipulator_control::ManipulatorCommand::Response &res) {
-
+  res.success = true;
   return callback_mode_service(req, res) && callback_nozzle_service(req, res) &&
          callback_status_service(req, res);
 }
+
 bool ManipulatorServiceHandler::callback_mode_service(
     manipulator_control::ManipulatorCommand::Request &req,
     manipulator_control::ManipulatorCommand::Response &res) {
@@ -28,11 +29,10 @@ bool ManipulatorServiceHandler::callback_mode_service(
   case WorkMode::MANUAL:
   case WorkMode::AUTO:
     manipulator_control.set_mode(mode_);
-    res.success = true;
     break;
   default:
     ROS_ERROR("Got unknown work mode");
-    res.success = false;
+    res.success &= false;
   }
   return true;
 }
@@ -46,11 +46,10 @@ bool ManipulatorServiceHandler::callback_nozzle_service(
   case NozzleType::BRUSH:
   case NozzleType::EMA:
     manipulator_control.set_nozzle(nozzle_);
-    res.success = true;
     break;
   default:
     ROS_ERROR("Got unknown nozzle type");
-    res.success = false;
+    res.success &= false;
   }
   return true;
 }
@@ -63,13 +62,10 @@ bool ManipulatorServiceHandler::callback_status_service(
   case LockStatus::LOCKED:
   case LockStatus::UNLOCKED:
     manipulator_control.set_lock(status_);
-    res.success = true;
     break;
   default:
     ROS_ERROR("Got unknown lock status");
-    res.success = false;
+    res.success &= false;
   }
   return true;
 }
-
-// template class ManipulatorServiceHandler<>;
