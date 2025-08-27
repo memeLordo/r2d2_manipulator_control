@@ -13,12 +13,12 @@ constexpr T polynome(const T (&coeffs)[N], T2 x) {
     return T{0};
 
   T x_ = static_cast<T>(x);
-  T result = coeffs[N - 1];
-  for (size_t i = N - 1; i > 0; --i)
-    result = result * x_ + coeffs[i - 1];
+  T result = coeffs[0];
+  for (size_t i = 1; i < N; ++i)
+    result = result * x_ + coeffs[i];
   return result;
 }
-
+// template
 // template <typename T, typename T2>
 // T polynome(const std::vector<T> &coeffs, T2 x) {
 //   if (coeffs.empty())
