@@ -103,7 +103,7 @@ template <typename T> T ManipulatorControlHandler<T>::calcRadius() {
 }
 template <typename T> void ManipulatorControlHandler<T>::processAngleControl() {
   ROS_DEBUG_STREAM(MAGENTA("\nprocessAngleControl()"));
-  static constexpr T ANGLE_THRESHOLD = 5.0;
+  static constexpr T ANGLE_THRESHOLD = 6.0;
 
   const auto angle_diff =
       r2d2_math::abs(m_elbow.getAngle() - (m_elbow.calcAngle() -
