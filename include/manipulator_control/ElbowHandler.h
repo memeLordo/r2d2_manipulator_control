@@ -41,8 +41,10 @@ private:
     auto omega_ = r2d2_process::unwrap<int16_t>(m_params.omega);
     auto theta_ = r2d2_process::unwrap<int16_t>(m_params.theta);
     r2d2_msg_pkg::DriverCommand msg;
+    msg.header.stamp = ros::Time::now();
     msg.omega = omega_;
     msg.theta = theta_;
+    msg.control_word = 10;
     return msg;
   };
 
