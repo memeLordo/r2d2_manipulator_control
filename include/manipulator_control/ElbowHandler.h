@@ -62,11 +62,11 @@ public:
     m_params.theta = theta_;
   };
   void updateSpeed(T omega) {
-    ROS_DEBUG_STREAM("Elbow::updateSpeed(" << WHITE(omega) << GREEN(")"));
+    ROS_DEBUG_STREAM("Elbow::updateSpeed(" << WHITE(omega) << ")");
     m_params.omega = omega;
   };
   void updateAngle(T theta) {
-    ROS_DEBUG_STREAM("Elbow::updateAngle(" << WHITE(theta) << GREEN(")"));
+    ROS_DEBUG_STREAM("Elbow::updateAngle(" << WHITE(theta) << ")");
     m_params.theta = theta;
   };
 

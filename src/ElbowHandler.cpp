@@ -28,8 +28,7 @@ template <typename T> T ElbowHandler<T>::calcAngle() {
 }
 template <typename T> T ElbowHandler<T>::calcAngle(T theta) {
   T res = horner::polynome(m_coeffs, theta);
-  ROS_DEBUG_STREAM("Elbow::calcAngle(" << WHITE(theta) << GREEN(") : ")
-                                       << WHITE(res));
+  ROS_DEBUG_STREAM("Elbow::calcAngle(" << WHITE(theta) << ") : " << WHITE(res));
   return r2d2_math::max<T>(res, 0);
 }
 

@@ -71,15 +71,15 @@ public:
     m_lockStatus = value;
   };
   void setMode(T value) {
-    ROS_DEBUG_STREAM("Set mode(" << WHITE(value) << GREEN(")"));
+    ROS_DEBUG_STREAM("Set mode(" << WHITE(value) << ")");
     m_workMode = static_cast<WorkMode>(value);
   };
   void setNozzle(T value) {
-    ROS_DEBUG_STREAM("Set nozzle(" << WHITE(value) << GREEN(")"));
+    ROS_DEBUG_STREAM("Set nozzle(" << WHITE(value) << ")");
     m_nozzleType = static_cast<NozzleType>(value);
   };
   void setLock(T value) {
-    ROS_DEBUG_STREAM("Set lock(" << WHITE(value) << GREEN(")"));
+    ROS_DEBUG_STREAM("Set lock(" << WHITE(value) << ")");
     m_lockStatus = static_cast<LockStatus>(value);
   };
 
