@@ -15,11 +15,12 @@ private:
   static const T m_coeffs[];
   static const T m_length;
 
-  struct elbow_t {
-    int16_t omega{};
-    int16_t theta{};
-  } m_params;
-  elbow_t m_callbackParams;
+  template <typename Type> struct elbow_t {
+    Type omega{};
+    Type theta{};
+  };
+  elbow_t<T> m_params{};
+  elbow_t<int16_t> m_callbackParams{};
 
   const PipeHandler<T> &m_pipe;
 
@@ -31,7 +32,7 @@ public:
 
 private:
   void callbackElbow(const r2d2_msg_pkg::DriverStateConstPtr &msg) {
-    m_callbackParams = elbow_t{msg->omega, msg->theta};
+    m_callbackParams = elbow_t<int16_t>{msg->omega, msg->theta};
   };
 
   r2d2_msg_pkg::DriverCommand prepareMsg() const {
@@ -58,11 +59,11 @@ public:
   };
   void updateSpeed(T omega) {
     ROS_INFO("Update callback elbow | omega : %f", omega);
-    m_params.omega = static_cast<int16_t>(omega);
+    m_params.omega = omega;
   };
   void updateAngle(T theta) {
     ROS_INFO("Update callback elbow | theta : %f", theta);
-    m_params.theta = static_cast<int16_t>(theta);
+    m_params.theta = theta;
   };
 
   void publish() {
@@ -73,15 +74,15 @@ public:
 
   T getSpeed() const {
     ROS_INFO("Get elbow | omega : %f", m_params.omega);
-    return static_cast<T>(m_params.omega);
+    return m_params.omega;
   };
   T getAngle() const {
     ROS_INFO("Get elbow | theta : %f", m_params.theta);
-    return static_cast<T>(m_params.theta);
+    return m_params.theta;
   };
   T getLength() const {
     ROS_INFO("Get elbow | length : %f", m_length);
-    return static_cast<T>(m_length);
+    return m_length;
   };
 
   T calcAngle();

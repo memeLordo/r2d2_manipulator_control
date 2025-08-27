@@ -7,7 +7,7 @@
 
 template <typename T = double> class PayloadHandler {
 private:
-  int16_t m_callbackForce;
+  int16_t m_callbackForce{};
   // TODO: add omega -  раскрутка щёток
   // считать желаемую скорость из manipulator_t
 
@@ -22,7 +22,10 @@ private:
   };
 
 public:
-  T getForce() const { return static_cast<T>(m_callbackForce); };
+  T getForce() const {
+    auto force = static_cast<T>(m_callbackForce);
+    return force;
+  };
 };
 
 #endif // PIPE_HANDLER_H

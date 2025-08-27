@@ -24,7 +24,10 @@ private:
   };
 
 public:
-  T getRadius() const { return m_callbackParams.radius(); };
+  T getRadius() const {
+    auto radius = m_callbackParams.radius();
+    return radius;
+  };
 };
 
 #endif // PIPE_HANDLER_H

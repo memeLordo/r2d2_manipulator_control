@@ -14,11 +14,12 @@ private:
   static const T m_coeffs[];
   static const T m_length;
 
-  struct shoulder_t {
-    int16_t omega{};
-    int16_t theta{};
-  } m_params;
-  shoulder_t m_callbackParams;
+  template <typename Type> struct shoulder_t {
+    Type omega{};
+    Type theta{};
+  };
+  shoulder_t<T> m_params{};
+  shoulder_t<int16_t> m_callbackParams{};
 
   const PipeHandler<T> &m_pipe;
 
@@ -32,7 +33,7 @@ public:
 
 private:
   void callbackShoulder(const r2d2_msg_pkg::DriverStateConstPtr &msg) {
-    m_callbackParams = shoulder_t{msg->omega, msg->theta};
+    m_callbackParams = shoulder_t<int16_t>{msg->omega, msg->theta};
   };
 
   r2d2_msg_pkg::DriverCommand prepareMsg() const {
@@ -57,9 +58,11 @@ public:
   };
   void updateSpeed(T omega) {
     ROS_INFO("Update callback shoulder | omega : %f", omega);
-    m_params.omega = static_cast<int16_t>(omega);
+    m_params.omega = omega;
   };
-  void updateAngle(T theta) { m_params.theta = static_cast<int16_t>(theta); };
+  void updateAngle(T theta) {
+    m_params.theta = theta;
+  };
 
   void setPublishPending(bool pending = true) {
     ROS_INFO("Set publish pending to %d", pending);
@@ -82,11 +85,11 @@ public:
 
   T getSpeed() const {
     ROS_INFO("Get shoulder | speed : %f", m_params.omega);
-    return static_cast<T>(m_params.omega);
+    return m_params.omega;
   };
   T getAngle() const {
     ROS_INFO("Get shoulder | angle : %f", m_params.theta);
-    return static_cast<T>(m_params.theta);
+    return m_params.theta;
   };
   T getLength() const {
     ROS_INFO("Get shoulder | length : %f", m_length);
