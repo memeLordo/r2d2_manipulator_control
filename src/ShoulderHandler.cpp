@@ -10,7 +10,7 @@ template <typename T>
 const std::string ShoulderHandler<T>::INPUT_NODE = "/shoulder_input";
 
 template <typename T>
-const T ShoulderHandler<T>::m_coeffs[]{0.00024, 0.142, 20.9};
+const T ShoulderHandler<T>::m_coeffs[]{0.00024, -0.142, 20.9};
 template <typename T> const T ShoulderHandler<T>::m_length{363}; // mm
 
 template <typename T>
