@@ -2,6 +2,7 @@
 #define PIPE_HANDLER_H
 
 #include "r2d2_msg_pkg/PipeParameters.h"
+#include "utils/Debug.h"
 #include <cstdint>
 #include <ros/node_handle.h>
 
@@ -26,6 +27,7 @@ private:
 public:
   T getRadius() const {
     auto radius = m_callbackParams.radius();
+    ROS_DEBUG_STREAM("Pipe::getRadius() : " << WHITE(radius));
     return radius;
   };
 };

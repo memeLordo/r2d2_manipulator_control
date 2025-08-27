@@ -2,6 +2,7 @@
 #define PAYLOAD_HANDLER_H
 
 #include "r2d2_msg_pkg/DriverState.h"
+#include "utils/Debug.h"
 #include <cstdint>
 #include <ros/node_handle.h>
 
@@ -24,6 +25,7 @@ private:
 public:
   T getForce() const {
     auto force = static_cast<T>(m_callbackForce);
+    ROS_DEBUG_STREAM("Payload::getForce() : " << WHITE(force));
     return force;
   };
 };

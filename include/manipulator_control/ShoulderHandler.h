@@ -4,8 +4,10 @@
 #include "PipeHandler.h"
 #include "r2d2_msg_pkg/DriverCommand.h"
 #include "r2d2_msg_pkg/DriverState.h"
+#include "utils/Debug.h"
 #include "utils/Math.h"
 #include <cstdint>
+#include <ros/console.h>
 #include <ros/node_handle.h>
 
 template <typename T = double> class ShoulderHandler {
@@ -39,6 +41,9 @@ private:
   r2d2_msg_pkg::DriverCommand prepareMsg() const {
     auto omega_ = r2d2_process::unwrap<int16_t>(m_params.omega);
     auto theta_ = r2d2_process::unwrap<int16_t>(m_params.theta);
+    ROS_DEBUG_STREAM("Prepare shoulder msg |"
+                     << YELLOW(" omeha : ") << WHITE(omega_) << " "
+                     << YELLOW(" theta : ") << WHITE(theta_));
     r2d2_msg_pkg::DriverCommand msg;
     msg.header.stamp = ros::Time::now();
     msg.omega = omega_;
@@ -49,52 +54,56 @@ private:
 
 public:
   void updateSpeed() {
-    ROS_INFO("Update callback shoulder | omega : %f", m_callbackParams.omega);
     auto omega_ = r2d2_process::wrap<T>(m_callbackParams.omega);
+    ROS_DEBUG_STREAM("Shoulder::updateSpeed() : " << WHITE(omega_));
     m_params.omega = omega_;
   };
   void updateAngle() {
-    ROS_INFO("Update callback shoulder | theta : %f", m_callbackParams.theta);
     auto theta_ = r2d2_process::wrap<T>(m_callbackParams.theta);
+    ROS_DEBUG_STREAM("Shoulder::updateAngle() : " << WHITE(theta_));
     m_params.theta = theta_;
   };
   void updateSpeed(T omega) {
-    ROS_INFO("Update callback shoulder | omega : %f", omega);
+    ROS_DEBUG_STREAM("Shoulder::updateSpeed(" << WHITE(omega) << GREEN(")"));
     m_params.omega = omega;
   };
   void updateAngle(T theta) {
+    ROS_DEBUG_STREAM("Shoulder::updateAngle(" << WHITE(theta) << GREEN(")"));
     m_params.theta = theta;
   };
 
   void setPublishPending(bool pending = true) {
-    ROS_INFO("Set publish pending to %d", pending);
+    ROS_DEBUG_STREAM("Set publish pending to " << pending);
     m_needsPublish = pending;
   }
   void clearPublishPending() {
-    ROS_INFO("Clear publish pending");
+    ROS_DEBUG("Clear publish pending");
     m_needsPublish = false;
   }
 
   void publish() {
+    ROS_DEBUG_STREAM_COND(m_params.omega == 0 && m_params.theta == 0,
+                          RED("Shoulder : no update"));
     if (m_params.omega != 0 || m_params.theta != 0) {
+      ROS_DEBUG_STREAM(BLUE("Shoulder::publish()"));
       m_publisher.publish(prepareMsg());
     }
   };
   bool isPublishPending() const {
-    ROS_INFO("Get publish pending");
+    ROS_DEBUG("Get publish pending");
     return m_needsPublish;
   }
 
   T getSpeed() const {
-    ROS_INFO("Get shoulder | speed : %f", m_params.omega);
+    ROS_DEBUG_STREAM("Shoulder::getSpeed() : " << WHITE(m_params.omega));
     return m_params.omega;
   };
   T getAngle() const {
-    ROS_INFO("Get shoulder | angle : %f", m_params.theta);
+    ROS_DEBUG_STREAM("Shoulder::getAngle() : " << WHITE(m_params.theta));
     return m_params.theta;
   };
   T getLength() const {
-    ROS_INFO("Get shoulder | length : %f", m_length);
+    ROS_DEBUG_STREAM("Shoulder::getLength() : " << WHITE(m_length));
     return m_length;
   };
 
