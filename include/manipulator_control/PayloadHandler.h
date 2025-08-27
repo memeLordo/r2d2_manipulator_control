@@ -8,6 +8,8 @@
 
 template <typename T = double> class PayloadHandler {
 private:
+  static const std::string OUTPUT_NODE;
+
   int16_t m_callbackForce{};
   // TODO: add omega -  раскрутка щёток
   // считать желаемую скорость из manipulator_t

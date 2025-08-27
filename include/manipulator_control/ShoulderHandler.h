@@ -13,6 +13,9 @@
 template <typename T = double> class ShoulderHandler {
 
 private:
+  static const std::string OUTPUT_NODE;
+  static const std::string INPUT_NODE;
+
   static const T m_coeffs[];
   static const T m_length;
 
@@ -93,6 +96,9 @@ public:
     ROS_DEBUG("Get publish pending");
     return m_needsPublish;
   }
+
+  std::string getInputNode() const { return INPUT_NODE; };
+  std::string getOutputNode() const { return OUTPUT_NODE; };
 
   T getSpeed() const {
     ROS_DEBUG_STREAM("Shoulder::getSpeed() : " << WHITE(m_params.omega));

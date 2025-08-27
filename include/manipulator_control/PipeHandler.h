@@ -8,6 +8,8 @@
 
 template <typename T = double> class PipeHandler {
 private:
+  static const std::string OUTPUT_NODE;
+
   struct pipe_t {
     uint16_t diameter{};
     uint8_t thickness{};
