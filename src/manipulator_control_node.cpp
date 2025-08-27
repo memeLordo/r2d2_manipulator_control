@@ -6,7 +6,7 @@
 int main(int argc, char **argv) {
   ros::init(argc, argv, "manipulator_control");
   ros::NodeHandle node;
-  rkt_debug::checkLogging(&node);
+  r2d2_debug::checkLogging(&node);
   // ros::AsyncSpinner spinner(2);
   // spinner.start();
   ManipulatorControlHandler<> mc(&node);
