@@ -1,9 +1,11 @@
 #ifndef MATH_H_
 #define MATH_H_
 
+#include "utils/Debug.h"
 #include <algorithm>
 #include <cmath>
 #include <cstdlib>
+#include <ros/console.h>
 
 namespace r2d2_math {
 
@@ -24,14 +26,27 @@ template <typename T> constexpr T sin(const T thetha) {
 namespace r2d2_process {
 
 constexpr int K = -100;
-template <typename T> constexpr T wrap(T a) { return a /= K; };
-template <typename T> constexpr T unwrap(T a) { return a *= K; };
-
-template <typename T, typename T2> constexpr T wrap(T2 a) {
-  return static_cast<T>(a /= K);
+template <typename T> const T wrap(T a) {
+  T res = a / K;
+  ROS_DEBUG_STREAM(CYAN("wrap(") << WHITE(a) << CYAN(") -> ") << WHITE(res));
+  return res;
 };
-template <typename T, typename T2> constexpr T unwrap(T2 a) {
-  return static_cast<T>(a *= K);
+template <typename T> const T unwrap(T a) {
+  T res = a * K;
+  ROS_DEBUG_STREAM(CYAN("unwrap(") << WHITE(a) << CYAN(") -> ") << WHITE(res));
+  return res;
+};
+template <typename T, typename T2> const T wrap(T2 a) {
+  T res = static_cast<T>(a / K);
+  ROS_DEBUG_STREAM(CYAN("convert wrap(")
+                   << WHITE(a) << CYAN(") -> ") << WHITE(res));
+  return res;
+};
+template <typename T, typename T2> const T unwrap(T2 a) {
+  T res = static_cast<T>(a * K);
+  ROS_DEBUG_STREAM(CYAN("convert unwrap(")
+                   << WHITE(a) << CYAN(") -> ") << WHITE(res));
+  return res;
 };
 
 } // namespace r2d2_process
