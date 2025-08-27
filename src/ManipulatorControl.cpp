@@ -28,6 +28,10 @@ void ManipulatorControlHandler<T>::callbackManipulator(
     case LockStatus::UNLOCKED:
       ROS_DEBUG_STREAM(YELLOW("LockStatus::UNLOCKED"));
       // Основная логика управления
+      m_elbow.updateSpeed();
+      m_elbow.updateAngle();
+      m_shoulder.updateSpeed();
+      m_shoulder.updateAngle();
       processAngleControl();
       processForceControl();
       publishResults();
