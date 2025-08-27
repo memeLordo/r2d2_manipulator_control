@@ -66,8 +66,7 @@ public:
   }
 
   void publish() {
-    if (m_params.omega > 0 || m_params.theta > 0) {
-      ROS_INFO("Publish shoulder");
+    if (m_params.omega != 0 || m_params.theta != 0) {
       m_publisher.publish(prepareMsg());
     }
   };
