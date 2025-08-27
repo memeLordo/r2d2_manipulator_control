@@ -4,7 +4,8 @@
 	<arg name="debug" default="true"/>
 	<arg name="rate"  default="1.0"/>
 
-  <!-- <param name="logger_level" value="DEBUG"/> -->
+	<env name="ROSCONSOLE_CONFIG_FILE"
+       value="$(find manipulator_control)/rosconsole.conf"/>
   <param name="control_rate" value="$(arg rate)"/>
 
 	<!-- Основной узел манипулятора -->
