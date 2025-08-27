@@ -1,4 +1,5 @@
 #include "ManipulatorControl.h"
+#include "utils/Debug.h"
 #include "utils/Math.h"
 constexpr double RATE = 20; // Hz
 
@@ -84,15 +85,17 @@ template <typename T> void ManipulatorControlHandler<T>::updateNozzleType() {
   }
 };
 template <typename T> T ManipulatorControlHandler<T>::calcRadius() {
-  return m_shoulder.getLength() * rtk_math::sin(m_shoulder.getAngle()) +
-         m_elbow.getLength() * rtk_math::sin(m_elbow.getAngle()) + getRadius();
+  T radius = m_shoulder.getLength() * r2d2_math::sin(m_shoulder.getAngle()) +
+             m_elbow.getLength() * r2d2_math::sin(m_elbow.getAngle()) +
+             getRadius();
+  return radius;
 }
 template <typename T> void ManipulatorControlHandler<T>::processAngleControl() {
   static constexpr T ANGLE_THRESHOLD = 5.0;
 
-  const T angle_diff =
-      abs(m_elbow.getAngle() - m_elbow.calcAngle() - ANGLE_THRESHOLD);
-
+  const auto angle_diff =
+      r2d2_math::abs(m_elbow.getAngle() - (m_elbow.calcAngle() -
+                                           5.0 /*- m_elbow.getAngleMargin()*/));
   if (angle_diff >= ANGLE_THRESHOLD) { // TODO: fix to angle_threshold2
     m_shoulder.updateAngle(m_shoulder.calcAngle(calcRadius()));
     m_shoulder.setPublishPending();

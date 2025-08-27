@@ -24,12 +24,12 @@ ShoulderHandler<T>::ShoulderHandler(ros::NodeHandle *node,
 template <typename T> T ShoulderHandler<T>::calcAngle() {
   T res = horner::polynome(m_coeffs, m_pipe.getRadius());
   ROS_INFO("Calc shoulder | angle : %f", res);
-  return rtk_math::max<T>(res, 0);
+  return r2d2_math::max<T>(res, 0);
 }
 template <typename T> T ShoulderHandler<T>::calcAngle(T theta) {
   T res = horner::polynome(m_coeffs, theta);
   ROS_INFO("Calc shoulder | angle : %f", res);
-  return rtk_math::max<T>(res, 0);
+  return r2d2_math::max<T>(res, 0);
 }
 
 template class ShoulderHandler<>;

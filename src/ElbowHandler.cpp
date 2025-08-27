@@ -24,12 +24,12 @@ ElbowHandler<T>::ElbowHandler(ros::NodeHandle *node,
 template <typename T> T ElbowHandler<T>::calcAngle() {
   T res = horner::polynome(m_coeffs, m_pipe.getRadius()) /* - angle_treshold*/;
   ROS_INFO("Calc elbow | angle : %f", res);
-  return rtk_math::max<T>(res, 0);
+  return r2d2_math::max<T>(res, 0);
 }
 template <typename T> T ElbowHandler<T>::calcAngle(T theta) {
   T res = horner::polynome(m_coeffs, theta);
   ROS_INFO("Calc elbow | angle : %f", res);
-  return rtk_math::max<T>(res, 0);
+  return r2d2_math::max<T>(res, 0);
 }
 
 template class ElbowHandler<>;
