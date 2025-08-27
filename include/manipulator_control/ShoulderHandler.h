@@ -4,6 +4,7 @@
 #include "PipeHandler.h"
 #include "r2d2_msg_pkg/DriverCommand.h"
 #include "r2d2_msg_pkg/DriverState.h"
+#include "utils/Math.h"
 #include <cstdint>
 #include <ros/node_handle.h>
 
@@ -35,20 +36,24 @@ private:
   };
 
   r2d2_msg_pkg::DriverCommand prepareMsg() const {
+    auto omega_ = r2d2_process::unwrap<int16_t>(m_params.omega);
+    auto theta_ = r2d2_process::unwrap<int16_t>(m_params.theta);
     r2d2_msg_pkg::DriverCommand msg;
-    msg.omega = m_params.omega;
-    msg.theta = m_params.theta;
+    msg.omega = omega_;
+    msg.theta = theta_;
     return msg;
   };
 
 public:
   void updateSpeed() {
     ROS_INFO("Update callback shoulder | omega : %f", m_callbackParams.omega);
-    m_params.omega = m_callbackParams.omega;
+    auto omega_ = r2d2_process::wrap<T>(m_callbackParams.omega);
+    m_params.omega = omega_;
   };
   void updateAngle() {
     ROS_INFO("Update callback shoulder | theta : %f", m_callbackParams.theta);
-    m_params.theta = m_callbackParams.theta;
+    auto theta_ = r2d2_process::wrap<T>(m_callbackParams.theta);
+    m_params.theta = theta_;
   };
   void updateSpeed(T omega) {
     ROS_INFO("Update callback shoulder | omega : %f", omega);
