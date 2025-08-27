@@ -57,21 +57,25 @@ private:
 
 public:
   void updateSpeed() {
-    auto omega_ = r2d2_process::wrap<T>(m_callbackParams.omega);
-    ROS_DEBUG_STREAM("Shoulder::updateSpeed() : " << WHITE(omega_));
+    auto omega_ = m_callbackParams.omega;
+    ROS_DEBUG_STREAM("Shoulder::updateSpeed("
+                     << YELLOW("callback = " << m_callbackParams.omega)
+                     << ") : " << WHITE(omega_));
     m_params.omega = omega_;
   };
   void updateAngle() {
     auto theta_ = r2d2_process::wrap<T>(m_callbackParams.theta);
-    ROS_DEBUG_STREAM("Shoulder::updateAngle() : " << WHITE(theta_));
+    ROS_DEBUG_STREAM("Shoulder::updateAngle("
+                     << YELLOW("callback = " << m_callbackParams.theta)
+                     << ") : " << WHITE(theta_));
     m_params.theta = theta_;
   };
   void updateSpeed(T omega) {
-    ROS_DEBUG_STREAM("Shoulder::updateSpeed(" << WHITE(omega) << ")");
+    ROS_DEBUG_STREAM("Shoulder::updateSpeed(omega = " << WHITE(omega) << ")");
     m_params.omega = omega;
   };
   void updateAngle(T theta) {
-    ROS_DEBUG_STREAM("Shoulder::updateAngle(" << WHITE(theta) << ")");
+    ROS_DEBUG_STREAM("Shoulder::updateAngle(theta = " << WHITE(theta) << ")");
     m_params.theta = theta;
   };
 

@@ -93,7 +93,7 @@ template <typename T> T ManipulatorControlHandler<T>::calcRadius() {
   T radius = m_shoulder.getLength() * r2d2_math::sin(m_shoulder.getAngle()) +
              m_elbow.getLength() * r2d2_math::sin(m_elbow.getAngle()) +
              getRadius();
-  ROS_DEBUG_STREAM("Radius : " << WHITE(radius));
+  ROS_DEBUG_STREAM("calcRadius() : " << WHITE(radius));
   ROS_DEBUG(" ");
   return radius;
 }

@@ -24,14 +24,16 @@ ShoulderHandler<T>::ShoulderHandler(ros::NodeHandle *node,
       node->advertise<r2d2_msg_pkg::DriverCommand>(INPUT_NODE, QUEUE_SIZE);
 }
 template <typename T> T ShoulderHandler<T>::calcAngle() {
-  T res = horner::polynome(m_coeffs, m_pipe.getRadius());
-  ROS_DEBUG_STREAM("Shoulder::calcAngle() : " << WHITE(res));
+  T radius = m_pipe.getRadius();
+  T res = horner::polynome(m_coeffs, radius);
+  ROS_DEBUG_STREAM("Shoulder::calcAngle(pipe.radius = "
+                   << WHITE(radius) << ") : " << WHITE(res));
   return r2d2_math::max<T>(res, 0);
 }
-template <typename T> T ShoulderHandler<T>::calcAngle(T theta) {
-  T res = horner::polynome(m_coeffs, theta);
-  ROS_DEBUG_STREAM("Shoulder::calcAngle(" << WHITE(theta)
-                                          << ") : " << WHITE(res));
+template <typename T> T ShoulderHandler<T>::calcAngle(T radius) {
+  T res = horner::polynome(m_coeffs, radius);
+  ROS_DEBUG_STREAM("Shoulder::calcAngle(radius = " << WHITE(radius)
+                                                   << ") : " << WHITE(res));
   return r2d2_math::max<T>(res, 0);
 }
 
