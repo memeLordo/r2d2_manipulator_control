@@ -70,6 +70,13 @@ public:
                      << ") : " << WHITE(theta_));
     m_params.theta = theta_;
   };
+  void updateControlWord() {
+    auto control_word_ =
+        static_cast<r2d2_commands::ControlType>(m_callbackParams.control_word);
+    ROS_DEBUG_STREAM("Shoulder::updateControlWord("
+                     << YELLOW("callback = " << m_callbackParams.control_word)
+                     << ") ");
+    m_params.control_word = control_word_;
   };
   // void updateSpeed(T omega) {
   //   ROS_DEBUG_STREAM("Shoulder::updateSpeed(omega = " << WHITE(omega) <<
@@ -78,6 +85,21 @@ public:
   void updateAngle(T theta) {
     ROS_DEBUG_STREAM("Shoulder::updateAngle(theta = " << WHITE(theta) << ")");
     m_params.theta = theta;
+  };
+  void holdControl() {
+    m_params.control_word = r2d2_commands::ControlType::HOLD;
+    ROS_DEBUG_STREAM(BLUE("Shoulder::set control_word to " << YELLOW(
+                              static_cast<uint16_t>(m_params.control_word))));
+  };
+  void setControlByAngle() {
+    m_params.control_word = r2d2_commands::ControlType::CONTROL_ANGLE;
+    ROS_DEBUG_STREAM(BLUE("Shoulder::set control_word to " << YELLOW(
+                              static_cast<uint16_t>(m_params.control_word))));
+  };
+  void setControlBySpeed() {
+    m_params.control_word = r2d2_commands::ControlType::CONTROL_SPEED;
+    ROS_DEBUG_STREAM(BLUE("Shoulder::set control_word to " << YELLOW(
+                              static_cast<uint16_t>(m_params.control_word))));
   };
 
   void setPublishPending(bool pending = true) {
@@ -101,6 +123,16 @@ public:
   std::string getInputNode() const { return INPUT_NODE; };
   std::string getOutputNode() const { return OUTPUT_NODE; };
 
+  bool isOnHold() const {
+    return m_params.control_word == r2d2_commands::ControlType::HOLD;
+  };
+  bool isControlByAngle() const {
+    return m_params.control_word == r2d2_commands::ControlType::CONTROL_ANGLE;
+  };
+  bool isControlBySpeed() const {
+    return m_params.control_word == r2d2_commands::ControlType::CONTROL_SPEED;
+  };
+
   T getSpeed() const {
     ROS_DEBUG_STREAM("Shoulder::getSpeed() : " << WHITE(m_params.omega));
     return m_params.omega;
@@ -109,6 +141,11 @@ public:
     ROS_DEBUG_STREAM("Shoulder::getAngle() : " << WHITE(m_params.theta));
     return m_params.theta;
   };
+  // r2d2_commands::ControlType getControlWord() const {
+  //   ROS_DEBUG_STREAM("Shoulder::getControlWord() : "
+  //                    << WHITE(static_cast<uint16_t>(m_params.control_word)));
+  //   return m_params.control_word;
+  // };
   T getLength() const {
     ROS_DEBUG_STREAM("Shoulder::getLength() : " << WHITE(m_length));
     return m_length;
