@@ -128,6 +128,11 @@ public:
     ROS_DEBUG_STREAM("Shoulder::getAngle() : " << WHITE(angle_));
     return angle_;
   };
+  T getInputAngle() const {
+    ROS_DEBUG_STREAM(
+        "Elbow::getInputAngle() : " << WHITE(m_callbackParams.theta));
+    return r2d2_process::wrap<T>(m_callbackParams.theta);
+  };
   // r2d2_commands::ControlType getControlWord() const {
   //   ROS_DEBUG_STREAM("Shoulder::getControlWord() : "
   //                    << WHITE(static_cast<uint16_t>(m_params.control_word)));
