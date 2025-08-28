@@ -1,6 +1,8 @@
 #ifndef CONTROL_WORD_H
 #define CONTROL_WORD_H
 
+#include <cstdint>
+
 namespace r2d2_commands {
 
 enum class ControlType : uint16_t {
@@ -19,5 +21,20 @@ enum class WorkMode : uint8_t { NONE = 0, MANUAL, AUTO, SETUP };
 enum class NozzleType : uint8_t { NONE = 0, BRUSH, EMA };
 
 } // namespace r2d2_state
+
+namespace r2d2_types {
+
+template <typename T1, typename T2, typename T> struct pipe_t {
+  T1 diameter{};
+  T2 thickness{};
+  T radius() const { return (T)diameter / T{2} - (T)thickness; };
+};
+
+template <typename T1, typename T> struct manipulator_t {
+  T1 force_needed{};
+  T r0{};
+};
+
+} // namespace r2d2_types
 
 #endif // CONTROL_WORD_H
