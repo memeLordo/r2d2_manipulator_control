@@ -35,6 +35,12 @@ template <typename T1, typename T> struct manipulator_t {
   T r0{};
 };
 
+template <typename T, typename T2> struct joint_t {
+  T omega{};
+  T theta{};
+  T2 control_word{};
+};
+
 } // namespace r2d2_types
 
 #endif // CONTROL_WORD_H
