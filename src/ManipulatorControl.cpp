@@ -120,7 +120,7 @@ template <typename T> void ManipulatorControlHandler<T>::processControl() {
   if (!setup())
     return;
   processAngleControl();
-  processForceControl();
+  processForceControl(m_payload.getForce(), getForce());
 }
 template <typename T> void ManipulatorControlHandler<T>::processAngleControl() {
   ROS_DEBUG_STREAM(MAGENTA("\nprocessAngleControl()"));
@@ -145,19 +145,28 @@ template <typename T> void ManipulatorControlHandler<T>::processAngleControl() {
   // m_elbow.control_word = 10;
   // m_shoulder.control_word = 10;
 }
-template <typename T> void ManipulatorControlHandler<T>::processForceControl() {
+template <typename T>
+void ManipulatorControlHandler<T>::processForceControl(const T currentForce,
+                                                       const T targetForce,
+                                                       const T forceTreshold) {
   ROS_DEBUG_STREAM(MAGENTA("\nprocessForceControl()"));
-  const auto current_force = m_payload.getForce();
-  const auto target_force = getForce();
-  ROS_DEBUG_STREAM_COND(current_force > target_force,
-                        RED("Over force control"));
-  ROS_DEBUG_STREAM_COND(current_force < target_force,
-                        RED("Under force control"));
+  // const auto current_force = m_payload.getForce();
+  // const auto target_force = getForce();
+  const auto forceDiff_ = currentForce - targetForce;
+  ROS_DEBUG_STREAM("current_force check");
+  // TODO:
   // TODO: update speed setter
-  if (current_force > target_force) {
-    m_elbow.updateSpeed(-abs(m_elbow.getSpeed()));
-  } else if (current_force < target_force) {
-    m_elbow.updateSpeed();
+  if (forceDiff_ < -forceTreshold) {
+    ROS_DEBUG_STREAM(CYAN("current_force < target_force!"));
+    m_shoulder.updateAngle(m_shoulder.calcAngle(calcRadius()) + 0.1);
+  } else if (forceDiff_ > forceTreshold) {
+    ROS_DEBUG_STREAM(CYAN("current_force > target_force!"));
+    m_shoulder.updateAngle(m_shoulder.calcAngle(calcRadius()) - 0.1);
+  } else {
+    ROS_DEBUG_STREAM(CYAN("No change."));
+    m_shoulder.updateAngle();
+    // TODO: control_word = 1
+    // For elbow and shoulder
   }
   // m_elbow.control_word = 10;
   // m_shoulder.control_word = 10;

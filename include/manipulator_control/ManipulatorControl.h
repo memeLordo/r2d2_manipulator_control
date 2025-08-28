@@ -17,6 +17,7 @@ private:
 
   bool finishSetup{false};
   r2d2_types::manipulator16_t<T> m_params{};
+
   PayloadHandler<T> m_payload;
   PipeHandler<T> m_pipe;
   ElbowHandler<T> m_elbow;
@@ -33,7 +34,8 @@ private:
   bool setup();
   void processControl();
   void processAngleControl();
-  void processForceControl();
+  void processForceControl(const T currentForce, const T targetForce,
+                           const T forceTreshold = 1e3);
   void publishResults();
 
 public:
