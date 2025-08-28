@@ -80,12 +80,11 @@ void ManipulatorControlHandler<T>::callbackManipulator(
     case LockStatus::UNLOCKED:
       ROS_DEBUG_STREAM(YELLOW("LockStatus::UNLOCKED"));
       // Основная логика управления
-      processAngleControl();
-      processForceControl();
       // m_elbow.updateSpeed();
       // m_elbow.updateAngle();
       // m_shoulder.updateSpeed();
       // m_shoulder.updateAngle();
+      processControl();
       publishResults();
       return;
     default:
@@ -116,6 +115,12 @@ template <typename T> T ManipulatorControlHandler<T>::calcRadius() {
   ROS_DEBUG_STREAM("calcRadius() : " << WHITE(radius));
   ROS_DEBUG(" ");
   return radius;
+}
+template <typename T> void ManipulatorControlHandler<T>::processControl() {
+  if (!setup())
+    return;
+  processAngleControl();
+  processForceControl();
 }
 template <typename T> void ManipulatorControlHandler<T>::processAngleControl() {
   ROS_DEBUG_STREAM(MAGENTA("\nprocessAngleControl()"));
