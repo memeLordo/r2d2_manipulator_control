@@ -1,4 +1,5 @@
 #include "ManipulatorService.h"
+#include "ros/console.h"
 
 using WorkMode = ManipulatorControlHandler<>::WorkMode;
 using NozzleType = ManipulatorControlHandler<>::NozzleType;
@@ -24,7 +25,8 @@ bool ManipulatorServiceHandler::callbackService(
 bool ManipulatorServiceHandler::callbackModeService(
     manipulator_control::ManipulatorCommand::Request &req,
     manipulator_control::ManipulatorCommand::Response &res) {
-  ROS_INFO("callback_mode_service::got request, work_mode: %d", req.work_mode);
+  ROS_DEBUG_STREAM(
+      "callbackModeService::got request, work_mode: " << req.work_mode);
   auto work_mode_ = static_cast<WorkMode>(req.work_mode);
   switch (work_mode_) {
   case WorkMode::MANUAL:
@@ -40,13 +42,14 @@ bool ManipulatorServiceHandler::callbackModeService(
 bool ManipulatorServiceHandler::callbackNozzleService(
     manipulator_control::ManipulatorCommand::Request &req,
     manipulator_control::ManipulatorCommand::Response &res) {
-  ROS_INFO("callback_nozzle_service::got request, nozzle_type: %d",
-           req.nozzle_type);
+  ROS_DEBUG_STREAM(
+      "callback_nozzle_service::got request, nozzle_type: " << req.nozzle_type);
   auto nozzle_type_ = static_cast<NozzleType>(req.nozzle_type);
   switch (nozzle_type_) {
   case NozzleType::BRUSH:
   case NozzleType::EMA:
     m_manipulatorControl.setNozzle(nozzle_type_);
+    m_manipulatorControl.updateNozzleType();
     break;
   default:
     ROS_ERROR("Got unknown nozzle type");
@@ -57,7 +60,8 @@ bool ManipulatorServiceHandler::callbackNozzleService(
 bool ManipulatorServiceHandler::callbackStatusService(
     manipulator_control::ManipulatorCommand::Request &req,
     manipulator_control::ManipulatorCommand::Response &res) {
-  ROS_INFO("callback_status_service::got request %d", req.lock_status);
+  ROS_DEBUG_STREAM(
+      "callback_status_service::got request, lock_status: " << req.lock_status);
   auto lock_status_ = static_cast<LockStatus>(req.lock_status);
   switch (lock_status_) {
   case LockStatus::LOCKED:

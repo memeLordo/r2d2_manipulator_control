@@ -41,22 +41,58 @@ private:
   void updateJointState();
   void publishJointState();
 
+public:
   void updateNozzleType();
 
 public:
-  void resetMode() { m_workMode = WorkMode::NONE; };
-  void resetNozzle() { m_nozzleType = NozzleType::NONE; };
-  void resetLock() { m_lockStatus = LockStatus::NONE; };
+  void resetMode() {
+    ROS_DEBUG("Reset mode");
+    m_workMode = WorkMode::NONE;
+  };
+  void resetNozzle() {
+    ROS_DEBUG("Reset nozzle");
+    m_nozzleType = NozzleType::NONE;
+  };
+  void resetLock() {
+    ROS_DEBUG("Reset lock");
+    m_lockStatus = LockStatus::NONE;
+  };
 
-  void setMode(WorkMode value) { m_workMode = value; };
-  void setNozzle(NozzleType value) { m_nozzleType = value; };
-  void setLock(LockStatus value) { m_lockStatus = value; };
-  void setMode(T value) { m_workMode = static_cast<WorkMode>(value); };
-  void setNozzle(T value) { m_nozzleType = static_cast<NozzleType>(value); };
-  void setLock(T value) { m_lockStatus = static_cast<LockStatus>(value); };
+  void setMode(WorkMode value) {
+    ROS_DEBUG_STREAM("Set mode(WorkMode)");
+    m_workMode = value;
+  };
+  void setNozzle(NozzleType value) {
+    ROS_DEBUG_STREAM("Set nozzle(NozzleType)");
+    m_nozzleType = value;
+  };
+  void setLock(LockStatus value) {
+    ROS_DEBUG_STREAM("Set lock(LockStatus)");
+    m_lockStatus = value;
+  };
+  void setMode(T value) {
+    ROS_DEBUG_STREAM("Set mode(value = " << WHITE(value) << ")");
+    m_workMode = static_cast<WorkMode>(value);
+  };
+  void setNozzle(T value) {
+    ROS_DEBUG_STREAM("Set nozzle(value = " << WHITE(value) << ")");
+    m_nozzleType = static_cast<NozzleType>(value);
+  };
+  void setLock(T value) {
+    ROS_DEBUG_STREAM("Set lock(value = " << WHITE(value) << ")");
+    m_lockStatus = static_cast<LockStatus>(value);
+  };
 
-  T getForce() const { return static_cast<T>(m_params.force_needed); };
-  T getRadius() const { return m_params.r0; };
+  T getForce() const {
+    auto force = static_cast<T>(m_params.force_needed);
+    ROS_DEBUG_STREAM("ManipulatorControl::getForce() : " << WHITE(force));
+    return force;
+  };
+  T getRadius() const {
+    auto radius = m_params.r0;
+    ROS_DEBUG_STREAM("ManipulatorControl::getRadius() : " << WHITE(radius));
+    return radius;
+  };
 };
 
 #endif // MANIPULATOR_CONTROL_H

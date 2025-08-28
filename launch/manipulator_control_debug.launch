@@ -4,17 +4,18 @@
 	<arg name="debug" default="true"/>
 	<arg name="rate"  default="1.0"/>
 
+	<env name="ROSCONSOLE_CONFIG_FILE"
+       value="$(find manipulator_control)/rosconsole.conf"/>
+  <param name="control_rate" value="$(arg rate)"/>
+
 	<!-- Основной узел манипулятора -->
 	<node pkg="manipulator_control" 
         type="manipulator_control_node" 
         name="manipulator_control_node_1" 
-    		output="screen"
-    		launch-prefix="gdb -ex run --args">
-
+    		output="screen">
+    		
 		<!-- Параметры узла -->
-		<param name="debug_output" value="$(arg debug)"/>
-		<param name="control_rate" value="$(arg rate)"/>
-
+		<!-- <param name="rosconsole_logger_level" value="DEBUG"/> -->
 		<!-- Переназначение топиков -->
 		<remap from="/elbow_input"         to="/manipulator1/elbow_input"/>
 		<remap from="/elbow_output"        to="/manipulator1/elbow_output"/>

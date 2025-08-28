@@ -4,20 +4,27 @@
 #include "PipeHandler.h"
 #include "r2d2_msg_pkg/DriverCommand.h"
 #include "r2d2_msg_pkg/DriverState.h"
+#include "utils/Debug.h"
+#include "utils/Math.h"
 #include <cstdint>
+#include <ros/console.h>
 #include <ros/node_handle.h>
 
 template <typename T = double> class ShoulderHandler {
 
 private:
+  static const std::string OUTPUT_NODE;
+  static const std::string INPUT_NODE;
+
   static const T m_coeffs[];
   static const T m_length;
 
-  struct shoulder_t {
-    int16_t omega{};
-    int16_t theta{};
-  } m_params;
-  shoulder_t m_callbackParams;
+  template <typename Type> struct shoulder_t {
+    Type omega{};
+    Type theta{};
+  };
+  shoulder_t<T> m_params{};
+  shoulder_t<int16_t> m_callbackParams{};
 
   const PipeHandler<T> &m_pipe;
 
@@ -31,34 +38,84 @@ public:
 
 private:
   void callbackShoulder(const r2d2_msg_pkg::DriverStateConstPtr &msg) {
-    m_callbackParams = shoulder_t{msg->omega, msg->theta};
+    m_callbackParams = shoulder_t<int16_t>{msg->omega, msg->theta};
   };
 
   r2d2_msg_pkg::DriverCommand prepareMsg() const {
+    auto omega_ = r2d2_process::unwrap<int16_t>(m_params.omega);
+    auto theta_ = r2d2_process::unwrap<int16_t>(m_params.theta);
+    ROS_DEBUG_STREAM("Prepare shoulder msg |"
+                     << YELLOW(" omeha : ") << WHITE(omega_) << " "
+                     << YELLOW(" theta : ") << WHITE(theta_));
     r2d2_msg_pkg::DriverCommand msg;
-    msg.omega = m_params.omega;
-    msg.theta = m_params.theta;
+    msg.header.stamp = ros::Time::now();
+    msg.omega = omega_;
+    msg.theta = theta_;
+    msg.control_word = 10;
     return msg;
   };
 
 public:
-  void updateSpeed() { m_params.omega = m_callbackParams.omega; };
-  void updateAngle() { m_params.theta = m_callbackParams.theta; };
-  void updateSpeed(T omega) { m_params.omega = static_cast<int16_t>(omega); };
-  void updateAngle(T theta) { m_params.theta = static_cast<int16_t>(theta); };
+  void updateSpeed() {
+    auto omega_ = m_callbackParams.omega;
+    ROS_DEBUG_STREAM("Shoulder::updateSpeed("
+                     << YELLOW("callback = " << m_callbackParams.omega)
+                     << ") : " << WHITE(omega_));
+    m_params.omega = omega_;
+  };
+  void updateAngle() {
+    auto theta_ = r2d2_process::wrap<T>(m_callbackParams.theta);
+    ROS_DEBUG_STREAM("Shoulder::updateAngle("
+                     << YELLOW("callback = " << m_callbackParams.theta)
+                     << ") : " << WHITE(theta_));
+    m_params.theta = theta_;
+  };
+  void updateSpeed(T omega) {
+    ROS_DEBUG_STREAM("Shoulder::updateSpeed(omega = " << WHITE(omega) << ")");
+    m_params.omega = omega;
+  };
+  void updateAngle(T theta) {
+    ROS_DEBUG_STREAM("Shoulder::updateAngle(theta = " << WHITE(theta) << ")");
+    m_params.theta = theta;
+  };
 
-  void setPublishPending(bool pending = true) { m_needsPublish = pending; }
-  void clearPublishPending() { m_needsPublish = false; }
+  void setPublishPending(bool pending = true) {
+    ROS_DEBUG_STREAM("Set publish pending to " << pending);
+    m_needsPublish = pending;
+  }
+  void clearPublishPending() {
+    ROS_DEBUG("Clear publish pending");
+    m_needsPublish = false;
+  }
 
   void publish() {
-    if (m_params.omega > 0 || m_params.theta > 0)
+    ROS_DEBUG_STREAM_COND(m_params.omega == 0 && m_params.theta == 0,
+                          RED("Shoulder : no update"));
+    if (m_params.omega != 0 || m_params.theta != 0) {
+      ROS_DEBUG_STREAM(BLUE("Shoulder::publish()"));
       m_publisher.publish(prepareMsg());
+    }
   };
-  bool isPublishPending() const { return m_needsPublish; }
+  bool isPublishPending() const {
+    ROS_DEBUG("Get publish pending");
+    return m_needsPublish;
+  }
 
-  T getSpeed() const { return static_cast<T>(m_params.omega); };
-  T getAngle() const { return static_cast<T>(m_params.theta); };
-  T getLength() const { return m_length; };
+  std::string getInputNode() const { return INPUT_NODE; };
+  std::string getOutputNode() const { return OUTPUT_NODE; };
+
+  T getSpeed() const {
+    ROS_DEBUG_STREAM("Shoulder::getSpeed() : " << WHITE(m_params.omega));
+    return m_params.omega;
+  };
+  T getAngle() const {
+    ROS_DEBUG_STREAM("Shoulder::getAngle() : " << WHITE(m_params.theta));
+    return m_params.theta;
+  };
+  T getLength() const {
+    ROS_DEBUG_STREAM("Shoulder::getLength() : " << WHITE(m_length));
+    return m_length;
+  };
 
   T calcAngle();
   T calcAngle(T theta);

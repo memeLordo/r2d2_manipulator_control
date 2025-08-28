@@ -2,12 +2,15 @@
 #define PAYLOAD_HANDLER_H
 
 #include "r2d2_msg_pkg/DriverState.h"
+#include "utils/Debug.h"
 #include <cstdint>
 #include <ros/node_handle.h>
 
 template <typename T = double> class PayloadHandler {
 private:
-  int16_t m_callbackForce;
+  static const std::string OUTPUT_NODE;
+
+  int16_t m_callbackForce{};
   // TODO: add omega -  раскрутка щёток
   // считать желаемую скорость из manipulator_t
 
@@ -22,7 +25,11 @@ private:
   };
 
 public:
-  T getForce() const { return static_cast<T>(m_callbackForce); };
+  T getForce() const {
+    auto force = static_cast<T>(m_callbackForce);
+    ROS_DEBUG_STREAM("Payload::getForce() : " << WHITE(force));
+    return force;
+  };
 };
 
 #endif // PIPE_HANDLER_H

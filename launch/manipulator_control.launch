@@ -4,6 +4,7 @@
 	<arg name="debug" default="false"/>
 	<arg name="rate"  default="50.0"/>
 
+  <param name="control_rate" value="$(arg rate)"/>
 	<!-- Основной узел манипулятора -->
 	<node pkg="manipulator_control" 
         type="manipulator_control_node" 
@@ -11,7 +12,6 @@
         output="screen">
 
 		<!-- Параметры узла -->
-		<!-- <param name="control_rate" value="$(arg rate)"/> -->
 		<!-- <param name="debug_output" value="$(arg debug)"/> -->
 
 		<!-- Переназначение топиков -->
