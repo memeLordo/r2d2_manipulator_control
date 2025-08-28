@@ -49,7 +49,6 @@ void ManipulatorControlHandler<T>::callbackManipulator(
 
   case WorkMode::MANUAL:
     ROS_DEBUG_STREAM(YELLOW("WorkMode::MANUAL"));
-    setup();
     resetMode();
     return;
 
@@ -57,45 +56,6 @@ void ManipulatorControlHandler<T>::callbackManipulator(
     return;
   }
 }
-template <typename T> void ManipulatorControlHandler<T>::setup() {
-  ROS_DEBUG_STREAM(MAGENTA("\nsetup()"));
-  /**
-   * INFO:
-   * 0. Получить данные для манипулятора (и трубы)
-   * 1. Проверка автоматического разжатия
-   * 2. Приём типа насадки (Щётка/ЕМА)
-   * 3. Проверка статуса блокировки
-   * 4. Обновить оставшиеся переменные
-   * 5. Опубликовать все переменные
-   */
-  updateJointState();
-  publishJointState();
-
-  // T current_angle[]{elbow.get_angle(), shoulder.get_angle()};
-  // while ((elbow.get_state() - elbow.get_input_angle()) > 0.1 &&
-  //        abs(shoulder.get_state() - shoulder.get_input_angle()) > 0.1) {
-  //   ros::Duration(0.1).sleep();
-  // }
-  // TODO: while проверка DriverState == DriverCommand
-  // exec wait... 0.1s
-  // TODO: creaate async task for timer to wait
-  // wait_for_state(elbow_state, shoulder_state);
-  ROS_INFO("Manipulator Setup completed");
-}
-
-template <typename T> void ManipulatorControlHandler<T>::updateNozzleType() {
-  ROS_DEBUG_STREAM(MAGENTA("updateNozzleType()"));
-  switch (m_nozzleType) {
-  case NozzleType::BRUSH:
-    m_params = manipulator_t{100, 347.0};
-    return;
-  case NozzleType::EMA:
-    m_params = manipulator_t{150, 331.0};
-    return;
-  default:
-    return;
-  }
-};
 template <typename T> T ManipulatorControlHandler<T>::calcRadius() {
   ROS_DEBUG_STREAM(MAGENTA("calcRadius()"));
   T radius = m_shoulder.getLength() * r2d2_math::sin(m_shoulder.getAngle()) +
@@ -136,34 +96,6 @@ template <typename T> void ManipulatorControlHandler<T>::processForceControl() {
 }
 template <typename T> void ManipulatorControlHandler<T>::publishResults() {
   ROS_DEBUG_STREAM(MAGENTA("\npublishResults()"));
-  m_elbow.publish();
-  if (m_shoulder.isPublishPending()) {
-    m_shoulder.publish();
-    m_shoulder.clearPublishPending();
-  }
-}
-template <typename T> void ManipulatorControlHandler<T>::updateJointState() {
-  ROS_DEBUG_STREAM(MAGENTA("updateJointState()"));
-  switch (m_lockStatus) {
-  case LockStatus::UNLOCKED:
-    ROS_DEBUG_STREAM(YELLOW("LockStatus::UNLOCKED"));
-    // Вычисляем углы для разблокированного состояния
-    m_elbow.updateAngle(m_elbow.calcAngle());
-    m_shoulder.updateAngle(m_shoulder.calcAngle());
-    break;
-  default:
-    ROS_DEBUG_STREAM(YELLOW("LockStatus::Default"));
-    // Используем текущие значения для заблокированного состояния
-    m_elbow.updateAngle();
-    m_shoulder.updateAngle();
-  }
-  // TODO: Если заблокированиы - манипуляторы в 0
-  // Обновляем скорости
-  m_elbow.updateSpeed();
-  m_shoulder.updateSpeed();
-}
-template <typename T> void ManipulatorControlHandler<T>::publishJointState() {
-  ROS_DEBUG_STREAM(MAGENTA("publishJointState()"));
   m_elbow.publish();
   m_shoulder.publish();
 }

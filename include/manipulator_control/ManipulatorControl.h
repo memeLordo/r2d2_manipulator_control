@@ -28,13 +28,10 @@ public:
 
 private:
   void callbackManipulator(const ros::TimerEvent &);
-  void setup();
   T calcRadius();
   void processAngleControl();
   void processForceControl();
   void publishResults();
-  void updateJointState();
-  void publishJointState();
 
 public:
   void updateNozzleType();
