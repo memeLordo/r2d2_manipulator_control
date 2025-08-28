@@ -21,17 +21,6 @@ private:
     T r0{};
   } params{};
 
-  void update_nozzle_type() {
-    switch (nozzle) {
-    case NozzleType::BRUSH:
-      params = manipulator_t{100, 347.0};
-      return;
-    case NozzleType::EMA:
-      params = manipulator_t{150, 331.0};
-      return;
-    }
-  }
-
   PayloadHandler<T> payload;
   PipeHandler<T> pipe;
   ElbowHandler<T> elbow;
