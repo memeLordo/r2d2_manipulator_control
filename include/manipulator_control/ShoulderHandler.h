@@ -28,8 +28,6 @@ private:
   ros::Subscriber m_subscriber;
   ros::Publisher m_publisher;
 
-  bool m_needsPublish{false};
-
 public:
   ShoulderHandler(ros::NodeHandle *node, const PipeHandler<T> &);
 
@@ -102,23 +100,10 @@ public:
                               static_cast<uint16_t>(m_params.control_word))));
   };
 
-  void setPublishPending(bool pending = true) {
-    ROS_DEBUG_STREAM("Set publish pending to " << pending);
-    m_needsPublish = pending;
-  }
-  void clearPublishPending() {
-    ROS_DEBUG("Clear publish pending");
-    m_needsPublish = false;
-  }
-
   void publish() {
     ROS_DEBUG_STREAM(BLUE("Shoulder::publish()"));
     m_publisher.publish(prepareMsg());
   };
-  bool isPublishPending() const {
-    ROS_DEBUG("Get publish pending");
-    return m_needsPublish;
-  }
 
   std::string getInputNode() const { return INPUT_NODE; };
   std::string getOutputNode() const { return OUTPUT_NODE; };

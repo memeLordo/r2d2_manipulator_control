@@ -78,7 +78,6 @@ template <typename T> void ManipulatorControlHandler<T>::processAngleControl() {
   if (angle_diff >= ANGLE_THRESHOLD) { // TODO: fix to angle_threshold2
     ROS_DEBUG_STREAM(CYAN("Success angle control"));
     m_shoulder.updateAngle(m_shoulder.calcAngle(calcRadius()));
-    m_shoulder.setPublishPending();
   }
   // m_elbow.control_word = 10;
   // m_shoulder.control_word = 10;
