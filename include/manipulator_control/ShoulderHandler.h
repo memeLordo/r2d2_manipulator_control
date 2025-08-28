@@ -6,7 +6,7 @@
 #include "r2d2_msg_pkg/DriverState.h"
 #include "utils/Debug.h"
 #include "utils/Math.h"
-#include <cstdint>
+#include "utils/Types.h"
 #include <ros/console.h>
 #include <ros/node_handle.h>
 
@@ -20,12 +20,8 @@ private:
   static const T m_length;
   static const T m_speed;
 
-  template <typename Type> struct shoulder_t {
-    Type omega{};
-    Type theta{};
-  };
-  shoulder_t<T> m_params{};
-  shoulder_t<int16_t> m_callbackParams{};
+  r2d2_types::shoulder_t<T, r2d2_commands::ControlType> m_params{};
+  r2d2_types::shoulder16_t m_callbackParams{};
 
   const PipeHandler<T> &m_pipe;
 
@@ -39,20 +35,23 @@ public:
 
 private:
   void callbackShoulder(const r2d2_msg_pkg::DriverStateConstPtr &msg) {
-    m_callbackParams = shoulder_t<int16_t>{msg->omega, msg->theta};
+    m_callbackParams =
+        r2d2_types::shoulder16_t{msg->omega, msg->theta, msg->control_word};
   };
 
   r2d2_msg_pkg::DriverCommand prepareMsg() const {
     auto omega_ = m_speed;
     auto theta_ = r2d2_process::unwrap<int16_t>(m_params.theta);
+    auto control_word_ = static_cast<uint16_t>(m_params.control_word);
     ROS_DEBUG_STREAM("Prepare shoulder msg |"
                      << YELLOW(" omeha : ") << WHITE(omega_) << " "
-                     << YELLOW(" theta : ") << WHITE(theta_));
+                     << YELLOW(" theta : ") << WHITE(theta_) << " "
+                     << YELLOW(" control_word : ") << WHITE(control_word_));
     r2d2_msg_pkg::DriverCommand msg;
     msg.header.stamp = ros::Time::now();
     msg.omega = omega_;
     msg.theta = theta_;
-    msg.control_word = 10;
+    msg.control_word = control_word_;
     return msg;
   };
 
