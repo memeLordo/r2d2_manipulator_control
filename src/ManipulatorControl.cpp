@@ -2,6 +2,8 @@
 #include "utils/Debug.h"
 #include "utils/Math.h"
 
+using namespace r2d2_state;
+
 template <typename T>
 ManipulatorControlHandler<T>::ManipulatorControlHandler(ros::NodeHandle *node)
     : m_payload(node), m_pipe(node), m_elbow(node, m_pipe),

@@ -1,9 +1,7 @@
 #include "ManipulatorService.h"
 #include "ros/console.h"
 
-using WorkMode = ManipulatorControlHandler<>::WorkMode;
-using NozzleType = ManipulatorControlHandler<>::NozzleType;
-using LockStatus = ManipulatorControlHandler<>::LockStatus;
+using namespace r2d2_state;
 
 constexpr const char *MANIPULATOR_SERVICE_MODE = "/manipulator_command";
 
