@@ -3,18 +3,14 @@
 
 #include "r2d2_msg_pkg/PipeParameters.h"
 #include "utils/Debug.h"
-#include <cstdint>
+#include "utils/Types.h"
 #include <ros/node_handle.h>
 
 template <typename T = double> class PipeHandler {
 private:
   static const std::string OUTPUT_NODE;
 
-  struct pipe_t {
-    uint16_t diameter{};
-    uint8_t thickness{};
-    T radius() const { return (T)diameter / T{2} - thickness; };
-  } m_callbackParams{};
+  r2d2_types::upipe_t<T> m_callbackParams{};
 
   ros::Subscriber m_subscriber;
 
@@ -23,7 +19,8 @@ public:
 
 private:
   void callbackPipe(const r2d2_msg_pkg::PipeParametersConstPtr &msg) {
-    m_callbackParams = pipe_t{msg->pipe_diam, msg->pipe_thickness};
+    m_callbackParams =
+        r2d2_types::upipe_t<T>{msg->pipe_diam, msg->pipe_thickness};
   };
 
 public:
