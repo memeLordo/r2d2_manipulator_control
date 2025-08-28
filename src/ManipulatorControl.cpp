@@ -4,6 +4,43 @@
 
 using namespace r2d2_state;
 
+template <typename T> bool ManipulatorControlHandler<T>::setup() {
+  if (finishSetup) {
+    return true;
+  }
+  ROS_DEBUG_STREAM(YELLOW("\nsetup()"));
+  // TODO: Если заблокированиы - манипуляторы в 0
+  // Обновляем скорости
+
+  ROS_DEBUG_STREAM(CYAN("Checking for reach..."));
+  auto check_elbow{
+      r2d2_math::abs(m_elbow.getAngle() - m_elbow.getInputAngle()) < 0.1};
+  auto check_shoulder{
+      r2d2_math::abs(m_shoulder.getAngle() - m_shoulder.getInputAngle()) < 0.1};
+  ROS_DEBUG_STREAM(YELLOW("check_elbow")
+                   << " : |elbow.getAngle() - elbow.getInputAngle()| < 0.1 = "
+                   << WHITE(check_elbow));
+  ROS_DEBUG_STREAM(
+      YELLOW("check_shoulder")
+      << " : |shoulder.getAngle() - shoulder.getInputAngle()| < 0.1 = "
+      << WHITE(check_shoulder));
+
+  bool state_ = check_elbow && check_shoulder || m_payload.getForce() > 20000;
+  if (!state_) {
+    ROS_DEBUG_STREAM(RED("No reach!"));
+    ROS_DEBUG(" ");
+    ROS_DEBUG_STREAM(CYAN("UPDATING ANGLES"));
+    m_elbow.updateAngle(m_elbow.calcAngle());
+    m_shoulder.updateAngle(m_shoulder.calcAngle());
+  } else {
+    ROS_DEBUG_STREAM(CYAN("OK!"));
+    updateSetup();
+  }
+  return state_;
+  // m_elbow.updateSpeed();
+  // m_shoulder.updateSpeed();
+}
+
 template <typename T>
 ManipulatorControlHandler<T>::ManipulatorControlHandler(ros::NodeHandle *node)
     : m_payload(node), m_pipe(node), m_elbow(node, m_pipe),

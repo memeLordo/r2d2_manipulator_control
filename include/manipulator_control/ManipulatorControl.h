@@ -15,6 +15,7 @@ private:
   r2d2_state::NozzleType m_nozzleType{};
   r2d2_state::LockStatus m_lockStatus{};
 
+  bool finishSetup{false};
   r2d2_types::manipulator16_t<T> m_params{};
   PayloadHandler<T> m_payload;
   PipeHandler<T> m_pipe;
@@ -29,6 +30,7 @@ public:
 private:
   void callbackManipulator(const ros::TimerEvent &);
   T calcRadius();
+  bool setup();
   void processAngleControl();
   void processForceControl();
   void publishResults();
@@ -37,6 +39,7 @@ public:
   void updateNozzleType();
 
 public:
+  void updateSetup() { finishSetup = true; }
   void resetMode() {
     ROS_DEBUG("Reset mode");
     m_workMode = r2d2_state::WorkMode::NONE;
