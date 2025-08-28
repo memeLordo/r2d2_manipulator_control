@@ -134,12 +134,14 @@ public:
   };
 
   T getSpeed() const {
-    ROS_DEBUG_STREAM("Shoulder::getSpeed() : " << WHITE(m_params.omega));
-    return m_params.omega;
+    auto speed_ = static_cast<T>(m_params.omega);
+    ROS_DEBUG_STREAM("Shoulder::getSpeed() : " << WHITE(speed_));
+    return speed_;
   };
   T getAngle() const {
-    ROS_DEBUG_STREAM("Shoulder::getAngle() : " << WHITE(m_params.theta));
-    return m_params.theta;
+    auto angle_ = static_cast<T>(m_params.theta);
+    ROS_DEBUG_STREAM("Shoulder::getAngle() : " << WHITE(angle_));
+    return angle_;
   };
   // r2d2_commands::ControlType getControlWord() const {
   //   ROS_DEBUG_STREAM("Shoulder::getControlWord() : "
