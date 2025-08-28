@@ -5,22 +5,17 @@
 #include "PayloadHandler.h"
 #include "PipeHandler.h"
 #include "ShoulderHandler.h"
-#include <cstdint>
+#include "utils/Types.h"
 #include <ros/node_handle.h>
 
 template <typename T = double> class ManipulatorControlHandler {
 
-public:
-  enum class WorkMode : uint8_t { NONE = 0, MANUAL, AUTO } m_workMode{};
-  enum class NozzleType : uint8_t { NONE = 0, BRUSH, EMA } m_nozzleType{};
-  enum class LockStatus : uint8_t { NONE = 0, LOCKED, UNLOCKED } m_lockStatus{};
-
 private:
-  struct manipulator_t {
-    int16_t force_needed{};
-    T r0{};
-  } m_params{};
+  r2d2_state::WorkMode m_workMode{};
+  r2d2_state::NozzleType m_nozzleType{};
+  r2d2_state::LockStatus m_lockStatus{};
 
+  r2d2_types::manipulator16_t<T> m_params{};
   PayloadHandler<T> m_payload;
   PipeHandler<T> m_pipe;
   ElbowHandler<T> m_elbow;
@@ -47,40 +42,40 @@ public:
 public:
   void resetMode() {
     ROS_DEBUG("Reset mode");
-    m_workMode = WorkMode::NONE;
+    m_workMode = r2d2_state::WorkMode::NONE;
   };
   void resetNozzle() {
     ROS_DEBUG("Reset nozzle");
-    m_nozzleType = NozzleType::NONE;
+    m_nozzleType = r2d2_state::NozzleType::NONE;
   };
   void resetLock() {
     ROS_DEBUG("Reset lock");
-    m_lockStatus = LockStatus::NONE;
+    m_lockStatus = r2d2_state::LockStatus::NONE;
   };
 
-  void setMode(WorkMode value) {
+  void setMode(r2d2_state::WorkMode value) {
     ROS_DEBUG_STREAM("Set mode(WorkMode)");
     m_workMode = value;
   };
-  void setNozzle(NozzleType value) {
+  void setNozzle(r2d2_state::NozzleType value) {
     ROS_DEBUG_STREAM("Set nozzle(NozzleType)");
     m_nozzleType = value;
   };
-  void setLock(LockStatus value) {
+  void setLock(r2d2_state::LockStatus value) {
     ROS_DEBUG_STREAM("Set lock(LockStatus)");
     m_lockStatus = value;
   };
   void setMode(T value) {
     ROS_DEBUG_STREAM("Set mode(value = " << WHITE(value) << ")");
-    m_workMode = static_cast<WorkMode>(value);
+    m_workMode = static_cast<r2d2_state::WorkMode>(value);
   };
   void setNozzle(T value) {
     ROS_DEBUG_STREAM("Set nozzle(value = " << WHITE(value) << ")");
-    m_nozzleType = static_cast<NozzleType>(value);
+    m_nozzleType = static_cast<r2d2_state::NozzleType>(value);
   };
   void setLock(T value) {
     ROS_DEBUG_STREAM("Set lock(value = " << WHITE(value) << ")");
-    m_lockStatus = static_cast<LockStatus>(value);
+    m_lockStatus = static_cast<r2d2_state::LockStatus>(value);
   };
 
   T getForce() const {
