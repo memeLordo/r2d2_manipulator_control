@@ -49,6 +49,8 @@ void ManipulatorControlHandler<T>::callbackManipulator(
 
   case WorkMode::MANUAL:
     ROS_DEBUG_STREAM(YELLOW("WorkMode::MANUAL"));
+    // m_shoulder.control_word = 1;
+    // m_elbow.control_word = 1;
     resetMode();
     return;
 
@@ -78,6 +80,8 @@ template <typename T> void ManipulatorControlHandler<T>::processAngleControl() {
     m_shoulder.updateAngle(m_shoulder.calcAngle(calcRadius()));
     m_shoulder.setPublishPending();
   }
+  // m_elbow.control_word = 10;
+  // m_shoulder.control_word = 10;
 }
 template <typename T> void ManipulatorControlHandler<T>::processForceControl() {
   ROS_DEBUG_STREAM(MAGENTA("\nprocessForceControl()"));
@@ -93,6 +97,8 @@ template <typename T> void ManipulatorControlHandler<T>::processForceControl() {
   } else if (current_force < target_force) {
     m_elbow.updateSpeed();
   }
+  // m_elbow.control_word = 10;
+  // m_shoulder.control_word = 10;
 }
 template <typename T> void ManipulatorControlHandler<T>::publishResults() {
   ROS_DEBUG_STREAM(MAGENTA("\npublishResults()"));
