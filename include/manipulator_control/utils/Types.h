@@ -12,4 +12,12 @@ enum class ControlType : uint16_t {
 
 } // namespace r2d2_commands
 
+namespace r2d2_state {
+
+enum class LockStatus : uint8_t { NONE = 0, LOCKED, UNLOCKED };
+enum class WorkMode : uint8_t { NONE = 0, MANUAL, AUTO, SETUP };
+enum class NozzleType : uint8_t { NONE = 0, BRUSH, EMA };
+
+} // namespace r2d2_state
+
 #endif // CONTROL_WORD_H
