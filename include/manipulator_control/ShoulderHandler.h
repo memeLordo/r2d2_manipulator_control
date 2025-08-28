@@ -18,6 +18,7 @@ private:
 
   static const T m_coeffs[];
   static const T m_length;
+  static const T m_speed;
 
   template <typename Type> struct shoulder_t {
     Type omega{};
@@ -42,7 +43,7 @@ private:
   };
 
   r2d2_msg_pkg::DriverCommand prepareMsg() const {
-    auto omega_ = r2d2_process::unwrap<int16_t>(m_params.omega);
+    auto omega_ = m_speed;
     auto theta_ = r2d2_process::unwrap<int16_t>(m_params.theta);
     ROS_DEBUG_STREAM("Prepare shoulder msg |"
                      << YELLOW(" omeha : ") << WHITE(omega_) << " "
@@ -56,13 +57,13 @@ private:
   };
 
 public:
-  void updateSpeed() {
-    auto omega_ = m_callbackParams.omega;
-    ROS_DEBUG_STREAM("Shoulder::updateSpeed("
-                     << YELLOW("callback = " << m_callbackParams.omega)
-                     << ") : " << WHITE(omega_));
-    m_params.omega = omega_;
-  };
+  // void updateSpeed() {
+  //   // auto omega_ = m_callbackParams.omega;
+  //   ROS_DEBUG_STREAM("Shoulder::updateSpeed("
+  //                    << YELLOW("callback = " << m_callbackParams.omega)
+  //                    << ") : " << WHITE(m_speed));
+  //   m_params.omega = m_speed;
+  // };
   void updateAngle() {
     auto theta_ = r2d2_process::wrap<T>(m_callbackParams.theta);
     ROS_DEBUG_STREAM("Shoulder::updateAngle("
@@ -70,10 +71,11 @@ public:
                      << ") : " << WHITE(theta_));
     m_params.theta = theta_;
   };
-  void updateSpeed(T omega) {
-    ROS_DEBUG_STREAM("Shoulder::updateSpeed(omega = " << WHITE(omega) << ")");
-    m_params.omega = omega;
   };
+  // void updateSpeed(T omega) {
+  //   ROS_DEBUG_STREAM("Shoulder::updateSpeed(omega = " << WHITE(omega) <<
+  //   ")"); m_params.omega = omega;
+  // };
   void updateAngle(T theta) {
     ROS_DEBUG_STREAM("Shoulder::updateAngle(theta = " << WHITE(theta) << ")");
     m_params.theta = theta;

@@ -12,6 +12,7 @@ const std::string ShoulderHandler<T>::INPUT_NODE = "/shoulder_input";
 template <typename T>
 const T ShoulderHandler<T>::m_coeffs[]{0.00024, -0.142, 20.9};
 template <typename T> const T ShoulderHandler<T>::m_length{363}; // mm
+template <typename T> const T ShoulderHandler<T>::m_speed{100};
 
 template <typename T>
 ShoulderHandler<T>::ShoulderHandler(ros::NodeHandle *node,

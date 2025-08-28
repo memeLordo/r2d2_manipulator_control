@@ -12,7 +12,9 @@ const std::string ElbowHandler<T>::OUTPUT_NODE = "/elbow_output";
 template <typename T>
 const T ElbowHandler<T>::m_coeffs[]{-0.00011, 0.341, -105.2};
 template <typename T> const T ElbowHandler<T>::m_length{180}; // mm
+template <typename T> const T ElbowHandler<T>::m_speed{100};
 // template<typename T> const T ElbowHandler<T>::angle_treshold{5};
+
 template <typename T>
 ElbowHandler<T>::ElbowHandler(ros::NodeHandle *node,
                               const PipeHandler<T> &pipeRef)

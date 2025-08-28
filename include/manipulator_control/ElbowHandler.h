@@ -18,6 +18,7 @@ private:
 
   static const T m_coeffs[];
   static const T m_length;
+  static const T m_speed;
 
   template <typename Type> struct elbow_t {
     Type omega{};
@@ -40,7 +41,7 @@ private:
   };
 
   r2d2_msg_pkg::DriverCommand prepareMsg() const {
-    auto omega_ = r2d2_process::unwrap<int16_t>(m_params.omega);
+    auto omega_ = m_speed;
     auto theta_ = r2d2_process::unwrap<int16_t>(m_params.theta);
     ROS_DEBUG_STREAM("Prepare elbow msg |"
                      << YELLOW(" omeha : ") << WHITE(omega_) << " "
@@ -54,13 +55,13 @@ private:
   };
 
 public:
-  void updateSpeed() {
-    auto omega_ = m_callbackParams.omega;
-    ROS_DEBUG_STREAM("Elbow::updateSpeed("
-                     << YELLOW("callback = " << m_callbackParams.omega)
-                     << ") : " << WHITE(omega_));
-    m_params.omega = omega_;
-  };
+  // void updateSpeed() {
+  //   // auto omega_ = m_callbackParams.omega;
+  //   ROS_DEBUG_STREAM("Elbow::updateSpeed("
+  //                    << YELLOW("callback = " << m_callbackParams.omega)
+  //                    << ") : " << WHITE(m_speed));
+  //   m_params.omega = m_speed;
+  // };
   void updateAngle() {
     auto theta_ = r2d2_process::wrap<T>(m_callbackParams.theta);
     ROS_DEBUG_STREAM("Elbow::updateAngle("
@@ -68,10 +69,11 @@ public:
                      << ") : " << WHITE(theta_));
     m_params.theta = theta_;
   };
-  void updateSpeed(T omega) {
-    ROS_DEBUG_STREAM("Elbow::updateSpeed(omega = " << WHITE(omega) << ")");
-    m_params.omega = omega;
   };
+  // void updateSpeed(T omega) {
+  //   ROS_DEBUG_STREAM("Elbow::updateSpeed(omega = " << WHITE(omega) << ")");
+  //   m_params.omega = omega;
+  // };
   void updateAngle(T theta) {
     ROS_DEBUG_STREAM("Elbow::updateAngle(theta = " << WHITE(theta) << ")");
     m_params.theta = theta;
@@ -85,10 +87,11 @@ public:
   std::string getInputNode() const { return INPUT_NODE; };
   std::string getOutputNode() const { return OUTPUT_NODE; };
 
-  T getSpeed() const {
-    ROS_DEBUG_STREAM("Elbow::getSpeed() : " << WHITE(m_params.omega));
-    return m_params.omega;
   };
+  // T getSpeed() const {
+  //   ROS_DEBUG_STREAM("Elbow::getSpeed() : " << WHITE(m_params.omega));
+  //   return m_params.omega;
+  // };
   T getAngle() const {
     ROS_DEBUG_STREAM("Elbow::getAngle() : " << WHITE(m_params.theta));
     return m_params.theta;
