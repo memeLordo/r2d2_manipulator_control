@@ -17,6 +17,19 @@ ManipulatorControlHandler<T>::ManipulatorControlHandler(ros::NodeHandle *node)
       ros::Duration(2 / RATE),
       &ManipulatorControlHandler<T>::callbackManipulator, this);
 }
+template <typename T> void ManipulatorControlHandler<T>::updateNozzleType() {
+  ROS_DEBUG_STREAM(MAGENTA("updateNozzleType()"));
+  switch (m_nozzleType) {
+  case NozzleType::BRUSH:
+    m_params = r2d2_types::manipulator16_t<T>{10000, 347.0};
+    return;
+  case NozzleType::EMA:
+    m_params = r2d2_types::manipulator16_t<T>{15000, 331.0};
+    return;
+  default:
+    return;
+  }
+};
 template <typename T>
 void ManipulatorControlHandler<T>::callbackManipulator(
     const ros::TimerEvent &) {
