@@ -41,6 +41,16 @@ template <typename T, typename T2> struct joint_t {
   T2 control_word{};
 };
 
+template <typename T, typename T2> using elbow_t = joint_t<T, T2>;
+template <typename T, typename T2> using shoulder_t = joint_t<T, T2>;
+
+template <typename T> using upipe_t = pipe_t<uint16_t, uint8_t, T>;
+template <typename T> using manipulator16_t = manipulator_t<int16_t, T>;
+
+typedef joint_t<int16_t, uint16_t> joint16_t;
+typedef joint16_t elbow16_t;
+typedef joint16_t shoulder16_t;
+
 } // namespace r2d2_types
 
 #endif // CONTROL_WORD_H
