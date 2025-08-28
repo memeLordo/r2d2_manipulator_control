@@ -78,12 +78,8 @@ public:
   };
 
   void publish() {
-    ROS_DEBUG_STREAM_COND(m_params.omega == 0 && m_params.theta == 0,
-                          RED("Elbow : no update"));
-    if (m_params.omega != 0 || m_params.theta != 0) {
-      ROS_DEBUG_STREAM(BLUE("Elbow::publish()"));
-      m_publisher.publish(prepareMsg());
-    }
+    ROS_DEBUG_STREAM(BLUE("Elbow::publish()"));
+    m_publisher.publish(prepareMsg());
   };
 
   std::string getInputNode() const { return INPUT_NODE; };

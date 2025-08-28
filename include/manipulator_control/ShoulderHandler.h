@@ -89,12 +89,8 @@ public:
   }
 
   void publish() {
-    ROS_DEBUG_STREAM_COND(m_params.omega == 0 && m_params.theta == 0,
-                          RED("Shoulder : no update"));
-    if (m_params.omega != 0 || m_params.theta != 0) {
-      ROS_DEBUG_STREAM(BLUE("Shoulder::publish()"));
-      m_publisher.publish(prepareMsg());
-    }
+    ROS_DEBUG_STREAM(BLUE("Shoulder::publish()"));
+    m_publisher.publish(prepareMsg());
   };
   bool isPublishPending() const {
     ROS_DEBUG("Get publish pending");
