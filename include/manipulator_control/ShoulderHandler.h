@@ -1,7 +1,6 @@
 #ifndef SHOULDER_HANDLER_H
 #define SHOULDER_HANDLER_H
 
-#include "PipeHandler.h"
 #include "r2d2_msg_pkg/DriverCommand.h"
 #include "r2d2_msg_pkg/DriverState.h"
 #include "utils/Debug.h"
@@ -23,13 +22,11 @@ private:
   r2d2_types::shoulder_t<T, r2d2_commands::ControlType> m_params{};
   r2d2_types::shoulder16_t m_callbackParams{};
 
-  const PipeHandler<T> &m_pipe; // TODO: remove
-
   ros::Subscriber m_subscriber;
   ros::Publisher m_publisher;
 
 public:
-  ShoulderHandler(ros::NodeHandle *node, const PipeHandler<T> &);
+  ShoulderHandler(ros::NodeHandle *node);
 
 private:
   void callbackShoulder(const r2d2_msg_pkg::DriverStateConstPtr &msg) {
@@ -147,7 +144,6 @@ public:
     return radius_;
   };
 
-  T calcAngle();
   T calcAngle(T theta);
 };
 

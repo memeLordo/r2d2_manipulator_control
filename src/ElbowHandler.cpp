@@ -15,22 +15,12 @@ template <typename T> const T ElbowHandler<T>::m_length{180}; // mm
 template <typename T> const T ElbowHandler<T>::m_speed{100};
 // template<typename T> const T ElbowHandler<T>::angle_treshold{5};
 
-template <typename T>
-ElbowHandler<T>::ElbowHandler(ros::NodeHandle *node,
-                              const PipeHandler<T> &pipeRef)
-    : m_pipe(pipeRef) {
+template <typename T> ElbowHandler<T>::ElbowHandler(ros::NodeHandle *node) {
   constexpr int QUEUE_SIZE = 8;
   m_subscriber = node->subscribe(OUTPUT_NODE, QUEUE_SIZE,
                                  &ElbowHandler::callbackElbow, this);
   m_publisher =
       node->advertise<r2d2_msg_pkg::DriverCommand>(INPUT_NODE, QUEUE_SIZE);
-}
-template <typename T> T ElbowHandler<T>::calcAngle() {
-  T radius = m_pipe.getRadius();
-  T res = horner::polynome(m_coeffs, radius) /* - angle_treshold*/;
-  ROS_DEBUG_STREAM("Elbow::calcAngle(pipe.radius = " << WHITE(radius)
-                                                     << ") : " << WHITE(res));
-  return r2d2_math::max<T>(res, 0);
 }
 template <typename T> T ElbowHandler<T>::calcAngle(T radius) {
   T res = horner::polynome(m_coeffs, radius);

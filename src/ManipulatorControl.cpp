@@ -19,8 +19,9 @@ template <typename T> bool ManipulatorControlHandler<T>::setup() {
     ROS_DEBUG_STREAM(RED("No reach!"));
     ROS_DEBUG(" ");
     ROS_DEBUG_STREAM(CYAN("UPDATING ANGLES"));
-    m_elbow.updateAngle(m_elbow.calcAngle()); // TODO: updateAngleByRadius()
-    m_shoulder.updateAngle(m_shoulder.calcAngle());
+    m_elbow.updateAngle(
+        m_elbow.calcAngle(m_pipe.getRadius())); // TODO: updateAngleByRadius()
+    m_shoulder.updateAngle(m_shoulder.calcAngle(m_pipe.getRadius()));
   } else {
     ROS_DEBUG_STREAM(CYAN("OK!"));
     updateSetup();
@@ -32,8 +33,7 @@ template <typename T> bool ManipulatorControlHandler<T>::setup() {
 
 template <typename T>
 ManipulatorControlHandler<T>::ManipulatorControlHandler(ros::NodeHandle *node)
-    : m_payload(node), m_pipe(node), m_elbow(node, m_pipe),
-      m_shoulder(node, m_pipe) {
+    : m_payload(node), m_pipe(node), m_elbow(node), m_shoulder(node) {
 
   const T RATE = node->param<T>("control_rate", 20);
   ROS_DEBUG_STREAM("Set RATE: " << RATE);
@@ -116,7 +116,8 @@ template <typename T> T ManipulatorControlHandler<T>::calcCurrentRadius() {
 template <typename T> void ManipulatorControlHandler<T>::processControl() {
   if (!setup())
     return;
-  processAngleControl(m_elbow.getAngle(), m_elbow.calcAngle());
+  processAngleControl(m_elbow.getAngle(),
+                      m_elbow.calcAngle(m_pipe.getRadius()));
   processForceControl(m_payload.getForce(), getForce());
 }
 template <typename T>
