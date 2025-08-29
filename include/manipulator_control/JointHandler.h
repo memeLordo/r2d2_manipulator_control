@@ -6,10 +6,11 @@
 #include "utils/Debug.h"
 #include "utils/Math.h"
 #include "utils/Types.h"
+#include <array>
 #include <ros/console.h>
 #include <ros/node_handle.h>
 
-template <typename T = double> class JointHandler {
+template <typename T = double, size_t N = 3> class JointHandler {
 
 private:
   r2d2_types::elbow_t<T, r2d2_commands::ControlType> m_params{};
@@ -18,20 +19,20 @@ private:
   ros::Subscriber m_subscriber;
   ros::Publisher m_publisher;
 
-  const std::string INPUT_NODE;
-  const std::string OUTPUT_NODE;
+  const std::string m_inputNode;
+  const std::string m_outputNode;
+  const std::array<T, N> m_coeffs;
   const T m_length;
   const T m_speed;
-  const T m_coeffs[];
 
 public:
-  JointHandler(ros::NodeHandle *node) = default;
-  JointHandler(ros::NodeHandle *node, const std::string &input_node,
-               const std::string &output_node, const T &length, const T &speed,
-               const T coeffs[]);
+  JointHandler() = default;
+  JointHandler(ros::NodeHandle *node, const std::string &inputNode,
+               const std::string &outputNode, std::initializer_list<T> coeffs,
+               const T &length, const T &speed);
 
 private:
-  void callbackElbow(const r2d2_msg_pkg::DriverStateConstPtr &msg) {
+  void callbackJoint(const r2d2_msg_pkg::DriverStateConstPtr &msg) {
     m_callbackParams =
         r2d2_types::elbow16_t{msg->omega, msg->theta, msg->control_word};
   };
@@ -51,6 +52,12 @@ private:
     msg.control_word = control_word_;
     return msg;
   };
+
+private:
+  void setCoeffsFrom(const std::initializer_list<T> &list) {
+    std::copy(list.begin(), list.begin() + std::min(list.size(), N),
+              m_coeffs.begin());
+  }
 
 public:
   // void updateSpeed() {
