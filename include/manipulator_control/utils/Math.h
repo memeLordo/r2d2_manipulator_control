@@ -25,7 +25,7 @@ template <typename T> constexpr T sin(const T thetha) {
 
 namespace r2d2_process {
 
-constexpr int K = -100;
+constexpr double K{-100};
 template <typename T> const T wrap(T a) {
   T res = a / K;
   ROS_DEBUG_STREAM(CYAN("wrap(") << WHITE(a) << CYAN(") -> ") << WHITE(res));
