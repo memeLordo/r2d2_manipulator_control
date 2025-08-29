@@ -30,7 +30,7 @@ public:
 
 private:
   void callbackManipulator(const ros::TimerEvent &);
-  T calcRadius();
+  T calcCurrentRadius();
   bool setup();
   void processControl();
   void processAngleControl();
