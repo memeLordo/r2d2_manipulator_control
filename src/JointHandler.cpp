@@ -14,15 +14,20 @@
 // template <typename T> const T JointHandler<T>::m_length{180}; // mm
 // template <typename T> const T JointHandler<T>::m_speed{100};
 // template<typename T> const T ElbowHandler<T>::angle_treshold{5};
-
-template <typename T>
-JointHandler<T>::JointHandler(ros::NodeHandle *node)
-    : m_length{}, m_speed{}, m_coeffs[]{0, 0, 0} {
+template <typename T, size_t N>
+JointHandler<T, N>::JointHandler(ros::NodeHandle *node,
+                                 const std::string &inputNode,
+                                 const std::string &outputNode,
+                                 std::initializer_list<T> coeffs,
+                                 const T &length, const T &speed)
+    : m_inputNode{inputNode}, m_outputNode{outputNode}, m_length{length},
+      m_speed{speed}, m_coeffs{} {
+  setCoeffsFrom(coeffs);
   constexpr int QUEUE_SIZE = 8;
-  m_subscriber = node->subscribe(OUTPUT_NODE, QUEUE_SIZE,
-                                 &JointHandler::callbackElbow, this);
+  m_subscriber = node->subscribe(outputNode, QUEUE_SIZE,
+                                 &JointHandler::callbackJoint, this);
   m_publisher =
-      node->advertise<r2d2_msg_pkg::DriverCommand>(INPUT_NODE, QUEUE_SIZE);
+      node->advertise<r2d2_msg_pkg::DriverCommand>(inputNode, QUEUE_SIZE);
 }
 template <typename T> T JointHandler<T>::calcAngle(T radius) {
   T res = horner::polynome(m_coeffs, radius);
