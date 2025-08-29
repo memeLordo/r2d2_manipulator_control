@@ -23,7 +23,7 @@ private:
   r2d2_types::shoulder_t<T, r2d2_commands::ControlType> m_params{};
   r2d2_types::shoulder16_t m_callbackParams{};
 
-  const PipeHandler<T> &m_pipe;
+  const PipeHandler<T> &m_pipe; // TODO: remove
 
   ros::Subscriber m_subscriber;
   ros::Publisher m_publisher;
@@ -110,6 +110,13 @@ public:
   std::string getInputNode() const { return INPUT_NODE; };
   std::string getOutputNode() const { return OUTPUT_NODE; };
 
+  bool checkAngleDiff(T margin = 0.1) const {
+    auto angle_ = getAngle();
+    auto input_angle_ = getInputAngle();
+    bool res = r2d2_math::abs(angle_ - input_angle_) < margin;
+    ROS_DEBUG_STREAM("Shoulder::checkAngleDiff() : " << WHITE(res));
+    return res;
+  };
   T getSpeed() const {
     auto speed_ = static_cast<T>(m_params.omega);
     ROS_DEBUG_STREAM("Shoulder::getSpeed() : " << WHITE(speed_));

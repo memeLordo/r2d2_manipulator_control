@@ -110,6 +110,13 @@ public:
   std::string getInputNode() const { return INPUT_NODE; };
   std::string getOutputNode() const { return OUTPUT_NODE; };
 
+  bool checkAngleDiff(T margin = 0.1) const {
+    auto angle_ = getAngle();
+    auto input_angle_ = getInputAngle();
+    bool res = r2d2_math::abs(angle_ - input_angle_) < margin;
+    ROS_DEBUG_STREAM("Shoulder::checkAngleDiff() : " << WHITE(res));
+    return res;
+  };
   // T getSpeed() const {
   //   ROS_DEBUG_STREAM("Elbow::getSpeed() : " << WHITE(m_params.omega));
   //   return m_params.omega;
