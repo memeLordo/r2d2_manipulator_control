@@ -9,24 +9,26 @@
 #include <ros/console.h>
 #include <ros/node_handle.h>
 
-template <typename T = double> class ElbowHandler {
+template <typename T = double> class JointHandler {
 
 private:
-  static const std::string INPUT_NODE;
-  static const std::string OUTPUT_NODE;
-
-  static const T m_coeffs[];
-  static const T m_length;
-  static const T m_speed;
-
   r2d2_types::elbow_t<T, r2d2_commands::ControlType> m_params{};
   r2d2_types::elbow16_t m_callbackParams{};
 
   ros::Subscriber m_subscriber;
   ros::Publisher m_publisher;
 
+  const std::string INPUT_NODE;
+  const std::string OUTPUT_NODE;
+  const T m_length;
+  const T m_speed;
+  const T m_coeffs[];
+
 public:
-  ElbowHandler(ros::NodeHandle *node);
+  JointHandler(ros::NodeHandle *node) = default;
+  JointHandler(ros::NodeHandle *node, const std::string &input_node,
+               const std::string &output_node, const T &length, const T &speed,
+               const T coeffs[]);
 
 private:
   void callbackElbow(const r2d2_msg_pkg::DriverStateConstPtr &msg) {

@@ -1,10 +1,9 @@
 #ifndef MANIPULATOR_CONTROL_H
 #define MANIPULATOR_CONTROL_H
 
-#include "ElbowHandler.h"
+#include "JointHandler.h"
 #include "PayloadHandler.h"
 #include "PipeHandler.h"
-#include "ShoulderHandler.h"
 #include "utils/Types.h"
 #include <ros/node_handle.h>
 
@@ -20,8 +19,8 @@ private:
 
   PayloadHandler<T> m_payload;
   PipeHandler<T> m_pipe;
-  ElbowHandler<T> m_elbow;
-  ShoulderHandler<T> m_shoulder;
+  JointHandler<T> m_elbow;
+  JointHandler<T> m_shoulder;
 
   ros::Timer m_timer;
 
