@@ -108,9 +108,7 @@ void ManipulatorControlHandler<T>::callbackManipulator(
 }
 template <typename T> T ManipulatorControlHandler<T>::calcCurrentRadius() {
   ROS_DEBUG_STREAM(MAGENTA("calcRadius()"));
-  T radius{m_shoulder.getLength() * r2d2_math::sin(m_shoulder.getAngle()) +
-           m_elbow.getLength() * r2d2_math::sin(m_elbow.getAngle()) +
-           getRadius()};
+  T radius{m_shoulder.getRadius() + m_elbow.getRadius() + getRadius()};
   ROS_DEBUG_STREAM("calcRadius() : " << WHITE(radius));
   ROS_DEBUG(" ");
   return radius;
