@@ -106,7 +106,7 @@ void ManipulatorControlHandler<T>::callbackManipulator(
     return;
   }
 }
-template <typename T> T ManipulatorControlHandler<T>::calcRadius() { // TODO: current radius?
+template <typename T> T ManipulatorControlHandler<T>::calcCurrentRadius() {
   ROS_DEBUG_STREAM(MAGENTA("calcRadius()"));
   T radius{m_shoulder.getLength() * r2d2_math::sin(m_shoulder.getAngle()) +
            m_elbow.getLength() * r2d2_math::sin(m_elbow.getAngle()) +
