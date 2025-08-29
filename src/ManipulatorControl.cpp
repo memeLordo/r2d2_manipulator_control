@@ -13,19 +13,8 @@ template <typename T> bool ManipulatorControlHandler<T>::setup() {
   // Обновляем скорости
 
   ROS_DEBUG_STREAM(CYAN("Checking for reach..."));
-  auto check_elbow{
-      r2d2_math::abs(m_elbow.getAngle() - m_elbow.getInputAngle()) < 0.1};
-  auto check_shoulder{
-      r2d2_math::abs(m_shoulder.getAngle() - m_shoulder.getInputAngle()) < 0.1};
-  ROS_DEBUG_STREAM(YELLOW("check_elbow")
-                   << " : |elbow.getAngle() - elbow.getInputAngle()| < 0.1 = "
-                   << WHITE(check_elbow));
-  ROS_DEBUG_STREAM(
-      YELLOW("check_shoulder")
-      << " : |shoulder.getAngle() - shoulder.getInputAngle()| < 0.1 = "
-      << WHITE(check_shoulder));
-
-  bool state_ = check_elbow && check_shoulder || m_payload.getForce() > 20000;
+  bool state_ = !m_shoulder.checkAngleDiff() || !m_elbow.checkAngleDiff() ||
+                m_payload.getForce() > 20000;
   if (!state_) {
     ROS_DEBUG_STREAM(RED("No reach!"));
     ROS_DEBUG(" ");
