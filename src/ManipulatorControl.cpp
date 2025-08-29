@@ -30,7 +30,7 @@ template <typename T> bool ManipulatorControlHandler<T>::setup() {
     ROS_DEBUG_STREAM(RED("No reach!"));
     ROS_DEBUG(" ");
     ROS_DEBUG_STREAM(CYAN("UPDATING ANGLES"));
-    m_elbow.updateAngle(m_elbow.calcAngle());
+    m_elbow.updateAngle(m_elbow.calcAngle()); // TODO: updateAngleByRadius()
     m_shoulder.updateAngle(m_shoulder.calcAngle());
   } else {
     ROS_DEBUG_STREAM(CYAN("OK!"));
@@ -48,12 +48,11 @@ ManipulatorControlHandler<T>::ManipulatorControlHandler(ros::NodeHandle *node)
 
   const T RATE = node->param<T>("control_rate", 20);
   ROS_DEBUG_STREAM("Set RATE: " << RATE);
-
-  setMode(WorkMode::MANUAL);
   m_timer = node->createTimer(
-      ros::Duration(2 / RATE),
+      ros::Duration(1 / RATE),
       &ManipulatorControlHandler<T>::callbackManipulator, this);
 }
+
 template <typename T> void ManipulatorControlHandler<T>::updateNozzleType() {
   ROS_DEBUG_STREAM(MAGENTA("updateNozzleType()"));
   switch (m_nozzleType) {
@@ -118,11 +117,11 @@ void ManipulatorControlHandler<T>::callbackManipulator(
     return;
   }
 }
-template <typename T> T ManipulatorControlHandler<T>::calcRadius() {
+template <typename T> T ManipulatorControlHandler<T>::calcRadius() { // TODO: current radius?
   ROS_DEBUG_STREAM(MAGENTA("calcRadius()"));
-  T radius = m_shoulder.getLength() * r2d2_math::sin(m_shoulder.getAngle()) +
-             m_elbow.getLength() * r2d2_math::sin(m_elbow.getAngle()) +
-             getRadius();
+  T radius{m_shoulder.getLength() * r2d2_math::sin(m_shoulder.getAngle()) +
+           m_elbow.getLength() * r2d2_math::sin(m_elbow.getAngle()) +
+           getRadius()};
   ROS_DEBUG_STREAM("calcRadius() : " << WHITE(radius));
   ROS_DEBUG(" ");
   return radius;
