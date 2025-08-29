@@ -114,6 +114,7 @@ void ManipulatorControlHandler<T>::callbackManipulator(
     return;
 
   default:
+    ROS_DEBUG_STREAM(YELLOW("Pending mode"));
     return;
   }
 }
