@@ -108,16 +108,6 @@ public:
   std::string getInputNode() const { return INPUT_NODE; };
   std::string getOutputNode() const { return OUTPUT_NODE; };
 
-  bool isOnHold() const {
-    return m_params.control_word == r2d2_commands::ControlType::HOLD;
-  };
-  bool isControlByAngle() const {
-    return m_params.control_word == r2d2_commands::ControlType::CONTROL_ANGLE;
-  };
-  bool isControlBySpeed() const {
-    return m_params.control_word == r2d2_commands::ControlType::CONTROL_SPEED;
-  };
-
   T getSpeed() const {
     auto speed_ = static_cast<T>(m_params.omega);
     ROS_DEBUG_STREAM("Shoulder::getSpeed() : " << WHITE(speed_));
