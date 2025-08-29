@@ -1,7 +1,6 @@
 #ifndef ELBOW_HANDLER_H
 #define ELBOW_HANDLER_H
 
-#include "PipeHandler.h"
 #include "r2d2_msg_pkg/DriverCommand.h"
 #include "r2d2_msg_pkg/DriverState.h"
 #include "utils/Debug.h"
@@ -23,13 +22,11 @@ private:
   r2d2_types::elbow_t<T, r2d2_commands::ControlType> m_params{};
   r2d2_types::elbow16_t m_callbackParams{};
 
-  const PipeHandler<T> &m_pipe;
-
   ros::Subscriber m_subscriber;
   ros::Publisher m_publisher;
 
 public:
-  ElbowHandler(ros::NodeHandle *node, const PipeHandler<T> &);
+  ElbowHandler(ros::NodeHandle *node);
 
 private:
   void callbackElbow(const r2d2_msg_pkg::DriverStateConstPtr &msg) {
@@ -145,7 +142,6 @@ public:
     return radius_;
   };
 
-  T calcAngle();
   T calcAngle(T theta);
 };
 
