@@ -141,6 +141,11 @@ public:
     ROS_DEBUG_STREAM("Shoulder::getLength() : " << WHITE(m_length));
     return m_length;
   };
+  T getRadius() const {
+    T radius_ = getLength() * r2d2_math::sin(getAngle());
+    ROS_DEBUG_STREAM("Shoulder::getRadius() : " << WHITE(radius_));
+    return radius_;
+  };
 
   T calcAngle();
   T calcAngle(T theta);
