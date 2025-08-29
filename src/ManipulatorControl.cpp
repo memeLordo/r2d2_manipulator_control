@@ -118,28 +118,27 @@ template <typename T> T ManipulatorControlHandler<T>::calcCurrentRadius() {
 template <typename T> void ManipulatorControlHandler<T>::processControl() {
   if (!setup())
     return;
-  processAngleControl();
+  processAngleControl(m_elbow.getAngle(), m_elbow.calcAngle());
   processForceControl(m_payload.getForce(), getForce());
 }
-template <typename T> void ManipulatorControlHandler<T>::processAngleControl() {
+template <typename T>
+void ManipulatorControlHandler<T>::processAngleControl(const T currentAngle,
+                                                       const T targetAngle,
+                                                       const T angleTreshold) {
   ROS_DEBUG_STREAM(MAGENTA("\nprocessAngleControl()"));
   ROS_DEBUG_STREAM(CYAN("Calculating angles"));
 
-  static constexpr T ANGLE_THRESHOLD = 6.0;
-  ROS_DEBUG_STREAM("ANGLE_THRESHOLD : " << ANGLE_THRESHOLD);
-  const auto angle_diff =
-      r2d2_math::abs(m_elbow.getAngle() - (m_elbow.calcAngle() -
-                                           5.0 /*- m_elbow.getAngleMargin()*/));
-  ROS_DEBUG_STREAM("angle_diff : " << WHITE(angle_diff));
+  ROS_DEBUG_STREAM("ANGLE_THRESHOLD : " << angleTreshold);
+  const auto angleDiff_ =
+      r2d2_math::abs(currentAngle - (targetAngle + angleTreshold));
+  ROS_DEBUG_STREAM("angle_diff : " << WHITE(angleDiff_));
   ROS_DEBUG_STREAM(RED("if(angel_dif >= ANGLE_THRESHOLD)"));
-  if (angle_diff >= ANGLE_THRESHOLD) { // TODO: fix to angle_threshold2
+  if (angleDiff_ >= angleTreshold) {
     ROS_DEBUG_STREAM(CYAN("Success angle control"));
-    // TODO: check angle update
-    m_shoulder.updateAngle(m_shoulder.calcAngle(calcRadius()));
+    m_shoulder.updateAngle(m_shoulder.calcAngle(calcCurrentRadius()));
   } else {
     ROS_DEBUG_STREAM(CYAN("No success."));
     m_shoulder.updateAngle();
-    // TODO: set process force control
   }
   // m_elbow.control_word = 10;
   // m_shoulder.control_word = 10;
