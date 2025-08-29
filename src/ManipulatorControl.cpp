@@ -70,6 +70,15 @@ template <typename T> void ManipulatorControlHandler<T>::updateNozzleType() {
 template <typename T>
 void ManipulatorControlHandler<T>::callbackManipulator(
     const ros::TimerEvent &) {
+  /**
+   * INFO:
+   * 0. Получить данные для манипулятора (и трубы)
+   * 1. Проверка автоматического разжатия
+   * 2. Приём типа насадки (Щётка/ЕМА)
+   * 3. Проверка статуса блокировки
+   * 4. Обновить оставшиеся переменные
+   * 5. Опубликовать все переменные
+   */
   ROS_DEBUG_STREAM(MAGENTA("\ncallbackManipulator()"));
   switch (m_workMode) {
   // Ранний выход при отключенном автоматическом режиме
@@ -92,6 +101,7 @@ void ManipulatorControlHandler<T>::callbackManipulator(
       // m_elbow.publish();
       m_elbow.updateAngle();
       m_shoulder.updateAngle();
+
       return;
     }
     break;
