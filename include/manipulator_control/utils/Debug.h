@@ -29,14 +29,12 @@
 template <typename T>
 inline void debug_print_single(std::ostringstream &oss, const std::string &name,
                                T &&value) {
-  oss << YELLOW(name + "=" << std::forward<T>(value));
+  oss << YELLOW(name << "=" << std::forward<T>(value));
 }
 
 inline void debug_print_impl(std::ostringstream &oss,
-                             const std::vector<std::string> &names,
-                             size_t /*idx*/) {
-  // базовый случай — ничего не делаем
-}
+                             const std::vector<std::string> & /*names*/,
+                             size_t /*idx*/) {}
 
 template <typename T, typename... Args>
 void debug_print_impl(std::ostringstream &oss,
@@ -50,33 +48,66 @@ void debug_print_impl(std::ostringstream &oss,
 }
 
 template <typename... Args>
-void somefunc(std::ostringstream &oss, std::string names_str, Args &&...args) {
+void debug_print_args(std::ostringstream &oss, std::string names_str,
+                      Args &&...args) {
   std::vector<std::string> names;
-
-  // Заменяем запятую на пробел, чтобы считать \t и пробелы одинаково
+  // Replace commas with spaces to normalize separators
   std::replace(names_str.begin(), names_str.end(), ',', ' ');
-
-  std::istringstream iss(names_str);
+  std::istringstream iss{names_str};
   std::string name;
-  while (iss >> name) { // Так пропускаются пробелы и табы между именами
+  while (iss >> name) { // Skip spaces and tabs between names
     names.emplace_back(name);
   }
-
   debug_print_impl(oss, names, 0, std::forward<Args>(args)...);
 }
 
-#define _LOG_FUNC(func, output, ...)                                           \
-  do {                                                                         \
-    std::ostringstream oss;                                                    \
-    oss << MAGENTA(__func__) << " ";                                           \
-    somefunc(oss, #__VA_ARGS__, __VA_ARGS__);                                  \
-    oss << " : " << WHITE(output);                                             \
-    func(oss.str());                                                           \
-  } while (0)
+// Non-void return type version
+template <typename Func, typename OutFunc, typename... Args>
+auto log_wrapper(const char *func_name, Func func, OutFunc outfunc,
+                 const char *names, Args &&...args) ->
+    typename std::enable_if<
+        !std::is_void<typename std::result_of<Func(Args &&...)>::type>::value,
+        typename std::result_of<Func(Args &&...)>::type>::type {
+  std::ostringstream oss;
+  oss << "[" << MAGENTA(func_name) << "](";
+  debug_print_args(oss, names, std::forward<Args>(args)...);
+  auto result = func(std::forward<Args>(args)...);
+  oss << ") : " << WHITE(result);
+  outfunc(oss.str());
+  return result;
+}
 
-// Simple debug function that outputs to std::cout
-#define DEBUG_FUNC(output, ...)                                                \
-  _LOG_FUNC([](const std::string &msg) { std::cout << msg << std::endl; },     \
-            output, __VA_ARGS__)
+// Void return type version
+template <typename Func, typename OutFunc, typename... Args>
+typename std::enable_if<
+    std::is_void<typename std::result_of<Func(Args &&...)>::type>::value,
+    void>::type
+log_wrapper(const char *func_name, Func func, OutFunc outfunc,
+            const char *names, Args &&...args) {
+  std::ostringstream oss;
+  oss << "[" << MAGENTA(func_name) << "](";
+  debug_print_args(oss, names, std::forward<Args>(args)...);
+  func(std::forward<Args>(args)...);
+  oss << ") : " << WHITE("(void)");
+  outfunc(oss.str());
+}
+
+#define DEBUG_FUNC(func, outfunc, ...)                                         \
+  log_wrapper(                                                                 \
+      #func,                                                                   \
+      [&](auto &&...args) -> decltype(auto) {                                  \
+        return func(std::forward<decltype(args)>(args)...);                    \
+      },                                                                       \
+      outfunc, #__VA_ARGS__, __VA_ARGS__)
+
+#define DEBUG_WRAP_FUNC(func, ...)                                             \
+  DEBUG_FUNC(                                                                  \
+      func, [](const std::string &msg) { std::cout << msg << std::endl; },     \
+      __VA_ARGS__)
+
+#define DEBUG_IN_FUNC(func, output, ...)                                       \
+  log_wrapper(                                                                 \
+      __func__, [](const std::string &msg) { std::cout << msg << std::endl; }, \
+      output, __VA_ARGS__)
 
 #endif // !PR_MANIPULATOR_CONTROL_DEBUG_H
