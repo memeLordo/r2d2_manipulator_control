@@ -1,8 +1,10 @@
 #ifndef PR_MANIPULATOR_CONTROL_DEBUG
 #define PR_MANIPULATOR_CONTROL_DEBUG
 
+#include <algorithm>
 #include <cstring>
 #include <sstream>
+#include <vector>
 
 // ANSI color definitions
 #define ANSI_COLOR_RED "\033[0;31m"
@@ -23,54 +25,52 @@
 #define CYAN(x) ANSI_COLOR_CYAN << x << ANSI_COLOR_RESET
 #define WHITE(x) ANSI_COLOR_WHITE << x << ANSI_COLOR_RESET
 
-// Base case for recursion
-inline void debug_print_args(std::ostringstream &oss, const char *names) {
-  // End of recursion - no more arguments
+// Вспомогательная печать одной пары имя-значение
+template <typename T>
+inline void debug_print_single(std::ostringstream &oss, const std::string &name,
+                               T &&value) {
+  oss << YELLOW(name + "=" << std::forward<T>(value));
 }
 
-// Recursive template to parse and print variable names with values
+inline void debug_print_impl(std::ostringstream &oss,
+                             const std::vector<std::string> &names,
+                             size_t /*idx*/) {
+  // базовый случай — ничего не делаем
+}
+
 template <typename T, typename... Args>
-void debug_print_args(std::ostringstream &oss, const char *names, T &&value,
-                      Args &&...args) {
-  // Extract first variable name from comma-separated string
-  const char *comma = strchr(names, ',');
-  std::string firstName;
-  const char *nextNames = nullptr;
-
-  if (comma) {
-    firstName = std::string(names, comma - names);
-    nextNames = comma + 1;
-    // Skip whitespace after comma
-    while (*nextNames == ' ' || *nextNames == '\t')
-      ++nextNames;
-  } else {
-    firstName = std::string(names);
-  }
-
-  // Trim leading and trailing spaces
-  size_t start = firstName.find_first_not_of(" \t");
-  size_t end = firstName.find_last_not_of(" \t");
-  if (start != std::string::npos && end != std::string::npos) {
-    firstName = firstName.substr(start, end - start + 1);
-  }
-
-  // Add colored variable name and value
-  oss << YELLOW(firstName + " = " << value);
-
-  // Continue recursion if more arguments exist
-  if (nextNames) {
+void debug_print_impl(std::ostringstream &oss,
+                      const std::vector<std::string> &names, size_t idx,
+                      T &&value, Args &&...args) {
+  debug_print_single(oss, names[idx], std::forward<T>(value));
+  if (sizeof...(args) > 0) {
     oss << ", ";
-    debug_print_args(oss, nextNames, std::forward<Args>(args)...);
+    debug_print_impl(oss, names, idx + 1, std::forward<Args>(args)...);
   }
 }
 
-// Main logging function macro - accepts custom output function
+template <typename... Args>
+void somefunc(std::ostringstream &oss, std::string names_str, Args &&...args) {
+  std::vector<std::string> names;
+
+  // Заменяем запятую на пробел, чтобы считать \t и пробелы одинаково
+  std::replace(names_str.begin(), names_str.end(), ',', ' ');
+
+  std::istringstream iss(names_str);
+  std::string name;
+  while (iss >> name) { // Так пропускаются пробелы и табы между именами
+    names.emplace_back(name);
+  }
+
+  debug_print_impl(oss, names, 0, std::forward<Args>(args)...);
+}
+
 #define _LOG_FUNC(func, output, ...)                                           \
   do {                                                                         \
     std::ostringstream oss;                                                    \
-    oss << MAGENTA("[" << __func__ << "]") << "(";                             \
-    debug_print_args(oss, #__VA_ARGS__, __VA_ARGS__);                          \
-    oss << ") : " << WHITE(output);                                            \
+    oss << MAGENTA(__func__) << " ";                                           \
+    somefunc(oss, #__VA_ARGS__, __VA_ARGS__);                                  \
+    oss << " : " << WHITE(output);                                             \
     func(oss.str());                                                           \
   } while (0)
 
@@ -78,15 +78,5 @@ void debug_print_args(std::ostringstream &oss, const char *names, T &&value,
 #define DEBUG_FUNC(output, ...)                                                \
   _LOG_FUNC([](const std::string &msg) { std::cout << msg << std::endl; },     \
             output, __VA_ARGS__)
-
-// Alternative macro for stream-based output
-#define DEBUG_STREAM(stream, output, ...)                                      \
-  do {                                                                         \
-    std::ostringstream oss;                                                    \
-    oss << MAGENTA(__func__);                                                  \
-    debug_print_args(oss, #__VA_ARGS__, __VA_ARGS__);                          \
-    oss << " : " << WHITE(output);                                             \
-    stream << oss.str() << std::endl;                                          \
-  } while (0)
 
 #endif // !PR_MANIPULATOR_CONTROL_DEBUG_H
