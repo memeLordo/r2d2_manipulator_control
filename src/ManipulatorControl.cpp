@@ -4,7 +4,7 @@
 
 using namespace r2d2_state;
 
-template <typename T, size_t N> bool ManipulatorControlHandler<T, N>::setup() {
+template <typename T> bool ManipulatorControlHandler<T>::setup() {
   if (finishSetup) {
     return true;
   }
@@ -31,9 +31,8 @@ template <typename T, size_t N> bool ManipulatorControlHandler<T, N>::setup() {
   // m_shoulder.updateSpeed();
 }
 
-template <typename T, size_t N>
-ManipulatorControlHandler<T, N>::ManipulatorControlHandler(
-    ros::NodeHandle *node)
+template <typename T>
+ManipulatorControlHandler<T>::ManipulatorControlHandler(ros::NodeHandle *node)
     : m_payload(node), m_pipe(node), m_elbow(node), m_shoulder(node) {
 
   const T RATE = node->param<T>("control_rate", 20);
@@ -43,8 +42,7 @@ ManipulatorControlHandler<T, N>::ManipulatorControlHandler(
       &ManipulatorControlHandler<T>::callbackManipulator, this);
 }
 
-template <typename T, size_t N>
-void ManipulatorControlHandler<T, N>::updateNozzleType() {
+template <typename T> void ManipulatorControlHandler<T>::updateNozzleType() {
   ROS_DEBUG_STREAM(MAGENTA("updateNozzleType()"));
   switch (m_nozzleType) {
   case NozzleType::BRUSH:
@@ -57,8 +55,8 @@ void ManipulatorControlHandler<T, N>::updateNozzleType() {
     return;
   }
 };
-template <typename T, size_t N>
-void ManipulatorControlHandler<T, N>::callbackManipulator(
+template <typename T>
+void ManipulatorControlHandler<T>::callbackManipulator(
     const ros::TimerEvent &) {
   /**
    * INFO:
@@ -108,25 +106,24 @@ void ManipulatorControlHandler<T, N>::callbackManipulator(
     return;
   }
 }
-template <typename T, size_t N>
-T ManipulatorControlHandler<T, N>::calcCurrentRadius() {
+template <typename T> T ManipulatorControlHandler<T>::calcCurrentRadius() {
   ROS_DEBUG_STREAM(MAGENTA("calcRadius()"));
   T radius{m_shoulder.getRadius() + m_elbow.getRadius() + getRadius()};
   ROS_DEBUG_STREAM("calcRadius() : " << WHITE(radius));
   ROS_DEBUG(" ");
   return radius;
 }
-template <typename T, size_t N>
-void ManipulatorControlHandler<T, N>::processControl() {
+template <typename T> void ManipulatorControlHandler<T>::processControl() {
   if (!setup())
     return;
   processAngleControl(m_elbow.getAngle(),
                       m_elbow.calcAngle(m_pipe.getRadius()));
   processForceControl(m_payload.getForce(), getForce());
 }
-template <typename T, size_t N>
-void ManipulatorControlHandler<T, N>::processAngleControl(
-    const T currentAngle, const T targetAngle, const T angleTreshold) {
+template <typename T>
+void ManipulatorControlHandler<T>::processAngleControl(const T currentAngle,
+                                                       const T targetAngle,
+                                                       const T angleTreshold) {
   ROS_DEBUG_STREAM(MAGENTA("\nprocessAngleControl()"));
   ROS_DEBUG_STREAM(CYAN("Calculating angles"));
 
@@ -145,9 +142,10 @@ void ManipulatorControlHandler<T, N>::processAngleControl(
   // m_elbow.control_word = 10;
   // m_shoulder.control_word = 10;
 }
-template <typename T, size_t N>
-void ManipulatorControlHandler<T, N>::processForceControl(
-    const T currentForce, const T targetForce, const T forceTreshold) {
+template <typename T>
+void ManipulatorControlHandler<T>::processForceControl(const T currentForce,
+                                                       const T targetForce,
+                                                       const T forceTreshold) {
   ROS_DEBUG_STREAM(MAGENTA("\nprocessForceControl()"));
   const auto forceDiff_ = currentForce - targetForce;
   ROS_DEBUG_STREAM("current_force check");
@@ -166,8 +164,7 @@ void ManipulatorControlHandler<T, N>::processForceControl(
   // m_elbow.control_word = 10;
   // m_shoulder.control_word = 10;
 }
-template <typename T, size_t N>
-void ManipulatorControlHandler<T, N>::publishResults() {
+template <typename T> void ManipulatorControlHandler<T>::publishResults() {
   ROS_DEBUG_STREAM(MAGENTA("\npublishResults()"));
   m_elbow.publish();
   m_shoulder.publish();

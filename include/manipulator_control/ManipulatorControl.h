@@ -7,7 +7,7 @@
 #include "utils/Types.h"
 #include <ros/node_handle.h>
 
-template <typename T = double, size_t N = 3> class ManipulatorControlHandler {
+template <typename T = double> class ManipulatorControlHandler {
 
 private:
   r2d2_state::WorkMode m_workMode{};
@@ -19,8 +19,8 @@ private:
 
   PayloadHandler<T> m_payload;
   PipeHandler<T> m_pipe;
-  JointHandler<T, N> m_elbow;
-  JointHandler<T, N> m_shoulder;
+  JointHandler<T> m_elbow;
+  JointHandler<T> m_shoulder;
 
   ros::Timer m_timer;
 
