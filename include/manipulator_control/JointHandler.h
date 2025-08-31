@@ -6,7 +6,6 @@
 #include "utils/Debug.h"
 #include "utils/Math.h"
 #include "utils/Types.h"
-#include <array>
 #include <ros/console.h>
 #include <ros/node_handle.h>
 
@@ -28,8 +27,8 @@ private:
 public:
   JointHandler() = default;
   JointHandler(ros::NodeHandle *node, const std::string &inputNode,
-               const std::string &outputNode, std::initializer_list<T> coeffs,
-               const T &length, const T &speed);
+               const std::string &outputNode, const T &length, const T &speed,
+               const std::array<T, N> &coeffs);
 
 private:
   void callbackJoint(const r2d2_msg_pkg::DriverStateConstPtr &msg) {
@@ -52,12 +51,11 @@ private:
     msg.control_word = control_word_;
     return msg;
   };
-
-private:
-  void setCoeffsFrom(const std::initializer_list<T> &list) {
-    std::copy(list.begin(), list.begin() + std::min(list.size(), N),
-              m_coeffs.begin());
-  }
+  //
+  // private:
+  //   std::array<T, N> setCoeffsFrom(const std::array<T, N> &arr) {
+  //     return std::reverse_copy(arr.begin(), arr.end(), m_coeffs.begin());
+  //   }
 
 public:
   // void updateSpeed() {
@@ -113,8 +111,8 @@ public:
     m_publisher.publish(prepareMsg());
   };
 
-  std::string getInputNode() const { return INPUT_NODE; };
-  std::string getOutputNode() const { return OUTPUT_NODE; };
+  std::string getInputNode() const { return m_inputNode; };
+  std::string getOutputNode() const { return m_outputNode; };
 
   bool checkAngleDiff(T margin = 0.1) const {
     auto angle_ = getAngle();

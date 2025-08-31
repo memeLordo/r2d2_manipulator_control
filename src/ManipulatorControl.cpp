@@ -1,4 +1,5 @@
 #include "ManipulatorControl.h"
+#include "utils/Config.h"
 #include "utils/Debug.h"
 #include "utils/Math.h"
 
@@ -33,8 +34,14 @@ template <typename T> bool ManipulatorControlHandler<T>::setup() {
 
 template <typename T>
 ManipulatorControlHandler<T>::ManipulatorControlHandler(ros::NodeHandle *node)
-    : m_payload(node), m_pipe(node), m_elbow(node), m_shoulder(node) {
-
+    : m_pipe(node, config::pipe::OUTPUT_NODE),
+      m_payload(node, config::payload::OUTPUT_NODE),
+      m_elbow(node, config::elbow::INPUT_NODE, config::elbow::OUTPUT_NODE,
+              config::elbow::length, config::elbow::speed,
+              config::elbow::coeffs),
+      m_shoulder(node, config::shoulder::INPUT_NODE,
+                 config::shoulder::OUTPUT_NODE, config::shoulder::length,
+                 config::shoulder::speed, config::shoulder::coeffs) {
   const T RATE = node->param<T>("control_rate", 20);
   ROS_DEBUG_STREAM("Set RATE: " << RATE);
   m_timer = node->createTimer(

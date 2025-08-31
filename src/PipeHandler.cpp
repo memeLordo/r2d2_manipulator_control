@@ -2,11 +2,10 @@
 #include <ros/node_handle.h>
 
 template <typename T>
-const std::string PipeHandler<T>::OUTPUT_NODE = "/pipe_output";
-
-template <typename T> PipeHandler<T>::PipeHandler(ros::NodeHandle *node) {
+PipeHandler<T>::PipeHandler(ros::NodeHandle *node,
+                            const std::string &outputNode) {
   constexpr int QUEUE_SIZE = 8;
-  m_subscriber = node->subscribe(OUTPUT_NODE, QUEUE_SIZE,
-                                 &PipeHandler::callbackPipe, this);
+  m_subscriber =
+      node->subscribe(outputNode, QUEUE_SIZE, &PipeHandler::callbackPipe, this);
 }
 template class PipeHandler<>;
