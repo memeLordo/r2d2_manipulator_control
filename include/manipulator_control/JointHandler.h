@@ -9,7 +9,7 @@
 #include <ros/console.h>
 #include <ros/node_handle.h>
 
-template <typename T = double, size_t N = 3> class JointHandler {
+template <typename T = double> class JointHandler {
 
 private:
   r2d2_types::elbow_t<T, r2d2_commands::ControlType> m_params{};
@@ -20,7 +20,7 @@ private:
 
   const std::string m_inputNode;
   const std::string m_outputNode;
-  const std::array<T, N> m_coeffs;
+  const std::vector<T> m_coeffs;
   const T m_length;
   const T m_speed;
 
@@ -28,7 +28,7 @@ public:
   JointHandler() = default;
   JointHandler(ros::NodeHandle *node, const std::string &inputNode,
                const std::string &outputNode, const T &length, const T &speed,
-               const std::array<T, N> &coeffs);
+               const std::vector<T> &coeffs);
 
 private:
   void callbackJoint(const r2d2_msg_pkg::DriverStateConstPtr &msg) {
