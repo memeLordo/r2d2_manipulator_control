@@ -4,13 +4,13 @@
 #include "utils/Polynome.h"
 #include <ros/node_handle.h>
 
-template <typename T, size_t N>
-JointHandler<T, N>::JointHandler(ros::NodeHandle *node,
-                                 const std::string &inputNode,
-                                 const std::string &outputNode, const T &length,
-                                 const T &speed, const std::array<T, N> &coeffs)
+template <typename T>
+JointHandler<T>::JointHandler(ros::NodeHandle *node,
+                              const std::string &inputNode,
+                              const std::string &outputNode, const T &length,
+                              const T &speed, const std::vector<T> &coeffs)
     : m_inputNode{inputNode}, m_outputNode{outputNode}, m_length{length},
-      m_speed{speed}, m_coeffs{1, 2, 3} {
+      m_speed{speed}, m_coeffs{coeffs} {
   // setCoeffsFrom(coeffs);
   constexpr int QUEUE_SIZE = 8;
   m_subscriber = node->subscribe(outputNode, QUEUE_SIZE,
@@ -18,7 +18,7 @@ JointHandler<T, N>::JointHandler(ros::NodeHandle *node,
   m_publisher =
       node->advertise<r2d2_msg_pkg::DriverCommand>(inputNode, QUEUE_SIZE);
 }
-template <typename T, size_t N> T JointHandler<T, N>::calcAngle(T radius) {
+template <typename T> T JointHandler<T>::calcAngle(T radius) {
   T res = horner::polynome(m_coeffs, radius);
   ROS_DEBUG_STREAM("Elbow::calcAngle(radius = " << WHITE(radius)
                                                 << ") : " << WHITE(res));
