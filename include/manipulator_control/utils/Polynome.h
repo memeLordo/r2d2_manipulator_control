@@ -7,7 +7,7 @@
 namespace horner {
 
 template <typename T, typename T2>
-T polynome(const std::vector<T> &coeffs, const T2 x) {
+constexpr T polynome(const std::vector<T> &coeffs, const T2 x) {
   if (coeffs.empty())
     return T{0};
   const T x_ = static_cast<T>(x);
