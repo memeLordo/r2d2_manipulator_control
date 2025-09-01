@@ -81,6 +81,15 @@ inline void debug_print_args(std::ostringstream &oss, std::string names_str,
   debug_print_impl(oss, parse_names(names_str), 0, std::forward<Args>(args)...);
 }
 
+template <typename OutFunc, typename... Args>
+inline void log_vars(const std::string func_name, OutFunc outfunc,
+                     const std::string names, Args &&...args) {
+  std::ostringstream oss;
+  if (func_name != "")
+    oss << "[" << MAGENTA(func_name) << "] : ";
+  debug_print_args(oss, names, args...);
+  outfunc(oss.str());
+}
 // Non-void return type version
 template <typename Func, typename OutFunc, typename... Args>
 inline auto log_func(const std::string func_name, Func func, OutFunc outfunc,
@@ -112,6 +121,18 @@ log_func(const std::string func_name, Func func, OutFunc outfunc,
   oss << ") : " << WHITE("(void)");
   outfunc(oss.str());
 }
+
+#define LOG_VAR_(func_name, outfunc, ...)                                      \
+  log_vars(func_name, outfunc, #__VA_ARGS__, __VA_ARGS__)
+#define LOG_VAR(...)                                                           \
+  LOG_VAR_(                                                                    \
+      , [](const std::string &msg) { std::cout << msg << std::endl; },         \
+      __VA_ARGS__)
+#define LOG_CLASS_VAR(...)                                                     \
+  LOG_VAR_(                                                                    \
+      __FUNC_NAME__,                                                           \
+      [](const std::string &msg) { std::cout << msg << std::endl; },           \
+      __VA_ARGS__)
 
 #define LOG_FUNC_(func, outfunc, ...)                                          \
   log_func(                                                                    \
