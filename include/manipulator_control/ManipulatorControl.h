@@ -1,10 +1,9 @@
 #ifndef MANIPULATOR_CONTROL_H
 #define MANIPULATOR_CONTROL_H
 
-#include "ElbowHandler.h"
+#include "JointHandler.h"
 #include "PayloadHandler.h"
 #include "PipeHandler.h"
-#include "ShoulderHandler.h"
 #include "utils/Types.h"
 #include <ros/node_handle.h>
 
@@ -20,8 +19,8 @@ private:
 
   PayloadHandler<T> m_payload;
   PipeHandler<T> m_pipe;
-  ElbowHandler<T> m_elbow;
-  ShoulderHandler<T> m_shoulder;
+  JointHandler<T> m_elbow;
+  JointHandler<T> m_shoulder;
 
   ros::Timer m_timer;
 
@@ -34,7 +33,7 @@ private:
   bool setup();
   void processControl();
   void processAngleControl(const T currentAngle, const T targetAngle,
-                           const T angleTreshold = 5);
+                           const T angleTreshold = 0.5);
   void processForceControl(const T currentForce, const T targetForce,
                            const T forceTreshold = 1e3);
   void publishResults();

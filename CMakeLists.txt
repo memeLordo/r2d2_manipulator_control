@@ -36,12 +36,11 @@ include_directories(
 )
 
 add_library(${PROJECT_NAME}
-  src/ElbowHandler.cpp
+  src/JointHandler.cpp
   src/ManipulatorControl.cpp
   src/ManipulatorService.cpp
   src/PayloadHandler.cpp
   src/PipeHandler.cpp
-  src/ShoulderHandler.cpp
 )
 
 add_executable(${PROJECT_NAME}_node 

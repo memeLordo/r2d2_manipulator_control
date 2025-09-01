@@ -8,7 +8,7 @@
 
 template <typename T = double> class PayloadHandler {
 private:
-  static const std::string OUTPUT_NODE;
+  const std::string outputNode;
 
   int16_t m_callbackForce{};
   // TODO: add omega -  раскрутка щёток
@@ -17,7 +17,7 @@ private:
   ros::Subscriber m_subscriber;
 
 public:
-  PayloadHandler(ros::NodeHandle *node);
+  PayloadHandler(ros::NodeHandle *node, const std::string &outputNode);
 
 private:
   void callbackPayload(const r2d2_msg_pkg::DriverStateConstPtr &msg) {

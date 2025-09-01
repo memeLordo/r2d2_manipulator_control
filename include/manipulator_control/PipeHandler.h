@@ -8,14 +8,14 @@
 
 template <typename T = double> class PipeHandler {
 private:
-  static const std::string OUTPUT_NODE;
+  const std::string outputNode;
 
   r2d2_types::upipe_t<T> m_callbackParams{};
 
   ros::Subscriber m_subscriber;
 
 public:
-  PipeHandler(ros::NodeHandle *node);
+  PipeHandler(ros::NodeHandle *node, const std::string &outputNode);
 
 private:
   void callbackPipe(const r2d2_msg_pkg::PipeParametersConstPtr &msg) {
