@@ -133,22 +133,30 @@ log_func(const std::string func_name, Func func, OutFunc outfunc,
   outfunc(oss.str());
 }
 
-#define DEBUG_FUNC(func, outfunc, ...)                                         \
-  log_wrapper(                                                                 \
+#define LOG_FUNC_(func, outfunc, ...)                                          \
+  log_func(                                                                    \
       #func,                                                                   \
       [&](auto &&...args) -> decltype(auto) {                                  \
         return func(std::forward<decltype(args)>(args)...);                    \
       },                                                                       \
       outfunc, #__VA_ARGS__, __VA_ARGS__)
 
-#define DEBUG_WRAP_FUNC(func, ...)                                             \
-  DEBUG_FUNC(                                                                  \
+#define LOG_IN_FUNC_(func, outfunc, ...)                                       \
+  log_func(                                                                    \
+      __METHOD_NAME__ + "->" #func,                                            \
+      [&](auto &&...args) -> decltype(auto) {                                  \
+        return func(std::forward<decltype(args)>(args)...);                    \
+      },                                                                       \
+      outfunc, #__VA_ARGS__, __VA_ARGS__)
+
+#define LOG_WRAP_FUNC(func, ...)                                               \
+  LOG_FUNC_(                                                                   \
       func, [](const std::string &msg) { std::cout << msg << std::endl; },     \
       __VA_ARGS__)
 
-#define DEBUG_IN_FUNC(func, output, ...)                                       \
-  log_wrapper(                                                                 \
-      __func__, [](const std::string &msg) { std::cout << msg << std::endl; }, \
-      output, __VA_ARGS__)
+#define LOG_WRAP_IN_FUNC(func, ...)                                            \
+  LOG_IN_FUNC_(                                                                \
+      func, [](const std::string &msg) { std::cout << msg << std::endl; },     \
+      __VA_ARGS__)
 
 #endif // PR_PALETTE_DEBUG_H
