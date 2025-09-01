@@ -25,11 +25,23 @@
 #define CYAN(x) ANSI_COLOR_CYAN << x << ANSI_COLOR_RESET
 #define WHITE(x) ANSI_COLOR_WHITE << x << ANSI_COLOR_RESET
 
+inline bool is_valid_var_name(const std::string &name) {
+  if (name.empty())
+    return false;
+  if (!(std::isalpha(name[0]) || name[0] == '_'))
+    return false;
+  return std::all_of(name.begin() + 1, name.end(),
+                     [](char c) { return std::isalnum(c) || c == '_'; });
+}
+
 // Вспомогательная печать одной пары имя-значение
 template <typename T>
 inline void debug_print_single(std::ostringstream &oss, const std::string &name,
                                T &&value) {
-  oss << YELLOW(name << "=" << std::forward<T>(value));
+  if (is_valid_var_name(name))
+    oss << YELLOW(name << "=" << std::forward<T>(value));
+  else
+    oss << YELLOW(std::forward<T>(value));
 }
 
 inline void debug_print_impl(std::ostringstream &oss,
