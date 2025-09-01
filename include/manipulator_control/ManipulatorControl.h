@@ -33,7 +33,7 @@ private:
   bool setup();
   void processControl();
   void processAngleControl(const T currentAngle, const T targetAngle,
-                           const T angleTreshold = 5);
+                           const T angleTreshold = 0.5);
   void processForceControl(const T currentForce, const T targetForce,
                            const T forceTreshold = 1e3);
   void publishResults();
