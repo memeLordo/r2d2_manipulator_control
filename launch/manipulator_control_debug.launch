@@ -2,7 +2,7 @@
 <launch>
 	<!-- Аргументы для конфигурации -->
 	<arg name="debug" default="true"/>
-	<arg name="rate"  default="1.0"/>
+	<arg name="rate"  default="5.0"/>
 
 	<env name="ROSCONSOLE_CONFIG_FILE"
        value="$(find manipulator_control)/rosconsole.conf"/>
@@ -17,7 +17,7 @@
 		<!-- Параметры узла -->
 		<!-- <param name="rosconsole_logger_level" value="DEBUG"/> -->
 		<!-- Переназначение топиков -->
-		<remap from="/pipe_output"         to="/parameters/pipe"/>
+		<!-- <remap from="/pipe_output"         to="/parameters/pipe"/> -->
 		<remap from="/elbow_input"         to="/manipulator1/elbow_input"/>
 		<remap from="/elbow_output"        to="/manipulator1/elbow_output"/>
 		<remap from="/shoulder_input"      to="/manipulator1/shoulder_input"/>
