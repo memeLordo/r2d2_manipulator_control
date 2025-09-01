@@ -1,4 +1,5 @@
 #include "ManipulatorService.h"
+
 #include "ros/console.h"
 
 using namespace r2d2_state;
@@ -13,16 +14,16 @@ ManipulatorServiceHandler::ManipulatorServiceHandler(
                              &ManipulatorServiceHandler::callbackService, this);
 }
 bool ManipulatorServiceHandler::callbackService(
-    manipulator_control::ManipulatorCommand::Request &req,
-    manipulator_control::ManipulatorCommand::Response &res) {
+    r2d2_msg_pkg::ManipulatorCommand::Request &req,
+    r2d2_msg_pkg::ManipulatorCommand::Response &res) {
   res.success = true;
   return callbackModeService(req, res) && callbackNozzleService(req, res) &&
          callbackStatusService(req, res);
 }
 
 bool ManipulatorServiceHandler::callbackModeService(
-    manipulator_control::ManipulatorCommand::Request &req,
-    manipulator_control::ManipulatorCommand::Response &res) {
+    r2d2_msg_pkg::ManipulatorCommand::Request &req,
+    r2d2_msg_pkg::ManipulatorCommand::Response &res) {
   ROS_DEBUG_STREAM(
       "callbackModeService::got request, work_mode: " << req.work_mode);
   auto work_mode_ = static_cast<WorkMode>(req.work_mode);
@@ -38,8 +39,8 @@ bool ManipulatorServiceHandler::callbackModeService(
   return true;
 }
 bool ManipulatorServiceHandler::callbackNozzleService(
-    manipulator_control::ManipulatorCommand::Request &req,
-    manipulator_control::ManipulatorCommand::Response &res) {
+    r2d2_msg_pkg::ManipulatorCommand::Request &req,
+    r2d2_msg_pkg::ManipulatorCommand::Response &res) {
   ROS_DEBUG_STREAM(
       "callback_nozzle_service::got request, nozzle_type: " << req.nozzle_type);
   auto nozzle_type_ = static_cast<NozzleType>(req.nozzle_type);
@@ -56,8 +57,8 @@ bool ManipulatorServiceHandler::callbackNozzleService(
   return true;
 }
 bool ManipulatorServiceHandler::callbackStatusService(
-    manipulator_control::ManipulatorCommand::Request &req,
-    manipulator_control::ManipulatorCommand::Response &res) {
+    r2d2_msg_pkg::ManipulatorCommand::Request &req,
+    r2d2_msg_pkg::ManipulatorCommand::Response &res) {
   ROS_DEBUG_STREAM(
       "callback_status_service::got request, lock_status: " << req.lock_status);
   auto lock_status_ = static_cast<LockStatus>(req.lock_status);

@@ -6,7 +6,6 @@ add_compile_options(-std=c++14)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
-  message_generation
   r2d2_msg_pkg 
 )
 
@@ -14,11 +13,6 @@ find_package(catkin REQUIRED COMPONENTS
 ## Declare ROS messages, services and actions ##
 ################################################
 
-# Generate services in the 'srv' folder
-add_service_files(
-  FILES
-  ManipulatorCommand.srv
-)
 generate_messages(
   DEPENDENCIES
   std_msgs
