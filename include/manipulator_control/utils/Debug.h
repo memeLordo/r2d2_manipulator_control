@@ -88,11 +88,11 @@ inline void debug_print_impl(std::ostringstream &oss,
 inline std::vector<std::string> parse_names(std::string &names_str) {
   std::replace(names_str.begin(), names_str.end(), ',', ' ');
   std::istringstream iss(names_str);
-  std::vector<std::string> names;
-  std::string name;
-  while (iss >> name)
-    names.emplace_back(name);
-  return names;
+  std::vector<std::string> names_;
+  std::string name_;
+  while (iss >> name_)
+    names_.emplace_back(name_);
+  return names_;
 }
 
 template <typename... Args>
