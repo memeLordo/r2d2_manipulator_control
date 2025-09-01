@@ -1,5 +1,0 @@
-uint8 work_mode    # 0 - NONE, 1 - MANUAL, 2 - AUTO
-uint8 nozzle_type  # 0 - NONE, 1 - BRUSH,  2 - EMA
-uint8 lock_status  # 0 - NONE, 1 - LOCKED, 2 - UNLOCKED
----
-bool success
