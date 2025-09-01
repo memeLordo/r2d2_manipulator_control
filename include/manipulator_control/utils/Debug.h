@@ -1,5 +1,5 @@
-#ifndef PR_MANIPULATOR_CONTROL_DEBUG
-#define PR_MANIPULATOR_CONTROL_DEBUG
+#ifndef PR_PALETTE_DEBUG_H
+#define PR_PALETTE_DEBUG_H
 
 #include <algorithm>
 #include <cstring>
@@ -151,4 +151,4 @@ log_func(const std::string func_name, Func func, OutFunc outfunc,
       __func__, [](const std::string &msg) { std::cout << msg << std::endl; }, \
       output, __VA_ARGS__)
 
-#endif // !PR_MANIPULATOR_CONTROL_DEBUG_H
+#endif // PR_PALETTE_DEBUG_H
