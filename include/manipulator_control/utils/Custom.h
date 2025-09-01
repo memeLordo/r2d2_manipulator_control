@@ -15,7 +15,7 @@
 //   } while (0)
 
 #define ROS_DEBUG_FUNC(output, ...)                                            \
-  _LOG_FUNC([](const std::string &msg) { ROS_DEBUG_STREAM(msg) }, output,      \
+  LOG_FUNC_([](const std::string &msg) { ROS_DEBUG_STREAM(msg) }, output,      \
             __VA_ARGS__)
 
 #endif // PR_CUSTOM_H
