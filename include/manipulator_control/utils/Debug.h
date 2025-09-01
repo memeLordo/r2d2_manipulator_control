@@ -77,18 +77,20 @@ inline void debug_print_args(std::ostringstream &oss, std::string names_str,
 
 // Non-void return type version
 template <typename Func, typename OutFunc, typename... Args>
-inline auto log_wrapper(const std::string func_name, Func func, OutFunc outfunc,
-                        const std::string names, Args &&...args) ->
+inline auto log_func(const std::string func_name, Func func, OutFunc outfunc,
+                     const std::string names, Args &&...args) ->
     typename std::enable_if<
         !std::is_void<typename std::result_of<Func(Args &&...)>::type>::value,
         typename std::result_of<Func(Args &&...)>::type>::type {
   std::ostringstream oss;
+  auto result_ = func(std::forward<Args>(args)...);
+
   oss << "[" << MAGENTA(func_name) << "](";
-  debug_print_args(oss, names, std::forward<Args>(args)...);
-  auto result = func(std::forward<Args>(args)...);
-  oss << ") : " << WHITE(result);
+  debug_print_args(oss, names, args...);
+  oss << ") : " << WHITE(result_);
   outfunc(oss.str());
-  return result;
+
+  return result_;
 }
 
 // Void return type version
@@ -96,12 +98,11 @@ template <typename Func, typename OutFunc, typename... Args>
 inline typename std::enable_if<
     std::is_void<typename std::result_of<Func(Args &&...)>::type>::value,
     void>::type
-log_wrapper(const char *func_name, Func func, OutFunc outfunc,
-            const char *names, Args &&...args) {
+log_func(const std::string func_name, Func func, OutFunc outfunc,
+         const std::string names, Args &&...args) {
   std::ostringstream oss;
   oss << "[" << MAGENTA(func_name) << "](";
-  debug_print_args(oss, names, std::forward<Args>(args)...);
-  func(std::forward<Args>(args)...);
+  debug_print_args(oss, names, args...);
   oss << ") : " << WHITE("(void)");
   outfunc(oss.str());
 }
