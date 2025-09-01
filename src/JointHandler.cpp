@@ -20,7 +20,7 @@ JointHandler<T>::JointHandler(ros::NodeHandle *node,
 }
 template <typename T> T JointHandler<T>::calcAngle(T radius) {
   T res = horner::polynome(m_coeffs, radius);
-  ROS_DEBUG_STREAM("Elbow::calcAngle(radius = " << WHITE(radius)
+  ROS_DEBUG_STREAM("Joint::calcAngle(radius = " << WHITE(radius)
                                                 << ") : " << WHITE(res));
   return r2d2_math::max<T>(res, 0);
 }
