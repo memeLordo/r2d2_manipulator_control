@@ -25,32 +25,12 @@
 #define CYAN(x) ANSI_COLOR_CYAN << x << ANSI_COLOR_RESET
 #define WHITE(x) ANSI_COLOR_WHITE << x << ANSI_COLOR_RESET
 
+inline std::string prettyName(const std::string &prettyFunction) {
+  return prettyFunction.substr();
+}
+#define __FUNC_NAME__ prettyName(__PRETTY_FUNCTION__)
+
 // Вспомогательная печать одной пары имя-значение
-inline std::string className(const std::string &prettyFunction) {
-  size_t colons = prettyFunction.find("::");
-  if (colons == std::string::npos)
-    return "::";
-  size_t begin = prettyFunction.substr(0, colons).rfind(" ") + 1;
-  size_t end = colons - begin;
-
-  return prettyFunction.substr(begin, end);
-}
-inline std::string methodName(const std::string &prettyFunction) {
-  size_t colons = prettyFunction.find("::");
-  size_t begin = prettyFunction.substr(0, colons).rfind(" ") + 1;
-  size_t end = prettyFunction.rfind("(") - begin;
-
-  return prettyFunction.substr(begin, end);
-}
-
-// inline std::string prettyName(const std::string &prettyFunction) {
-//   return prettyFunction.substr();
-// }
-
-#define __CLASS_NAME__ className(__PRETTY_FUNCTION__)
-#define __METHOD_NAME__ methodName(__PRETTY_FUNCTION__)
-// #define __FUNC__ prettyName(__PRETTY_FUNCTION__)
-
 inline bool is_valid_var_name(const std::string &name) {
   if (name.empty())
     return false;
@@ -143,7 +123,7 @@ log_func(const std::string func_name, Func func, OutFunc outfunc,
 
 #define LOG_IN_FUNC_(func, outfunc, ...)                                       \
   log_func(                                                                    \
-      __METHOD_NAME__ + "->" #func,                                            \
+      __FUNC_NAME__ + "->" #func,                                              \
       [&](auto &&...args) -> decltype(auto) {                                  \
         return func(std::forward<decltype(args)>(args)...);                    \
       },                                                                       \
