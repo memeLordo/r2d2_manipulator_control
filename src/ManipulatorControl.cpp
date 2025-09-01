@@ -165,11 +165,13 @@ void ManipulatorControlHandler<T>::processForceControl(const T currentForce,
   } else {
     ROS_DEBUG_STREAM(CYAN("No change."));
     m_shoulder.updateAngle();
-    // TODO: control_word = 1
-    // For elbow and shoulder
+
+    m_elbow.setHoldControl();
+    m_shoulder.setHoldControl();
+    return;
   }
-  // m_elbow.control_word = 10;
-  // m_shoulder.control_word = 10;
+  m_elbow.setControlByAngle();
+  m_shoulder.setControlByAngle();
 }
 template <typename T> void ManipulatorControlHandler<T>::publishResults() {
   ROS_DEBUG_STREAM(MAGENTA("\npublishResults()"));
