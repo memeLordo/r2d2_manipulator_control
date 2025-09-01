@@ -37,9 +37,9 @@ inline void debug_print_impl(std::ostringstream &oss,
                              size_t /*idx*/) {}
 
 template <typename T, typename... Args>
-void debug_print_impl(std::ostringstream &oss,
-                      const std::vector<std::string> &names, size_t idx,
-                      T &&value, Args &&...args) {
+inline void debug_print_impl(std::ostringstream &oss,
+                             const std::vector<std::string> &names, size_t idx,
+                             T &&value, Args &&...args) {
   debug_print_single(oss, names[idx], std::forward<T>(value));
   if (sizeof...(args) > 0) {
     oss << ", ";
@@ -63,8 +63,8 @@ void debug_print_args(std::ostringstream &oss, std::string names_str,
 
 // Non-void return type version
 template <typename Func, typename OutFunc, typename... Args>
-auto log_wrapper(const char *func_name, Func func, OutFunc outfunc,
-                 const char *names, Args &&...args) ->
+inline auto log_wrapper(const std::string func_name, Func func, OutFunc outfunc,
+                        const std::string names, Args &&...args) ->
     typename std::enable_if<
         !std::is_void<typename std::result_of<Func(Args &&...)>::type>::value,
         typename std::result_of<Func(Args &&...)>::type>::type {
@@ -79,7 +79,7 @@ auto log_wrapper(const char *func_name, Func func, OutFunc outfunc,
 
 // Void return type version
 template <typename Func, typename OutFunc, typename... Args>
-typename std::enable_if<
+inline typename std::enable_if<
     std::is_void<typename std::result_of<Func(Args &&...)>::type>::value,
     void>::type
 log_wrapper(const char *func_name, Func func, OutFunc outfunc,
