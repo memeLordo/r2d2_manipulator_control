@@ -55,22 +55,24 @@ inline void debug_print_impl(std::ostringstream &oss,
   debug_print_single(oss, names[idx], std::forward<T>(value));
   if (sizeof...(args) > 0) {
     oss << ", ";
-    debug_print_impl(oss, names, idx + 1, std::forward<Args>(args)...);
+    debug_print_impl(oss, names, idx++, std::forward<Args>(args)...);
   }
 }
 
-template <typename... Args>
-void debug_print_args(std::ostringstream &oss, std::string names_str,
-                      Args &&...args) {
-  std::vector<std::string> names;
-  // Replace commas with spaces to normalize separators
+inline std::vector<std::string> parse_names(std::string &names_str) {
   std::replace(names_str.begin(), names_str.end(), ',', ' ');
-  std::istringstream iss{names_str};
+  std::istringstream iss(names_str);
+  std::vector<std::string> names;
   std::string name;
-  while (iss >> name) { // Skip spaces and tabs between names
+  while (iss >> name)
     names.emplace_back(name);
-  }
-  debug_print_impl(oss, names, 0, std::forward<Args>(args)...);
+  return names;
+}
+
+template <typename... Args>
+inline void debug_print_args(std::ostringstream &oss, std::string names_str,
+                             Args &&...args) {
+  debug_print_impl(oss, parse_names(names_str), 0, std::forward<Args>(args)...);
 }
 
 // Non-void return type version
