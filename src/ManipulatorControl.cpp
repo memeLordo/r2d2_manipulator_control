@@ -6,7 +6,7 @@
 using namespace r2d2_state;
 
 template <typename T> bool ManipulatorControlHandler<T>::setup() {
-  if (finishSetup) {
+  if (m_finishSetup) {
     return true;
   }
   ROS_DEBUG_STREAM(YELLOW("\nsetup()"));

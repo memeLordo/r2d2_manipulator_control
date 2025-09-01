@@ -14,7 +14,7 @@ private:
   r2d2_state::NozzleType m_nozzleType{};
   r2d2_state::LockStatus m_lockStatus{};
 
-  bool finishSetup{false};
+  bool m_finishSetup{false};
   r2d2_types::manipulator16_t<T> m_params{};
 
   PayloadHandler<T> m_payload;
@@ -42,7 +42,7 @@ public:
   void updateNozzleType();
 
 public:
-  void updateSetup() { finishSetup = true; }
+  void updateSetup() { m_finishSetup = true; }
   void resetMode() {
     ROS_DEBUG("Reset mode");
     m_workMode = r2d2_state::WorkMode::NONE;
