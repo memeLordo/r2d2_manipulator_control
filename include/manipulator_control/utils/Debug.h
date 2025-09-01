@@ -120,22 +120,19 @@ log_func(const std::string func_name, Func func, OutFunc outfunc,
         return func(std::forward<decltype(args)>(args)...);                    \
       },                                                                       \
       outfunc, #__VA_ARGS__, __VA_ARGS__)
-
-#define LOG_IN_FUNC_(func, outfunc, ...)                                       \
+#define LOG_CLASS_FUNC_(func, outfunc, ...)                                    \
   log_func(                                                                    \
       __FUNC_NAME__ + "->" #func,                                              \
       [&](auto &&...args) -> decltype(auto) {                                  \
         return func(std::forward<decltype(args)>(args)...);                    \
       },                                                                       \
       outfunc, #__VA_ARGS__, __VA_ARGS__)
-
-#define LOG_WRAP_FUNC(func, ...)                                               \
+#define LOG_FUNC(func, ...)                                                    \
   LOG_FUNC_(                                                                   \
       func, [](const std::string &msg) { std::cout << msg << std::endl; },     \
       __VA_ARGS__)
-
-#define LOG_WRAP_IN_FUNC(func, ...)                                            \
-  LOG_IN_FUNC_(                                                                \
+#define LOG_CLASS_FUNC(func, ...)                                              \
+  LOG_CLASS_FUNC_(                                                             \
       func, [](const std::string &msg) { std::cout << msg << std::endl; },     \
       __VA_ARGS__)
 
