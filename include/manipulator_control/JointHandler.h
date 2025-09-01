@@ -1,5 +1,5 @@
-#ifndef ELBOW_HANDLER_H
-#define ELBOW_HANDLER_H
+#ifndef JOINT_HANDLER_H
+#define JOINT_HANDLER_H
 
 #include "r2d2_msg_pkg/DriverCommand.h"
 #include "r2d2_msg_pkg/DriverState.h"
@@ -153,4 +153,4 @@ public:
   T calcAngle(T radius);
 };
 
-#endif // ELBOW_HANDLER_H
+#endif // JOINT_HANDLER_H
