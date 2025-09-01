@@ -1,5 +1,5 @@
-#ifndef CUSTOM_ROS_DEBUG_H
-#define CUSTOM_ROS_DEBUG_H
+#ifndef PR_CUSTOM_H
+#define PR_CUSTOM_H
 
 #include "Debug.h"
 #include <ros/console.h>
@@ -18,4 +18,4 @@
   _LOG_FUNC([](const std::string &msg) { ROS_DEBUG_STREAM(msg) }, output,      \
             __VA_ARGS__)
 
-#endif // !PR_ROS_DEBUG_H
+#endif // PR_CUSTOM_H
