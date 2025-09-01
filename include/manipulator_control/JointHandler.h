@@ -60,14 +60,14 @@ private:
 public:
   // void updateSpeed() {
   //   // auto omega_ = m_callbackParams.omega;
-  //   ROS_DEBUG_STREAM("Elbow::updateSpeed("
+  //   ROS_DEBUG_STREAM("Joint::updateSpeed("
   //                    << YELLOW("callback = " << m_callbackParams.omega)
   //                    << ") : " << WHITE(m_speed));
   //   m_params.omega = m_speed;
   // };
   void updateAngle() {
     auto theta_ = r2d2_process::wrap<T>(m_callbackParams.theta);
-    ROS_DEBUG_STREAM("Elbow::updateAngle("
+    ROS_DEBUG_STREAM("Joint::updateAngle("
                      << YELLOW("callback = " << m_callbackParams.theta)
                      << ") : " << WHITE(theta_));
     m_params.theta = theta_;
@@ -76,38 +76,39 @@ public:
   void updateControlWord() {
     auto control_word_ =
         static_cast<r2d2_commands::ControlType>(m_callbackParams.control_word);
-    ROS_DEBUG_STREAM("Shoulder::updateControlWord("
+    ROS_DEBUG_STREAM("Joint::updateControlWord("
                      << YELLOW("callback = " << m_callbackParams.control_word)
                      << ") ");
     m_params.control_word = control_word_;
   };
   // void updateSpeed(T omega) {
-  //   ROS_DEBUG_STREAM("Elbow::updateSpeed(omega = " << WHITE(omega) << ")");
+  //   ROS_DEBUG_STREAM("Joint::updateSpeed(omega = " << WHITE(omega) << ")");
   //   m_params.omega = omega;
   // };
   void updateAngle(T theta) {
-    ROS_DEBUG_STREAM("Elbow::updateAngle(theta = " << WHITE(theta) << ")");
+    ROS_DEBUG_STREAM("Joint::updateAngle(theta = " << WHITE(theta) << ")");
     m_params.theta = theta;
     setControlByAngle();
   };
+  void updateAngleByRadius(T radius) { updateAngle(calcAngle(radius)); };
   void setHoldControl() {
     m_params.control_word = r2d2_commands::ControlType::HOLD;
-    ROS_DEBUG_STREAM(BLUE("Shoulder::set control_word to " << YELLOW(
+    ROS_DEBUG_STREAM(BLUE("Joint::set control_word to " << YELLOW(
                               static_cast<uint16_t>(m_params.control_word))));
   };
   void setControlByAngle() {
     m_params.control_word = r2d2_commands::ControlType::CONTROL_ANGLE;
-    ROS_DEBUG_STREAM(BLUE("Shoulder::set control_word to " << YELLOW(
+    ROS_DEBUG_STREAM(BLUE("Joint::set control_word to " << YELLOW(
                               static_cast<uint16_t>(m_params.control_word))));
   };
   void setControlBySpeed() {
     m_params.control_word = r2d2_commands::ControlType::CONTROL_SPEED;
-    ROS_DEBUG_STREAM(BLUE("Shoulder::set control_word to " << YELLOW(
+    ROS_DEBUG_STREAM(BLUE("Joint::set control_word to " << YELLOW(
                               static_cast<uint16_t>(m_params.control_word))));
   };
 
   void publish() {
-    ROS_DEBUG_STREAM(BLUE("Elbow::publish()"));
+    ROS_DEBUG_STREAM(BLUE("Joint::publish()"));
     m_publisher.publish(prepareMsg());
   };
 
@@ -118,38 +119,38 @@ public:
     auto angle_ = getAngle();
     auto input_angle_ = getInputAngle();
     bool res = r2d2_math::abs(angle_ - input_angle_) < margin;
-    ROS_DEBUG_STREAM("Shoulder::checkAngleDiff() : " << WHITE(res));
+    ROS_DEBUG_STREAM("Joint::checkAngleDiff() : " << WHITE(res));
     return res;
   };
   // T getSpeed() const {
-  //   ROS_DEBUG_STREAM("Elbow::getSpeed() : " << WHITE(m_params.omega));
+  //   ROS_DEBUG_STREAM("Joint::getSpeed() : " << WHITE(m_params.omega));
   //   return m_params.omega;
   // };
   T getAngle() const {
-    ROS_DEBUG_STREAM("Elbow::getAngle() : " << WHITE(m_params.theta));
+    ROS_DEBUG_STREAM("Joint::getAngle() : " << WHITE(m_params.theta));
     return m_params.theta;
   };
   T getInputAngle() const {
     ROS_DEBUG_STREAM(
-        "Elbow::getInputAngle() : " << WHITE(m_callbackParams.theta));
+        "Joint::getInputAngle() : " << WHITE(m_callbackParams.theta));
     return r2d2_process::wrap<T>(m_callbackParams.theta);
   };
   // r2d2_commands::ControlType getControlWord() const {
-  //   ROS_DEBUG_STREAM("Shoulder::getControlWord() : "
+  //   ROS_DEBUG_STREAM("Joint::getControlWord() : "
   //                    << WHITE(static_cast<uint16_t>(m_params.control_word)));
   //   return m_params.control_word;
   // };
   T getLength() const {
-    ROS_DEBUG_STREAM("Elbow::getLength() : " << WHITE(m_length));
+    ROS_DEBUG_STREAM("Joint::getLength() : " << WHITE(m_length));
     return m_length;
   };
   T getRadius() const {
     T radius_ = getLength() * r2d2_math::sin(getAngle());
-    ROS_DEBUG_STREAM("Elbow::getRadius() : " << WHITE(radius_));
+    ROS_DEBUG_STREAM("Joint::getRadius() : " << WHITE(radius_));
     return radius_;
   };
 
-  T calcAngle(T theta);
+  T calcAngle(T radius);
 };
 
 #endif // ELBOW_HANDLER_H
