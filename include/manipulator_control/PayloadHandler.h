@@ -8,16 +8,14 @@
 
 template <typename T = double> class PayloadHandler {
 private:
-  const std::string outputNode;
+  static constexpr const char *s_name = "Payload";
 
+  const std::string m_outputNode;
   int16_t m_callbackForce{};
-  // TODO: add omega -  раскрутка щёток
-  // считать желаемую скорость из manipulator_t
-
   ros::Subscriber m_subscriber;
 
 public:
-  PayloadHandler(ros::NodeHandle *node, const std::string &outputNode);
+  PayloadHandler(ros::NodeHandle *node);
 
 private:
   void callbackPayload(const r2d2_msg_pkg::DriverStateConstPtr &msg) {
@@ -27,7 +25,7 @@ private:
 public:
   T getForce() const {
     auto force = static_cast<T>(m_callbackForce);
-    ROS_DEBUG_STREAM("Payload::getForce() : " << WHITE(force));
+    ROS_DEBUG_STREAM(s_name << "::getForce() : " << WHITE(force));
     return force;
   };
 };
