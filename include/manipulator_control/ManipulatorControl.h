@@ -19,8 +19,8 @@ private:
 
   PayloadHandler<T> m_payload;
   PipeHandler<T> m_pipe;
-  JointHandler<T> m_elbow;
-  JointHandler<T> m_shoulder;
+  ElbowHandler<T> m_elbow;
+  ShoulderHandler<T> m_shoulder;
 
   ros::Timer m_timer;
 
