@@ -5,12 +5,12 @@
 #include <ros/node_handle.h>
 
 template <typename T>
-JointHandler<T>::JointHandler(ros::NodeHandle *node,
+JointHandler<T>::JointHandler(ros::NodeHandle *node, const std::string &name,
                               const std::string &inputNode,
                               const std::string &outputNode, const T &length,
                               const T &speed, const std::vector<T> &coeffs)
-    : m_inputNode{inputNode}, m_outputNode{outputNode}, m_length{length},
-      m_speed{speed}, m_coeffs{coeffs} {
+    : m_name{name}, m_inputNode{inputNode}, m_outputNode{outputNode},
+      m_length{length}, m_speed{speed}, m_coeffs{coeffs} {
   constexpr int QUEUE_SIZE = 8;
   m_subscriber = node->subscribe(m_outputNode, QUEUE_SIZE,
                                  &JointHandler::callbackJoint, this);

@@ -13,14 +13,13 @@
 template <typename T = double> class JointHandler {
 
 private:
-  static constexpr const char *m_name = "Joint";
-
   r2d2_types::elbow_t<T, r2d2_commands::ControlType> m_params{};
   r2d2_types::elbow16_t m_callbackParams{};
 
   ros::Subscriber m_subscriber;
   ros::Publisher m_publisher;
 
+  const std::string m_name;
   const std::string m_inputNode;
   const std::string m_outputNode;
   const std::vector<T> m_coeffs;
@@ -29,9 +28,9 @@ private:
 
 public:
   JointHandler() = default;
-  JointHandler(ros::NodeHandle *node, const std::string &inputNode,
-               const std::string &outputNode, const T &length, const T &speed,
-               const std::vector<T> &coeffs);
+  JointHandler(ros::NodeHandle *node, const std::string &name,
+               const std::string &inputNode, const std::string &outputNode,
+               const T &length, const T &speed, const std::vector<T> &coeffs);
 
 private:
   void callbackJoint(const r2d2_msg_pkg::DriverStateConstPtr &msg) {
@@ -159,12 +158,10 @@ public:
 };
 
 template <typename T> class ShoulderHandler : public JointHandler<T> {
-private:
-  static constexpr const char *s_name = "Shoulder";
 
 public:
   ShoulderHandler(ros::NodeHandle *node)
-      : JointHandler<T>(node, config::shoulder::INPUT_NODE,
+      : JointHandler<T>(node, "Shoulder", config::shoulder::INPUT_NODE,
                         config::shoulder::OUTPUT_NODE,
                         config::shoulder::length, // длина плеча
                         config::shoulder::speed,  // скорость плеча
@@ -173,12 +170,10 @@ public:
 };
 
 template <typename T = double> class ElbowHandler : public JointHandler<T> {
-private:
-  static constexpr const char *s_name = "Elbow";
 
 public:
   ElbowHandler(ros::NodeHandle *node)
-      : JointHandler<T>(node, config::elbow::INPUT_NODE,
+      : JointHandler<T>(node, "Elbow", config::elbow::INPUT_NODE,
                         config::elbow::OUTPUT_NODE,
                         config::elbow::length, // длина локтя
                         config::elbow::speed,  // скорость локтя
