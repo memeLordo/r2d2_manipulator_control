@@ -3,6 +3,7 @@
 
 #include "r2d2_msg_pkg/DriverCommand.h"
 #include "r2d2_msg_pkg/DriverState.h"
+#include "utils/Config.h"
 #include "utils/Debug.h"
 #include "utils/Math.h"
 #include "utils/Types.h"
@@ -157,6 +158,34 @@ public:
   };
 
   T calcAngle(T radius);
+};
+
+template <typename T> class ShoulderHandler : public JointHandler<T> {
+private:
+  static constexpr const char *s_name = "Shoulder";
+
+public:
+  ShoulderHandler(ros::NodeHandle *node)
+      : JointHandler<T>(node, config::shoulder::INPUT_NODE,
+                        config::shoulder::OUTPUT_NODE,
+                        config::shoulder::length, // длина плеча
+                        config::shoulder::speed,  // скорость плеча
+                        config::shoulder::coeffs) // коэффициенты плеча
+  {}
+};
+
+template <typename T = double> class ElbowHandler : public JointHandler<T> {
+private:
+  static constexpr const char *s_name = "Elbow";
+
+public:
+  ElbowHandler(ros::NodeHandle *node)
+      : JointHandler<T>(node, config::elbow::INPUT_NODE,
+                        config::elbow::OUTPUT_NODE,
+                        config::elbow::length, // длина локтя
+                        config::elbow::speed,  // скорость локтя
+                        config::elbow::coeffs) // коэффициенты локтя
+  {}
 };
 
 #endif // JOINT_HANDLER_H
