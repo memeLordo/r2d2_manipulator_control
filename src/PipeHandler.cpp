@@ -1,5 +1,5 @@
-#include "PipeHandler.h"
-#include "utils/Config.h"
+#include "PipeHandler.hpp"
+#include "utils/Config.hpp"
 #include <ros/node_handle.h>
 
 template <typename T>

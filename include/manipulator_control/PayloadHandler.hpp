@@ -1,8 +1,8 @@
-#ifndef PAYLOAD_HANDLER_H
-#define PAYLOAD_HANDLER_H
+#ifndef R2D2_PAYLOAD_HANDLER_HPP
+#define R2D2_PAYLOAD_HANDLER_HPP
 
 #include "r2d2_msg_pkg/DriverState.h"
-#include "utils/Debug.h"
+#include "utils/Debug.hpp"
 #include <cstdint>
 #include <ros/node_handle.h>
 
@@ -30,4 +30,4 @@ public:
   };
 };
 
-#endif // PIPE_HANDLER_H
+#endif // PIPE_HANDLER_HPP

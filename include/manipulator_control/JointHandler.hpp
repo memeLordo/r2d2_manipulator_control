@@ -1,12 +1,12 @@
-#ifndef JOINT_HANDLER_H
-#define JOINT_HANDLER_H
+#ifndef R2D2_JOINT_HANDLER_HPP
+#define R2D2_JOINT_HANDLER_HPP
 
 #include "r2d2_msg_pkg/DriverCommand.h"
 #include "r2d2_msg_pkg/DriverState.h"
-#include "utils/Config.h"
-#include "utils/Debug.h"
-#include "utils/Math.h"
-#include "utils/Types.h"
+#include "utils/Config.hpp"
+#include "utils/Debug.hpp"
+#include "utils/Math.hpp"
+#include "utils/Types.hpp"
 #include <ros/console.h>
 #include <ros/node_handle.h>
 
@@ -186,4 +186,4 @@ public:
   {}
 };
 
-#endif // JOINT_HANDLER_H
+#endif // R2D2_JOINT_HANDLER_HPP

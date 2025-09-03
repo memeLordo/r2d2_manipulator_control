@@ -1,7 +1,7 @@
-#include "JointHandler.h"
+#include "JointHandler.hpp"
 #include "r2d2_msg_pkg/DriverCommand.h"
-#include "utils/Math.h"
-#include "utils/Polynome.h"
+#include "utils/Math.hpp"
+#include "utils/Polynome.hpp"
 #include <ros/node_handle.h>
 
 template <typename T>

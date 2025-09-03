@@ -1,6 +1,6 @@
-#include "ManipulatorControl.h"
-#include "utils/Debug.h"
-#include "utils/Math.h"
+#include "ManipulatorControl.hpp"
+#include "utils/Debug.hpp"
+#include "utils/Math.hpp"
 
 using namespace r2d2_state;
 

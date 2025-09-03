@@ -1,9 +1,9 @@
-#ifndef PIPE_HANDLER_H
-#define PIPE_HANDLER_H
+#ifndef R2D2_PIPE_HANDLER_HPP
+#define R2D2_PIPE_HANDLER_HPP
 
 #include "r2d2_msg_pkg/PipeParameters.h"
-#include "utils/Debug.h"
-#include "utils/Types.h"
+#include "utils/Debug.hpp"
+#include "utils/Types.hpp"
 #include <ros/node_handle.h>
 
 template <typename T = double> class PipeHandler {
@@ -31,4 +31,4 @@ public:
   };
 };
 
-#endif // PIPE_HANDLER_H
+#endif // R2D2_PIPE_HANDLER_HPP

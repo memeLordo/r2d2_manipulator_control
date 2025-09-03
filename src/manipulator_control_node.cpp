@@ -1,5 +1,5 @@
-#include "ManipulatorControl.h"
-#include "ManipulatorService.h"
+#include "ManipulatorControl.hpp"
+#include "ManipulatorService.hpp"
 #include <ros/node_handle.h>
 
 int main(int argc, char **argv) {

@@ -1,5 +1,5 @@
-#ifndef CONTROL_WORD_H
-#define CONTROL_WORD_H
+#ifndef R2D2_CONTROL_WORD_HPP
+#define R2D2_CONTROL_WORD_HPP
 
 #include <cstdint>
 
@@ -53,4 +53,4 @@ typedef joint16_t shoulder16_t;
 
 } // namespace r2d2_types
 
-#endif // CONTROL_WORD_H
+#endif // R2D2_CONTROL_WORD_HPP

@@ -1,5 +1,5 @@
-#ifndef PR_PALETTE_DEBUG_H
-#define PR_PALETTE_DEBUG_H
+#ifndef PR_PALETTE_DEBUG_HPP
+#define PR_PALETTE_DEBUG_HPP
 
 #include <algorithm>
 #include <cstring>
@@ -157,4 +157,4 @@ log_func(const std::string func_name, Func func, OutFunc outfunc,
       func, [](const std::string &msg) { std::cout << msg << std::endl; },     \
       __VA_ARGS__)
 
-#endif // PR_PALETTE_DEBUG_H
+#endif // PR_PALETTE_DEBUG_HPP

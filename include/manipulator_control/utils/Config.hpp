@@ -1,5 +1,5 @@
-#ifndef R2D2_CONFIG_H
-#define R2D2_CONFIG_H
+#ifndef R2D2_CONFIG_HPP
+#define R2D2_CONFIG_HPP
 
 #include <string>
 #include <vector>

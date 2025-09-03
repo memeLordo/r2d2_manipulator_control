@@ -1,5 +1,5 @@
-#include "PayloadHandler.h"
-#include "utils/Config.h"
+#include "PayloadHandler.hpp"
+#include "utils/Config.hpp"
 #include <ros/node_handle.h>
 
 template <typename T>

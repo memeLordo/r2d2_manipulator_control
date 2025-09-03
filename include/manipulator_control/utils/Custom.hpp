@@ -1,7 +1,7 @@
-#ifndef PR_CUSTOM_H
-#define PR_CUSTOM_H
+#ifndef PR_PALETTE_CUSTOM_HPP
+#define PR_PALETTE_CUSTOM_HPP
 
-#include "Debug.h"
+#include "Debug.hpp"
 #include <ros/console.h>
 
 // // ROS debug function (requires ROS environment)
@@ -18,4 +18,4 @@
   LOG_FUNC_([](const std::string &msg) { ROS_DEBUG_STREAM(msg) }, output,      \
             __VA_ARGS__)
 
-#endif // PR_CUSTOM_H
+#endif // PR_PALETTE_CUSTOM_HPP

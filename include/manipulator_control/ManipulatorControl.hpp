@@ -1,10 +1,10 @@
-#ifndef MANIPULATOR_CONTROL_H
-#define MANIPULATOR_CONTROL_H
+#ifndef R2D2_MANIPULATOR_CONTROL_HPP
+#define R2D2_MANIPULATOR_CONTROL_HPP
 
-#include "JointHandler.h"
-#include "PayloadHandler.h"
-#include "PipeHandler.h"
-#include "utils/Types.h"
+#include "JointHandler.hpp"
+#include "PayloadHandler.hpp"
+#include "PipeHandler.hpp"
+#include "utils/Types.hpp"
 #include <ros/node_handle.h>
 
 template <typename T = double> class ManipulatorControlHandler {
@@ -93,4 +93,4 @@ public:
   };
 };
 
-#endif // MANIPULATOR_CONTROL_H
+#endif // R2D2_MANIPULATOR_CONTROL_HPP

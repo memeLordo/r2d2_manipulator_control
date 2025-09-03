@@ -1,6 +1,5 @@
-#include "ManipulatorService.h"
-
-#include "ros/console.h"
+#include "ManipulatorService.hpp"
+#include <ros/console.h>
 
 using namespace r2d2_state;
 

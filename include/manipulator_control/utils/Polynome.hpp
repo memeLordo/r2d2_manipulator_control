@@ -1,5 +1,5 @@
-#ifndef POLYNOME_H
-#define POLYNOME_H
+#ifndef R2D2_POLYNOME_HPP
+#define R2D2_POLYNOME_HPP
 
 // #include <cstddef>
 #include <vector>
@@ -17,4 +17,5 @@ constexpr T polynome(const std::vector<T> &coeffs, const T x) {
 }
 
 } // namespace horner
-#endif // POLYNOME_SAFE_H
+
+#endif // R2D2_POLYNOME_H

@@ -1,7 +1,7 @@
-#ifndef MATH_H_
-#define MATH_H_
+#ifndef R2D2_MATH_HPP
+#define R2D2_MATH_HPP
 
-#include "utils/Debug.h"
+#include "utils/Debug.hpp"
 #include <algorithm>
 #include <cmath>
 #include <cstdlib>
@@ -51,4 +51,4 @@ template <typename T, typename T2> const T unwrap(T2 a) {
 
 } // namespace r2d2_process
 
-#endif // MATH_H_
+#endif // R2D2_MATH_HPP
