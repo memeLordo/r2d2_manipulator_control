@@ -8,14 +8,14 @@
 
 template <typename T = double> class PipeHandler {
 private:
-  const std::string outputNode;
+  static constexpr const char *s_name = "Pipe";
 
+  const std::string m_outputNode;
   r2d2_types::upipe_t<T> m_callbackParams{};
-
   ros::Subscriber m_subscriber;
 
 public:
-  PipeHandler(ros::NodeHandle *node, const std::string &outputNode);
+  PipeHandler(ros::NodeHandle *node);
 
 private:
   void callbackPipe(const r2d2_msg_pkg::PipeParametersConstPtr &msg) {
@@ -26,7 +26,7 @@ private:
 public:
   T getRadius() const {
     auto radius = m_callbackParams.radius();
-    ROS_DEBUG_STREAM("Pipe::getRadius() : " << WHITE(radius));
+    ROS_DEBUG_STREAM(s_name << "::getRadius() : " << WHITE(radius));
     return radius;
   };
 };
