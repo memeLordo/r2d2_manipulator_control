@@ -26,6 +26,8 @@ void ManipulatorControlHandler<T>::callbackManipulator(
    * 4. Обновить оставшиеся переменные
    * 5. Опубликовать все переменные
    */
+  m_elbow.updateAngle();
+  m_shoulder.updateAngle();
   switch (m_workMode) {
   // Ранний выход при отключенном автоматическом режиме
   case WorkMode::AUTO:
