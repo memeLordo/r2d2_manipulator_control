@@ -83,7 +83,7 @@ bool ManipulatorControlHandler<T>::processRadiusControl(
   ROS_DEBUG_STREAM(CYAN("Checking for reach..."));
   // bool state_ = m_shoulder.checkAngleDiff() && m_elbow.checkAngleDiff() ||
   //               m_payload.getForce() > 20000;
-  bool state_ = r2d2_math::abs(currentRadius - targetRadius) < radiusTreshold;
+  bool state_ = (currentRadius - targetRadius) > -radiusTreshold;
   if (!state_) {
     ROS_DEBUG_STREAM(RED("No reach!"));
     ROS_DEBUG(" ");
