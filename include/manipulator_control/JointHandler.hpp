@@ -161,8 +161,7 @@ template <typename T> class ShoulderHandler : public JointHandler<T> {
 
 public:
   ShoulderHandler(ros::NodeHandle *node)
-      : JointHandler<T>(node, "Shoulder", config::shoulder::INPUT_NODE,
-                        config::shoulder::OUTPUT_NODE,
+      : JointHandler<T>(node, "Shoulder", "/shoulder_input", "/shoulder_output",
                         config::shoulder::length, // длина плеча
                         config::shoulder::speed,  // скорость плеча
                         config::shoulder::coeffs) // коэффициенты плеча
@@ -173,8 +172,7 @@ template <typename T = double> class ElbowHandler : public JointHandler<T> {
 
 public:
   ElbowHandler(ros::NodeHandle *node)
-      : JointHandler<T>(node, "Elbow", config::elbow::INPUT_NODE,
-                        config::elbow::OUTPUT_NODE,
+      : JointHandler<T>(node, "Elbow", "/elbow_input", "/elbow_output",
                         config::elbow::length, // длина локтя
                         config::elbow::speed,  // скорость локтя
                         config::elbow::coeffs) // коэффициенты локтя
