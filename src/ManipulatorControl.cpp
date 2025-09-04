@@ -52,7 +52,7 @@ void ManipulatorControlHandler<T>::callbackManipulator(
 template <typename T> T ManipulatorControlHandler<T>::calcCurrentRadius() {
   ROS_DEBUG_STREAM(MAGENTA("calcRadius()"));
   T radius_{m_shoulder.getRadius() + m_elbow.getRadius() + getRadius()};
-  ROS_DEBUG_STREAM("calcCurrentRadius() : " << WHITE(radius_));
+  ROS_DEBUG_STREAM(RED("calcCurrentRadius())") << " : " << WHITE(radius_));
   ROS_DEBUG(" ");
   return radius_;
 }
@@ -87,17 +87,12 @@ template <typename T> void ManipulatorControlHandler<T>::processControl() {
   case LockStatus::UNLOCKED:
     ROS_DEBUG_STREAM(YELLOW("LockStatus::UNLOCKED"));
     // Основная логика управления
-    // m_elbow.updateSpeed();
-    // m_elbow.updateAngle();
-    // m_shoulder.updateSpeed();
-    // m_shoulder.updateAngle();
     processAngleControl(m_elbow.getAngle(),
                         m_elbow.calcAngle(m_pipe.getRadius()));
     processForceControl(m_payload.getForce(), getForce());
     break;
   default:
     // m_elbow.updateSpeed(0);
-    // m_elbow.publish();
     m_elbow.updateAngle();
     m_shoulder.updateAngle();
   }
