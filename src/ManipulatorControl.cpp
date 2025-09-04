@@ -4,33 +4,6 @@
 
 using namespace r2d2_state;
 
-template <typename T> bool ManipulatorControlHandler<T>::setup() {
-  if (m_finishSetup) {
-    return true;
-  }
-  ROS_DEBUG_STREAM(YELLOW("\nsetup()"));
-  // TODO: Если заблокированиы - манипуляторы в 0
-  // Обновляем скорости
-
-  ROS_DEBUG_STREAM(CYAN("Checking for reach..."));
-  bool state_ = !m_shoulder.checkAngleDiff() || !m_elbow.checkAngleDiff() ||
-                m_payload.getForce() > 20000;
-  if (!state_) {
-    ROS_DEBUG_STREAM(RED("No reach!"));
-    ROS_DEBUG(" ");
-    ROS_DEBUG_STREAM(CYAN("UPDATING ANGLES"));
-    m_elbow.updateAngle(
-        m_elbow.calcAngle(m_pipe.getRadius())); // TODO: updateAngleByRadius()
-    m_shoulder.updateAngle(m_shoulder.calcAngle(m_pipe.getRadius()));
-  } else {
-    ROS_DEBUG_STREAM(CYAN("OK!"));
-    updateSetup();
-  }
-  return state_;
-  // m_elbow.updateSpeed();
-  // m_shoulder.updateSpeed();
-}
-
 template <typename T>
 ManipulatorControlHandler<T>::ManipulatorControlHandler(ros::NodeHandle *node)
     : m_pipe(node), m_payload(node), m_elbow(node), m_shoulder(node) {
@@ -40,23 +13,10 @@ ManipulatorControlHandler<T>::ManipulatorControlHandler(ros::NodeHandle *node)
       ros::Duration(1 / RATE),
       &ManipulatorControlHandler<T>::callbackManipulator, this);
 }
-
-template <typename T> void ManipulatorControlHandler<T>::updateNozzleType() {
-  ROS_DEBUG_STREAM(MAGENTA("updateNozzleType()"));
-  switch (m_nozzleType) {
-  case NozzleType::BRUSH:
-    m_params = r2d2_types::manipulator16_t<T>{10000, 347.0};
-    return;
-  case NozzleType::EMA:
-    m_params = r2d2_types::manipulator16_t<T>{15000, 331.0};
-    return;
-  default:
-    return;
-  }
-};
 template <typename T>
 void ManipulatorControlHandler<T>::callbackManipulator(
     const ros::TimerEvent &) {
+  ROS_DEBUG_STREAM(MAGENTA("\ncallbackManipulator()"));
   /**
    * INFO:
    * 0. Получить данные для манипулятора (и трубы)
@@ -66,7 +26,6 @@ void ManipulatorControlHandler<T>::callbackManipulator(
    * 4. Обновить оставшиеся переменные
    * 5. Опубликовать все переменные
    */
-  ROS_DEBUG_STREAM(MAGENTA("\ncallbackManipulator()"));
   switch (m_workMode) {
   // Ранний выход при отключенном автоматическом режиме
   case WorkMode::AUTO:
@@ -111,6 +70,32 @@ template <typename T> T ManipulatorControlHandler<T>::calcCurrentRadius() {
   ROS_DEBUG_STREAM("calcCurrentRadius() : " << WHITE(radius_));
   ROS_DEBUG(" ");
   return radius_;
+}
+template <typename T> bool ManipulatorControlHandler<T>::setup() {
+  if (m_finishSetup) {
+    return true;
+  }
+  ROS_DEBUG_STREAM(YELLOW("\nsetup()"));
+  // TODO: Если заблокированиы - манипуляторы в 0
+  // Обновляем скорости
+
+  ROS_DEBUG_STREAM(CYAN("Checking for reach..."));
+  bool state_ = !m_shoulder.checkAngleDiff() || !m_elbow.checkAngleDiff() ||
+                m_payload.getForce() > 20000;
+  if (!state_) {
+    ROS_DEBUG_STREAM(RED("No reach!"));
+    ROS_DEBUG(" ");
+    ROS_DEBUG_STREAM(CYAN("UPDATING ANGLES"));
+    m_elbow.updateAngle(
+        m_elbow.calcAngle(m_pipe.getRadius())); // TODO: updateAngleByRadius()
+    m_shoulder.updateAngle(m_shoulder.calcAngle(m_pipe.getRadius()));
+  } else {
+    ROS_DEBUG_STREAM(CYAN("OK!"));
+    updateSetup();
+  }
+  return state_;
+  // m_elbow.updateSpeed();
+  // m_shoulder.updateSpeed();
 }
 template <typename T> void ManipulatorControlHandler<T>::processControl() {
   if (!setup())
@@ -169,6 +154,19 @@ template <typename T> void ManipulatorControlHandler<T>::publishResults() {
   ROS_DEBUG_STREAM(MAGENTA("\npublishResults()"));
   m_elbow.publish();
   m_shoulder.publish();
+}
+template <typename T> void ManipulatorControlHandler<T>::updateNozzleType() {
+  ROS_DEBUG_STREAM(MAGENTA("updateNozzleType()"));
+  switch (m_nozzleType) {
+  case NozzleType::BRUSH:
+    m_params = r2d2_types::manipulator16_t<T>{10000, 347.0};
+    return;
+  case NozzleType::EMA:
+    m_params = r2d2_types::manipulator16_t<T>{15000, 331.0};
+    return;
+  default:
+    return;
+  }
 }
 
 template class ManipulatorControlHandler<>;
