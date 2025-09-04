@@ -1,8 +1,11 @@
 #include "JointHandler.hpp"
 #include "r2d2_msg_pkg/DriverCommand.h"
+#include "r2d2_msg_pkg/DriverState.h"
+#include "utils/Debug.hpp"
 #include "utils/Math.hpp"
 #include "utils/Polynome.hpp"
 #include <ros/node_handle.h>
+#include <ros/topic.h>
 
 template <typename T>
 JointHandler<T>::JointHandler(ros::NodeHandle *node, const std::string &name,
@@ -12,6 +15,8 @@ JointHandler<T>::JointHandler(ros::NodeHandle *node, const std::string &name,
     : m_name{name}, m_inputNode{inputNode}, m_outputNode{outputNode},
       m_length{length}, m_speed{speed}, m_coeffs{coeffs} {
   constexpr int QUEUE_SIZE = 8;
+  ROS_INFO_STREAM(CYAN("Waiting for " << m_name << " topic..."));
+  ros::topic::waitForMessage<r2d2_msg_pkg::DriverState>(m_outputNode);
   m_subscriber = node->subscribe(m_outputNode, QUEUE_SIZE,
                                  &JointHandler::callbackJoint, this);
   m_publisher =
