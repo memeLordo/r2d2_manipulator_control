@@ -30,6 +30,7 @@ include_directories(
 )
 
 add_library(${PROJECT_NAME}
+  src/ConfigJson.cpp
   src/JointHandler.cpp
   src/ManipulatorControl.cpp
   src/ManipulatorService.cpp
