@@ -63,7 +63,7 @@ template <typename T> bool ManipulatorControlHandler<T>::setup() {
   // Обновляем скорости
 
   ROS_DEBUG_STREAM(CYAN("Checking for reach..."));
-  bool state_ = !m_shoulder.checkAngleDiff() || !m_elbow.checkAngleDiff() ||
+  bool state_ = m_shoulder.checkAngleDiff() && m_elbow.checkAngleDiff() ||
                 m_payload.getForce() > 20000;
   if (!state_) {
     ROS_DEBUG_STREAM(RED("No reach!"));
