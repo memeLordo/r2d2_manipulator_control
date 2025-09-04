@@ -3,14 +3,12 @@
 
 using namespace r2d2_state;
 
-constexpr const char *MANIPULATOR_SERVICE_MODE = "/manipulator_command";
-
 ManipulatorServiceHandler::ManipulatorServiceHandler(
     ros::NodeHandle *node, ManipulatorControlHandler<> &manipulator_controlRef)
-    : m_manipulatorControl(manipulator_controlRef) {
-  m_manipulatorService =
-      node->advertiseService(MANIPULATOR_SERVICE_MODE,
-                             &ManipulatorServiceHandler::callbackService, this);
+    : m_serviceNode{"/manipulator_command"},
+      m_manipulatorControl(manipulator_controlRef) {
+  m_manipulatorService = node->advertiseService(
+      m_serviceNode, &ManipulatorServiceHandler::callbackService, this);
 }
 bool ManipulatorServiceHandler::callbackService(
     r2d2_msg_pkg::ManipulatorCommand::Request &req,
