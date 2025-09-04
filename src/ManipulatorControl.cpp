@@ -59,9 +59,6 @@ template <typename T> T ManipulatorControlHandler<T>::calcCurrentRadius() {
 template <typename T>
 bool ManipulatorControlHandler<T>::setup(
     /*target_radius, current_radius, margin*/) {
-  if (m_finishSetup) {
-    return true;
-  }
   ROS_DEBUG_STREAM(YELLOW("\nsetup()"));
   // TODO: Если заблокированиы - манипуляторы в 0
   // Обновляем скорости
