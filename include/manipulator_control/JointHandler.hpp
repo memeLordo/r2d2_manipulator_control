@@ -110,9 +110,6 @@ public:
     m_publisher.publish(prepareMsg());
   };
 
-  std::string getInputNode() const { return m_inputNode; };
-  std::string getOutputNode() const { return m_outputNode; };
-
   // T getSpeed() const {
   //   ROS_DEBUG_STREAM("Joint::getSpeed() : " << WHITE(m_params.omega));
   //   return m_params.omega;
