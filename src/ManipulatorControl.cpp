@@ -56,7 +56,9 @@ template <typename T> T ManipulatorControlHandler<T>::calcCurrentRadius() {
   ROS_DEBUG(" ");
   return radius_;
 }
-template <typename T> bool ManipulatorControlHandler<T>::setup() {
+template <typename T>
+bool ManipulatorControlHandler<T>::setup(
+    /*target_radius, current_radius, margin*/) {
   if (m_finishSetup) {
     return true;
   }
