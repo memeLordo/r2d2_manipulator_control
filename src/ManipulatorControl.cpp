@@ -73,7 +73,7 @@ template <typename T> bool ManipulatorControlHandler<T>::setup() {
     m_shoulder.updateAngleByRadius(m_pipe.getRadius());
   } else {
     ROS_DEBUG_STREAM(CYAN("OK!"));
-    updateSetup();
+    updateSetup(); // TODO: change from SETUP to AUTO
   }
   return state_;
   // m_elbow.updateSpeed();
