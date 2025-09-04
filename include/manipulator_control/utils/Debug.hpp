@@ -14,7 +14,7 @@
 #define ANSI_COLOR_MAGENTA "\033[0;35m"
 #define ANSI_COLOR_CYAN "\033[0;36m"
 #define ANSI_COLOR_WHITE "\033[0;37m"
-#define ANSI_COLOR_RESET "\033[0m"
+#define ANSI_COLOR_RESET ANSI_COLOR_GREEN
 
 // Color stream manipulators
 #define RED(x) ANSI_COLOR_RED << x << ANSI_COLOR_RESET
