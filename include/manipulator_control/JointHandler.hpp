@@ -114,13 +114,6 @@ public:
   std::string getInputNode() const { return m_inputNode; };
   std::string getOutputNode() const { return m_outputNode; };
 
-  bool checkAngleDiff(T margin = 0.1) const {
-    auto angle_ = getAngle();
-    auto input_angle_ = getInputAngle();
-    bool res = r2d2_math::abs(angle_ - input_angle_) < margin;
-    ROS_DEBUG_STREAM(m_name << "::checkAngleDiff() : " << WHITE(res));
-    return res;
-  };
   // T getSpeed() const {
   //   ROS_DEBUG_STREAM("Joint::getSpeed() : " << WHITE(m_params.omega));
   //   return m_params.omega;
