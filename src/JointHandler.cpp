@@ -11,12 +11,11 @@ JointHandler<T>::JointHandler(ros::NodeHandle *node,
                               const T &speed, const std::vector<T> &coeffs)
     : m_inputNode{inputNode}, m_outputNode{outputNode}, m_length{length},
       m_speed{speed}, m_coeffs{coeffs} {
-  // setCoeffsFrom(coeffs);
   constexpr int QUEUE_SIZE = 8;
-  m_subscriber = node->subscribe(outputNode, QUEUE_SIZE,
+  m_subscriber = node->subscribe(m_outputNode, QUEUE_SIZE,
                                  &JointHandler::callbackJoint, this);
   m_publisher =
-      node->advertise<r2d2_msg_pkg::DriverCommand>(inputNode, QUEUE_SIZE);
+      node->advertise<r2d2_msg_pkg::DriverCommand>(m_inputNode, QUEUE_SIZE);
 }
 template <typename T> T JointHandler<T>::calcAngle(T radius) {
   T res = horner::polynome(m_coeffs, radius);
@@ -24,4 +23,5 @@ template <typename T> T JointHandler<T>::calcAngle(T radius) {
                                                 << ") : " << WHITE(res));
   return r2d2_math::max<T>(res, 0);
 }
+
 template class JointHandler<>;
