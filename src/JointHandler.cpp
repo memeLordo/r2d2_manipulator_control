@@ -24,4 +24,17 @@ template <typename T> T JointHandler<T>::calcAngle(T radius) {
   return r2d2_math::max<T>(res, 0);
 }
 
+template <typename T>
+ShoulderHandler<T>::ShoulderHandler(ros::NodeHandle *node)
+    : JointHandler<T>(node, "Shoulder", "/shoulder_input", "/shoulder_output",
+                      config::shoulder::length, config::shoulder::speed,
+                      config::shoulder::coeffs) {}
+template <typename T>
+ElbowHandler<T>::ElbowHandler(ros::NodeHandle *node)
+    : JointHandler<T>(node, "Elbow", "/elbow_input", "/elbow_output",
+                      config::elbow::length, config::elbow::speed,
+                      config::elbow::coeffs) {}
+
 template class JointHandler<>;
+template class ShoulderHandler<>;
+template class ElbowHandler<>;
