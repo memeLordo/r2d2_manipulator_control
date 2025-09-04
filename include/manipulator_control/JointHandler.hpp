@@ -53,11 +53,6 @@ private:
     msg.control_word = control_word_;
     return msg;
   };
-  //
-  // private:
-  //   std::array<T, N> setCoeffsFrom(const std::array<T, N> &arr) {
-  //     return std::reverse_copy(arr.begin(), arr.end(), m_coeffs.begin());
-  //   }
 
 public:
   // void updateSpeed() {
