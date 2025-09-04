@@ -69,9 +69,8 @@ template <typename T> bool ManipulatorControlHandler<T>::setup() {
     ROS_DEBUG_STREAM(RED("No reach!"));
     ROS_DEBUG(" ");
     ROS_DEBUG_STREAM(CYAN("UPDATING ANGLES"));
-    m_elbow.updateAngle(
-        m_elbow.calcAngle(m_pipe.getRadius())); // TODO: updateAngleByRadius()
-    m_shoulder.updateAngle(m_shoulder.calcAngle(m_pipe.getRadius()));
+    m_elbow.updateAngleByRadius(m_pipe.getRadius());
+    m_shoulder.updateAngleByRadius(m_pipe.getRadius());
   } else {
     ROS_DEBUG_STREAM(CYAN("OK!"));
     updateSetup();
@@ -116,7 +115,7 @@ void ManipulatorControlHandler<T>::processAngleControl(const T currentAngle,
   ROS_DEBUG_STREAM(RED("if(angel_dif >= ANGLE_THRESHOLD)"));
   if (angleDiff_ >= angleTreshold) {
     ROS_DEBUG_STREAM(CYAN("Success angle control"));
-    m_shoulder.updateAngle(m_shoulder.calcAngle(calcCurrentRadius()));
+    m_shoulder.updateAngleByRadius(calcCurrentRadius());
   } else {
     ROS_DEBUG_STREAM(CYAN("No success."));
     m_shoulder.updateAngle();
