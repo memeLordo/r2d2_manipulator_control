@@ -30,27 +30,10 @@ void ManipulatorControlHandler<T>::callbackManipulator(
   // Ранний выход при отключенном автоматическом режиме
   case WorkMode::AUTO:
     ROS_DEBUG_STREAM(YELLOW("WorkMode::AUTO"));
-    switch (m_lockStatus) {
     //  Проверка блокировки
-    case LockStatus::UNLOCKED:
-      ROS_DEBUG_STREAM(YELLOW("LockStatus::UNLOCKED"));
-      // Основная логика управления
-      // m_elbow.updateSpeed();
-      // m_elbow.updateAngle();
-      // m_shoulder.updateSpeed();
-      // m_shoulder.updateAngle();
-      processControl();
-      publishResults();
-      return;
-    default:
-      // m_elbow.updateSpeed(0);
-      // m_elbow.publish();
-      m_elbow.updateAngle();
-      m_shoulder.updateAngle();
-
-      return;
-    }
-    break;
+    processControl();
+    publishResults();
+    return;
 
   case WorkMode::MANUAL:
     ROS_DEBUG_STREAM(YELLOW("WorkMode::MANUAL"));
@@ -100,9 +83,24 @@ template <typename T> bool ManipulatorControlHandler<T>::setup() {
 template <typename T> void ManipulatorControlHandler<T>::processControl() {
   if (!setup())
     return;
-  processAngleControl(m_elbow.getAngle(),
-                      m_elbow.calcAngle(m_pipe.getRadius()));
-  processForceControl(m_payload.getForce(), getForce());
+  switch (m_lockStatus) {
+  case LockStatus::UNLOCKED:
+    ROS_DEBUG_STREAM(YELLOW("LockStatus::UNLOCKED"));
+    // Основная логика управления
+    // m_elbow.updateSpeed();
+    // m_elbow.updateAngle();
+    // m_shoulder.updateSpeed();
+    // m_shoulder.updateAngle();
+    processAngleControl(m_elbow.getAngle(),
+                        m_elbow.calcAngle(m_pipe.getRadius()));
+    processForceControl(m_payload.getForce(), getForce());
+    break;
+  default:
+    // m_elbow.updateSpeed(0);
+    // m_elbow.publish();
+    m_elbow.updateAngle();
+    m_shoulder.updateAngle();
+  }
 }
 template <typename T>
 void ManipulatorControlHandler<T>::processAngleControl(const T currentAngle,
