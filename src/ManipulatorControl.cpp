@@ -57,7 +57,7 @@ template <typename T> T ManipulatorControlHandler<T>::calcCurrentRadius() {
   return radius_;
 }
 template <typename T> void ManipulatorControlHandler<T>::processControl() {
-  if (!setup())
+  if (!processRadiusControl(m_pipe.getRadius(), calcCurrentRadius()))
     return;
   switch (m_lockStatus) {
   case LockStatus::UNLOCKED:
@@ -74,16 +74,16 @@ template <typename T> void ManipulatorControlHandler<T>::processControl() {
   }
 }
 template <typename T>
-bool ManipulatorControlHandler<T>::setup(
-    /*target_radius, current_radius, margin*/) {
-  ROS_DEBUG_STREAM(YELLOW("\nsetup()"));
+bool ManipulatorControlHandler<T>::processRadiusControl(
+    const T currentRadius, const T targetRadius, const T radiusTreshold) {
+  ROS_DEBUG_STREAM(YELLOW("\nprocessRadiusControl()"));
   // TODO: Если заблокированиы - манипуляторы в 0
   // Обновляем скорости
 
   ROS_DEBUG_STREAM(CYAN("Checking for reach..."));
   // bool state_ = m_shoulder.checkAngleDiff() && m_elbow.checkAngleDiff() ||
   //               m_payload.getForce() > 20000;
-  bool state_ = r2d2_math::abs(m_pipe.getRadius() - calcCurrentRadius()) < 10;
+  bool state_ = r2d2_math::abs(currentRadius - targetRadius) < radiusTreshold;
   if (!state_) {
     ROS_DEBUG_STREAM(RED("No reach!"));
     ROS_DEBUG(" ");
