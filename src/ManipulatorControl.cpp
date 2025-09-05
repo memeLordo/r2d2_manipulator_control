@@ -29,8 +29,7 @@ void ManipulatorControlHandler<T>::callbackManipulator(
   case WorkMode::AUTO:
     ROS_DEBUG_STREAM(YELLOW("WorkMode::AUTO"));
     //  Проверка блокировки
-    m_elbow.updateAngle();
-    m_shoulder.updateAngle();
+    updateAngles();
     processControl();
     publishResults();
     return;
@@ -46,6 +45,10 @@ void ManipulatorControlHandler<T>::callbackManipulator(
     ROS_DEBUG_STREAM(YELLOW("Pending mode"));
     return;
   }
+}
+template <typename T> void ManipulatorControlHandler<T>::updateAngles() {
+  m_elbow.updateAngle();
+  m_shoulder.updateAngle();
 }
 
 template <typename T> void ManipulatorControlHandler<T>::calcCurrentRadius() {
@@ -72,8 +75,7 @@ template <typename T> void ManipulatorControlHandler<T>::processControl() {
     break;
   default:
     // m_elbow.updateSpeed(0);
-    m_elbow.updateAngle();
-    m_shoulder.updateAngle();
+    updateAngles();
   }
 }
 template <typename T>
