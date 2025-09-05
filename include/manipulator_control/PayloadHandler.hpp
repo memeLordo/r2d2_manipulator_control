@@ -28,9 +28,9 @@ public:
     ros::topic::waitForMessage<r2d2_msg_pkg::DriverState>(m_outputNode);
   }
   T getForce() const {
-    T force = static_cast<T>(m_callbackParams.force);
-    ROS_DEBUG_STREAM(s_name << "::getForce() : " << WHITE(force));
-    return force;
+    T force_ = static_cast<T>(m_callbackParams.force);
+    ROS_DEBUG_STREAM(s_name << "::getForce() : " << WHITE(force_));
+    return force_;
   };
 };
 

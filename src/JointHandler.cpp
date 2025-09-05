@@ -20,10 +20,10 @@ JointHandler<T>::JointHandler(ros::NodeHandle *node, const std::string &name,
       node->advertise<r2d2_msg_pkg::DriverCommand>(m_inputNode, QUEUE_SIZE);
 }
 template <typename T> T JointHandler<T>::calcAngle(T radius) {
-  T res = horner::polynome(m_coeffs, radius);
+  T radius_ = horner::polynome(m_coeffs, radius);
   ROS_DEBUG_STREAM(m_name << "::calcAngle(radius = " << WHITE(radius)
-                          << ") : " << WHITE(res));
-  return r2d2_math::max<T>(res, 0);
+                          << ") : " << WHITE(radius_));
+  return r2d2_math::max<T>(radius_, 0);
 }
 
 template <typename T>

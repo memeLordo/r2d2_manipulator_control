@@ -29,9 +29,9 @@ public:
     ros::topic::waitForMessage<r2d2_msg_pkg::PipeParameters>(m_outputNode);
   }
   T getRadius() const {
-    auto radius = m_callbackParams.radius();
-    ROS_DEBUG_STREAM(s_name << "::getRadius() : " << WHITE(radius));
-    return radius;
+    T radius_ = m_callbackParams.radius();
+    ROS_DEBUG_STREAM(s_name << "::getRadius() : " << WHITE(radius_));
+    return radius_;
   };
 };
 

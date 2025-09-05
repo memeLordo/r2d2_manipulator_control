@@ -80,14 +80,14 @@ public:
   };
 
   T getTargetForce() const {
-    auto force = static_cast<T>(m_params.force_needed);
-    ROS_DEBUG_STREAM("ManipulatorControl::getForce() : " << WHITE(force));
-    return force;
+    T force_ = static_cast<T>(m_params.force_needed);
+    ROS_DEBUG_STREAM("ManipulatorControl::getForce() : " << WHITE(force_));
+    return force_;
   };
   T getRadius() const {
-    auto radius = m_params.r0;
-    ROS_DEBUG_STREAM("ManipulatorControl::getRadius() : " << WHITE(radius));
-    return radius;
+    T radius_ = m_params.r0;
+    ROS_DEBUG_STREAM("ManipulatorControl::getRadius() : " << WHITE(radius_));
+    return radius_;
   };
 };
 
