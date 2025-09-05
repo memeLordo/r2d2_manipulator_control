@@ -130,7 +130,9 @@ public:
   T getAngleTolerance() const { return m_angleTolerance; };
 
   T calcAngle(T radius);
-  T calcRadius(T targetRadius) { return getRadius(calcAngle(targetRadius)); };
+  T calcRadius(T targetRadius) const {
+    return getRadius(calcAngle(targetRadius));
+  };
 
   bool checkAngleDiffByRadius(const T targetRadius,
                               const bool isAbsolute = true) const {
