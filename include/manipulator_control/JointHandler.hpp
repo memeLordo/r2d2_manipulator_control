@@ -67,6 +67,7 @@ public:
                             << YELLOW("callback = " << m_callbackParams.theta)
                             << ") : " << WHITE(theta_));
     m_params.theta = theta_;
+    setControlByAngle();
   };
   void updateControlWord() {
     auto control_word_ =
@@ -84,6 +85,7 @@ public:
   void updateAngle(T theta) {
     ROS_DEBUG_STREAM(m_name << "::updateAngle(theta = " << WHITE(theta) << ")");
     m_params.theta = theta;
+    setControlByAngle();
   };
   void updateAngleByRadius(T radius) { updateAngle(calcAngle(radius)); };
   void setHoldControl() {
