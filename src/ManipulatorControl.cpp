@@ -75,8 +75,8 @@ template <typename T> void ManipulatorControlHandler<T>::processControl() {
   }
 }
 template <typename T>
-bool ManipulatorControlHandler<T>::processRadiusControl(
-    const T currentRadius, const T targetRadius, const T radiusTreshold) {
+bool ManipulatorControlHandler<T>::processRadiusControl(T radiusDiff,
+                                                        T radiusTreshold) {
   ROS_DEBUG_STREAM(YELLOW("\nprocessRadiusControl()"));
   // TODO: Если заблокированиы - манипуляторы в 0
   // Обновляем скорости
@@ -99,8 +99,7 @@ bool ManipulatorControlHandler<T>::processRadiusControl(
   return state_;
 }
 template <typename T>
-void ManipulatorControlHandler<T>::processAngleControl(const T currentAngle,
-                                                       const T targetAngle,
+void ManipulatorControlHandler<T>::processAngleControl(const T angleDiff,
                                                        const T angleTreshold) {
   ROS_DEBUG_STREAM(MAGENTA("\nprocessAngleControl()"));
   ROS_DEBUG_STREAM(CYAN("Calculating angles"));
@@ -121,8 +120,7 @@ void ManipulatorControlHandler<T>::processAngleControl(const T currentAngle,
   // m_shoulder.control_word = 10;
 }
 template <typename T>
-void ManipulatorControlHandler<T>::processForceControl(const T currentForce,
-                                                       const T targetForce,
+void ManipulatorControlHandler<T>::processForceControl(const T forceDiff,
                                                        const T forceTreshold) {
   ROS_DEBUG_STREAM(MAGENTA("\nprocessForceControl()"));
   const auto forceDiff_ = currentForce - targetForce;

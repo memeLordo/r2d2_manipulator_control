@@ -31,12 +31,9 @@ private:
   void callbackManipulator(const ros::TimerEvent &);
   void calcCurrentRadius();
   void processControl();
-  bool processRadiusControl(const T correntRadius, const T targetRadius,
-                            const T radiusTreshold = 5);
-  void processAngleControl(const T currentAngle, const T targetAngle,
-                           const T angleTreshold = 0.5);
-  void processForceControl(const T currentForce, const T targetForce,
-                           const T forceTreshold = 1e3);
+  bool processRadiusControl(const T radiusDiff, const T radiusTreshold = 5);
+  void processAngleControl(const T angleDiff, const T angleTreshold = 0.5);
+  void processForceControl(const T forceDiff, const T forceTreshold = 1e3);
   void publishResults();
 
 public:
