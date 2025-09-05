@@ -29,6 +29,7 @@ public:
 
 private:
   void callbackManipulator(const ros::TimerEvent &);
+  void processStop();
   void processControl();
   bool
   processRadiusControl(const T radiusDiff,

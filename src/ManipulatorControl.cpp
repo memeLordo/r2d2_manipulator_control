@@ -36,20 +36,26 @@ void ManipulatorControlHandler<T>::callbackManipulator(
     ROS_DEBUG_STREAM(YELLOW("WorkMode::MANUAL"));
     resetMode();
     return;
+
   case WorkMode::STOP:
     ROS_DEBUG_STREAM(YELLOW("WorkMode::STOP"));
-    setTargetRadius(getRadius());
-    // TODO: add config margin
-    if (processRadiusControl(m_currentRadius - m_targetRadius, 0.1))
-      resetMode();
-    publishResults();
+    processStop();
     return;
+
   default:
     ROS_DEBUG_STREAM(YELLOW("Pending mode"));
     return;
   }
 }
 
+template <typename T> void ManipulatorControlHandler<T>::processStop() {
+  ROS_DEBUG_STREAM(YELLOW("WorkMode::STOP"));
+  setTargetRadius(getRadius());
+  // TODO: add config margin
+  if (processRadiusControl(m_currentRadius - m_targetRadius, 0.1))
+    resetMode();
+  publishResults();
+}
 template <typename T> void ManipulatorControlHandler<T>::processControl() {
   setTargetRadius(m_pipe.getRadius());
   calcCurrentRadius();
