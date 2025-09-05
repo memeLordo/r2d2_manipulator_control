@@ -91,17 +91,6 @@ void ManipulatorControlHandler<T>::processRadiusControl() {
   ROS_DEBUG_STREAM(RED("\nend") << MAGENTA("::processRadiusControl()"));
 }
 template <typename T>
-void ManipulatorControlHandler<T>::processAngleControl(const T angleDiff,
-                                                       const T threshold) {
-  ROS_DEBUG_STREAM(MAGENTA("\nprocessAngleControl()"));
-  const bool isAngleReached_ = r2d2_math::abs(angleDiff) >= threshold;
-  ROS_DEBUG_STREAM(BLUE("isAngleReached_ = " << isAngleReached_));
-  ROS_DEBUG_STREAM_COND(isAngleReached_, CYAN("OK!"));
-  if (isAngleReached_)
-    m_shoulder.updateAngleByRadius(m_targetRadius);
-  ROS_DEBUG_STREAM(RED("\nend") << MAGENTA("::processAngleControl()"));
-}
-template <typename T>
 void ManipulatorControlHandler<T>::processForceControl(const T forceDiff,
                                                        const T threshold) {
   ROS_DEBUG_STREAM(MAGENTA("\nprocessForceControl()"));

@@ -33,9 +33,6 @@ private:
   void processControl();
   void processRadiusControl();
   void
-  processAngleControl(const T angleDiff,
-                      const T threshold = 0.5); // TODO: add threshold config
-  void
   processForceControl(const T forceDiff,
                       const T threshold = 1e3); // TODO: add threshold config
 
