@@ -14,6 +14,8 @@ private:
   r2d2_state::LockStatus m_lockStatus{};
 
   r2d2_type::manipulator16_t<T> m_params{};
+  T m_currentRadius{};
+  T m_targetRadius{};
 
   PayloadHandler<T> m_payload;
   PipeHandler<T> m_pipe;
