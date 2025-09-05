@@ -50,6 +50,10 @@ private:
     m_elbow.publish();
     m_shoulder.publish();
   };
+  void setTargetRadius(T radius) {
+    ROS_DEBUG_STREAM(RED("targetRadius = ") << WHITE(m_targetRadius));
+    m_targetRadius = radius;
+  };
 
 public:
   void updateNozzleType();
@@ -91,10 +95,6 @@ public:
   void setLock(T value) {
     ROS_DEBUG_STREAM("Set lock(value = " << WHITE(value) << ")");
     m_lockStatus = static_cast<r2d2_state::LockStatus>(value);
-  };
-  void setTargetRadius(T radius) {
-    ROS_DEBUG_STREAM("Set targetRadius(radius = " << WHITE(radius) << ")");
-    m_targetRadius = radius;
   };
 
   T getTargetForce() const {
