@@ -6,14 +6,18 @@ namespace config {
 
 namespace shoulder {
 const std::vector<double> coeffs{0.00024, -0.142, 20.9};
-const int length{363}; // mm
-const int speed{100};  // rad/s
+const int length{363};  // mm
+const int speed{100};   // rad/s
+const int offset{0};    // deg
+const int tolerance{0}; // deg
 } // namespace shoulder
 
 namespace elbow {
 const std::vector<double> coeffs{-0.00011, 0.341, -105.2};
-const int length{180}; // mm
-const int speed{100};  // rad/s
+const int length{180};  // mm
+const int speed{100};   // rad/s
+const int offset{0};    // deg
+const int tolerance{0}; // deg
 } // namespace elbow
 
 namespace ema {

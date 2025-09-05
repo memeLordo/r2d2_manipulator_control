@@ -13,7 +13,6 @@ template <typename T = double> class JointHandler {
 private:
   r2d2_type::joint_t<T, r2d2_commands::ControlType> m_params{};
   r2d2_type::joint16_t m_callbackParams{};
-  const r2d2_type::delta_t<T> m_angleDeviation;
 
   ros::Subscriber m_subscriber;
   ros::Publisher m_publisher;
@@ -24,12 +23,15 @@ private:
   const std::vector<T> m_coeffs;
   const T m_length;
   const T m_speed;
+  const T m_angleOffset;
+  const T m_angleTolerance;
 
 public:
   JointHandler() = default;
   JointHandler(ros::NodeHandle *node, const std::string &name,
                const std::string &inputTopic, const std::string &outputTopic,
-               const T &length, const T &speed, const std::vector<T> &coeffs);
+               const T &length, const T &speed, const T &offset,
+               const T &tolerance, const std::vector<T> &coeffs);
 
 private:
   void callbackJoint(const r2d2_msg_pkg::DriverStateConstPtr &msg) {
@@ -113,12 +115,6 @@ public:
     m_publisher.publish(prepareMsg());
   };
 
-  bool checkAngleDiffByRadius(T targetRadius, const bool isAbsolute = true) {
-    if (isAbsolute)
-      return r2d2_math::abs(getAngle() - calcAngle(targetRadius)) <
-             getAngleTolerance();
-    return (getAngle() - calcAngle(targetRadius)) < getAngleTolerance();
-  };
   // T getSpeed() const {
   //   ROS_DEBUG_STREAM("Joint::getSpeed() : " << WHITE(m_params.omega));
   //   return m_params.omega;
@@ -130,11 +126,18 @@ public:
   T getRadius() const { return m_length * r2d2_math::sin(getAngle()); };
   T getRadius(T theta) const { return m_length * r2d2_math::sin(theta); };
 
+  T getAngleOffset() const { return m_angleOffset; };
+  T getAngleTolerance() const { return m_angleTolerance; };
+
   T calcAngle(T radius);
   T calcRadius(T targetRadius) { return getRadius(calcAngle(targetRadius)); };
 
-  T getAngleTolerance() const { return m_angleDeviation.tolerance; };
-  T getAngleOffset() const { return m_angleDeviation.offset; };
+  bool checkAngleDiffByRadius(T targetRadius, const bool isAbsolute = true) {
+    if (isAbsolute)
+      return r2d2_math::abs(getAngle() - calcAngle(targetRadius)) <
+             getAngleTolerance();
+    return (getAngle() - calcAngle(targetRadius)) < getAngleTolerance();
+  };
 };
 
 template <typename T = double> class ShoulderHandler : public JointHandler<T> {
