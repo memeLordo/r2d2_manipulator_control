@@ -53,8 +53,8 @@ template <typename T> void ManipulatorControlHandler<T>::calcCurrentRadius() {
 }
 
 template <typename T> void ManipulatorControlHandler<T>::processControl() {
-  setTargetRadius(m_pipe.getRadius());
-  calcCurrentRadius();
+  setTargetRadius(m_pipe.getRadius()); // TODO: update log
+  calcCurrentRadius();                 // TODO: update log
 
   if (!processRadiusControl(m_targetRadius - m_currentRadius))
     return;
@@ -73,7 +73,8 @@ template <typename T>
 bool ManipulatorControlHandler<T>::processRadiusControl(T radiusDiff,
                                                         T radiusTreshold) {
   ROS_DEBUG_STREAM(YELLOW("\nprocessRadiusControl()"));
-  const bool isRadiusReached_ = radiusDiff < radiusTreshold;
+  const bool isRadiusReached_ =
+      radiusDiff < radiusTreshold; // TODO: fix, add log
   if (!isRadiusReached_) {
     ROS_DEBUG_STREAM(CYAN("UPDATING ANGLES"));
     m_elbow.updateAngleByRadius(m_targetRadius);
@@ -87,8 +88,8 @@ template <typename T>
 void ManipulatorControlHandler<T>::processAngleControl(const T angleDiff,
                                                        const T angleTreshold) {
   ROS_DEBUG_STREAM(MAGENTA("\nprocessAngleControl()"));
-  const bool isAngleReached_ =
-      r2d2_math::abs(angleDiff + angleTreshold) >= angleTreshold;
+  const bool isAngleReached_ = r2d2_math::abs(angleDiff + angleTreshold) >=
+                               angleTreshold; // TODO: fix, add log
   if (isAngleReached_) {
     // Success angle control
     m_shoulder.updateAngleByRadius(m_targetRadius);
@@ -101,12 +102,12 @@ template <typename T>
 void ManipulatorControlHandler<T>::processForceControl(const T forceDiff,
                                                        const T forceTreshold) {
   ROS_DEBUG_STREAM(MAGENTA("\nprocessForceControl()"));
-  const bool isForceHigh_ = forceDiff > forceTreshold;
-  const bool isForceLow_ = forceDiff < -forceTreshold;
+  const bool isForceHigh_ = forceDiff > forceTreshold; // TODO: fix, add log
+  const bool isForceLow_ = forceDiff < -forceTreshold; // TODO: fix, add log
   if (isForceHigh_) {
-    m_shoulder.updateAngleBy(-0.1);
+    m_shoulder.updateAngleBy(-0.1); // TODO: fix
   } else if (isForceLow_) {
-    m_shoulder.updateAngleBy(0.1);
+    m_shoulder.updateAngleBy(0.1); // TODO: fix
   } else {
     ROS_DEBUG_STREAM(CYAN("No change."));
     m_shoulder.updateAngle();
@@ -117,10 +118,10 @@ template <typename T> void ManipulatorControlHandler<T>::updateNozzleType() {
   ROS_DEBUG_STREAM(MAGENTA("updateNozzleType()"));
   switch (m_nozzleType) {
   case NozzleType::BRUSH:
-    m_params = r2d2_type::manipulator16_t<T>{10000, 347.0};
+    m_params = r2d2_type::manipulator16_t<T>{10000, 347.0}; // TODO: add config
     return;
   case NozzleType::EMA:
-    m_params = r2d2_type::manipulator16_t<T>{15000, 331.0};
+    m_params = r2d2_type::manipulator16_t<T>{15000, 331.0}; // TODO: add config
     return;
   default:
     return;
