@@ -97,17 +97,16 @@ template <typename T>
 void ManipulatorControlHandler<T>::processForceControl(const T forceDiff,
                                                        const T forceTreshold) {
   ROS_DEBUG_STREAM(MAGENTA("\nprocessForceControl()"));
-  const bool isForceHigh_ = forceDiff > forceTreshold; // TODO: fix, add log
-  const bool isForceLow_ = forceDiff < -forceTreshold; // TODO: fix, add log
-  if (isForceHigh_) {
-    m_shoulder.updateAngleBy(-0.1); // TODO: fix
-  } else if (isForceLow_) {
-    m_shoulder.updateAngleBy(0.1); // TODO: fix
-  } else {
-    ROS_DEBUG_STREAM(CYAN("No change."));
-    m_shoulder.updateAngle();
-    return;
-  }
+  const bool isForceHigh_ = forceDiff < forceTreshold;
+  const bool isForceLow_ = forceDiff > -forceTreshold;
+  ROS_DEBUG_STREAM(BLUE("isForceHigh_ = " << isForceHigh_));
+  ROS_DEBUG_STREAM(BLUE("isForceLow_ = " << isForceLow_));
+  ROS_DEBUG_STREAM_COND(isForceHigh_ || isForceLow_, CYAN("OK!"));
+  if (isForceHigh_)
+    m_shoulder.updateAngleBy(-0.1);
+  else if (isForceLow_)
+    m_shoulder.updateAngleBy(0.1);
+  ROS_DEBUG_STREAM(RED("\nend") << MAGENTA("::processForceControl()"));
 }
 template <typename T> void ManipulatorControlHandler<T>::updateNozzleType() {
   ROS_DEBUG_STREAM(MAGENTA("updateNozzleType()"));
