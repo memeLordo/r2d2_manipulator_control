@@ -52,8 +52,9 @@ template <typename T> void ManipulatorControlHandler<T>::processControl() {
     ROS_DEBUG_STREAM(YELLOW("LockStatus::UNLOCKED"));
     if (!processRadiusControl(m_targetRadius - m_currentRadius))
       return;
-    processAngleControl(m_elbow.calcAngle(m_targetRadius) - m_elbow.getAngle());
-    processForceControl(getTargetForce() - m_payload.getForce());
+    processAngleControl(m_elbow.getAngle() -
+                        m_elbow.calcAngle(m_targetRadius, 5));
+    processForceControl(m_payload.getForce() - getTargetForce());
     break;
   default:
     return;
