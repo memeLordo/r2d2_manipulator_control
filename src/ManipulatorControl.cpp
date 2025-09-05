@@ -50,10 +50,10 @@ void ManipulatorControlHandler<T>::callbackManipulator(
 
 template <typename T> void ManipulatorControlHandler<T>::processStop() {
   ROS_DEBUG_STREAM(YELLOW("WorkMode::STOP"));
+  updateAngles();
   setTargetRadius(getRadius());
-  // TODO: add config margin
-  if (processRadiusControl(m_currentRadius - m_targetRadius, 0.1))
-    resetMode();
+  // if (processRadiusControl(m_currentRadius - m_targetRadius, 0.1))
+  //   resetMode();
   publishResults();
 }
 template <typename T> void ManipulatorControlHandler<T>::processControl() {
