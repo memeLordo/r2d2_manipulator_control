@@ -114,24 +114,19 @@ template <typename T>
 void ManipulatorControlHandler<T>::processForceControl(const T forceDiff,
                                                        const T forceTreshold) {
   ROS_DEBUG_STREAM(MAGENTA("\nprocessForceControl()"));
-  const auto forceDiff_ = currentForce - targetForce;
-  ROS_DEBUG_STREAM("current_force check");
-  if (forceDiff_ < -forceTreshold) {
-    ROS_DEBUG_STREAM(CYAN("current_force < target_force!"));
-    m_shoulder.updateAngle(m_shoulder.getAngle() + 0.1);
-  } else if (forceDiff_ > forceTreshold) {
-    ROS_DEBUG_STREAM(CYAN("current_force > target_force!"));
-    m_shoulder.updateAngle(m_shoulder.getAngle() - 0.1);
+  const bool isForceHigh_ = forceDiff > forceTreshold;
+  const bool isForceLow_ = forceDiff < -forceTreshold;
+  if (isForceHigh_) {
+    m_shoulder.updateAngle(m_shoulder.getAngle() -
+                           0.1); // TODO: increaseAngle(speed)
+  } else if (isForceLow_) {
+    m_shoulder.updateAngle(m_shoulder.getAngle() +
+                           0.1); // TODO: decreaseAngle(speed)
   } else {
     ROS_DEBUG_STREAM(CYAN("No change."));
     m_shoulder.updateAngle();
-
-    m_elbow.setHoldControl();
-    m_shoulder.setHoldControl();
     return;
   }
-  m_elbow.setControlByAngle();
-  m_shoulder.setControlByAngle();
 }
 template <typename T> void ManipulatorControlHandler<T>::publishResults() {
   ROS_DEBUG_STREAM(MAGENTA("\npublishResults()"));
