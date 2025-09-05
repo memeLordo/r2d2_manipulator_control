@@ -62,7 +62,7 @@ template <typename T> void ManipulatorControlHandler<T>::processControl() {
   switch (m_lockStatus) {
   case LockStatus::UNLOCKED:
     ROS_DEBUG_STREAM(YELLOW("LockStatus::UNLOCKED"));
-    processRadiusControl();
+    processAngleControl();
     processForceControl(m_payload.getForce() - getTargetForce());
     break;
   default:
@@ -70,8 +70,7 @@ template <typename T> void ManipulatorControlHandler<T>::processControl() {
   }
   publishResults();
 }
-template <typename T>
-void ManipulatorControlHandler<T>::processRadiusControl() {
+template <typename T> void ManipulatorControlHandler<T>::processAngleControl() {
   ROS_DEBUG_STREAM(MAGENTA("\nprocessRadiusControl()"));
   // TODO: add local m_joint margin
   const bool isElbowReached_ = m_elbow.checkAngleDiffByRadius(m_targetRadius);
