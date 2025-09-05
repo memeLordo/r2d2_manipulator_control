@@ -75,9 +75,9 @@ template <typename T> void ManipulatorControlHandler<T>::processControl() {
 }
 template <typename T> void ManipulatorControlHandler<T>::processAngleControl() {
   ROS_DEBUG_STREAM(MAGENTA("\nprocessRadiusControl()"));
-  const bool isElbowReached_ = m_elbow.checkAngleDiffByRadius(m_targetRadius);
+  const bool isElbowReached_ = m_elbow.checkAngleDiff(m_targetRadius);
   const bool isShoulderReached_ =
-      m_shoulder.checkAngleDiffByRadius(m_targetRadius, false);
+      m_shoulder.checkAngleDiff(m_targetRadius, false);
 
   ROS_DEBUG_STREAM(BLUE("isElbowReached_ = " << isElbowReached_));
   ROS_DEBUG_STREAM(BLUE("isShoulderReached_ = " << isShoulderReached_));

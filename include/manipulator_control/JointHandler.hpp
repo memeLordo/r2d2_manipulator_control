@@ -134,8 +134,8 @@ public:
     return getRadius(calcAngle(targetRadius));
   };
 
-  bool checkAngleDiffByRadius(const T targetRadius,
-                              const bool isAbsolute = true) const {
+  bool checkAngleDiff(const T targetRadius,
+                      const bool isAbsolute = true) const {
     const T angleDiff_ = getAngle() - calcAngle(targetRadius);
     if (isAbsolute)
       return r2d2_math::abs(angleDiff_) < getAngleTolerance();
