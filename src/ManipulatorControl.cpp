@@ -2,6 +2,7 @@
 #include "utils/Config.hpp"
 
 using namespace r2d2_state;
+using namespace r2d2_math;
 
 template <typename T>
 ManipulatorControlHandler<T>::ManipulatorControlHandler(ros::NodeHandle *node)
@@ -88,15 +89,12 @@ template <typename T> void ManipulatorControlHandler<T>::processAngleControl() {
 template <typename T>
 void ManipulatorControlHandler<T>::processForceControl(const T forceDiff) {
   ROS_DEBUG_STREAM(MAGENTA("\nprocessForceControl()"));
-  const bool isForceHigh_ = forceDiff > m_elbow.getForceTolerance();
-  const bool isForceLow_ = forceDiff < -m_elbow.getForceTolerance();
-  ROS_DEBUG_STREAM(BLUE("isForceHigh_ = " << isForceHigh_));
-  ROS_DEBUG_STREAM(BLUE("isForceLow_ = " << isForceLow_));
-  ROS_DEBUG_STREAM_COND(isForceHigh_ || isForceLow_, CYAN("OK!"));
-  if (isForceHigh_)
-    m_elbow.updateAngleBy(-0.1);
-  else if (isForceLow_)
-    m_elbow.updateAngleBy(0.1);
+  const T forceDiff_ = sqr(forceDiff) - sqr(m_elbow.getForceTolerance());
+  const bool isForceReached_ = forceDiff_ > 0;
+
+  ROS_DEBUG_STREAM(BLUE("isForceReached_ = " << isForceReached_));
+  if (isForceReached_)
+    m_elbow.updateAngleBy(sign(forceDiff_) * 0.1);
   ROS_DEBUG_STREAM(RED("\nend") << MAGENTA("::processForceControl()"));
 }
 template <typename T> void ManipulatorControlHandler<T>::updateNozzleType() {
