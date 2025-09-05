@@ -61,9 +61,9 @@ template <typename T> void ManipulatorControlHandler<T>::processControl() {
 }
 template <typename T>
 bool ManipulatorControlHandler<T>::processRadiusControl(T radiusDiff,
-                                                        T radiusTreshold) {
+                                                        T threshold) {
   ROS_DEBUG_STREAM(MAGENTA("\nprocessRadiusControl()"));
-  const bool isRadiusReached_ = radiusDiff < radiusTreshold;
+  const bool isRadiusReached_ = radiusDiff < threshold;
   ROS_DEBUG_STREAM(BLUE("isRadiusReached_ = " << isRadiusReached_));
   ROS_DEBUG_STREAM_COND(isRadiusReached_, CYAN("OK!"));
   if (!isRadiusReached_) {
@@ -76,10 +76,10 @@ bool ManipulatorControlHandler<T>::processRadiusControl(T radiusDiff,
 }
 template <typename T>
 void ManipulatorControlHandler<T>::processAngleControl(const T angleDiff,
-                                                       const T angleTreshold) {
+                                                       const T threshold) {
   ROS_DEBUG_STREAM(MAGENTA("\nprocessAngleControl()"));
   const bool isAngleReached_ =
-      r2d2_math::abs(angleDiff + angleTreshold) >= angleTreshold;
+      r2d2_math::abs(angleDiff + threshold) >= threshold;
   ROS_DEBUG_STREAM(BLUE("isAngleReached_ = " << isAngleReached_));
   ROS_DEBUG_STREAM_COND(isAngleReached_, CYAN("OK!"));
   if (isAngleReached_)
@@ -88,10 +88,10 @@ void ManipulatorControlHandler<T>::processAngleControl(const T angleDiff,
 }
 template <typename T>
 void ManipulatorControlHandler<T>::processForceControl(const T forceDiff,
-                                                       const T forceTreshold) {
+                                                       const T threshold) {
   ROS_DEBUG_STREAM(MAGENTA("\nprocessForceControl()"));
-  const bool isForceHigh_ = forceDiff < forceTreshold;
-  const bool isForceLow_ = forceDiff > -forceTreshold;
+  const bool isForceHigh_ = forceDiff < threshold;
+  const bool isForceLow_ = forceDiff > -threshold;
   ROS_DEBUG_STREAM(BLUE("isForceHigh_ = " << isForceHigh_));
   ROS_DEBUG_STREAM(BLUE("isForceLow_ = " << isForceLow_));
   ROS_DEBUG_STREAM_COND(isForceHigh_ || isForceLow_, CYAN("OK!"));
