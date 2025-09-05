@@ -112,15 +112,11 @@ public:
     m_publisher.publish(prepareMsg());
   };
 
-  std::string getInputNode() const { return m_inputNode; };
-  std::string getOutputNode() const { return m_outputNode; };
-
-  bool checkAngleDiff(T margin = 0.1) const {
-    auto angle_ = getAngle();
-    auto input_angle_ = getInputAngle();
-    bool res = r2d2_math::abs(angle_ - input_angle_) < margin;
-    ROS_DEBUG_STREAM(m_name << "::checkAngleDiff() : " << WHITE(res));
-    return res;
+  bool checkAngleDiffByRadius(T targetRadius, const bool isAbsolute = true) {
+    if (isAbsolute)
+      return r2d2_math::abs(getAngle() - calcAngle(targetRadius)) <
+             0;                                        // threshold_
+    return (getAngle() - calcAngle(targetRadius)) < 0; // threshold_
   };
   // T getSpeed() const {
   //   ROS_DEBUG_STREAM("Joint::getSpeed() : " << WHITE(m_params.omega));

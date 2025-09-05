@@ -1,6 +1,5 @@
 #include "ManipulatorControl.hpp"
 #include "utils/Config.hpp"
-#include "utils/Math.hpp"
 
 using namespace r2d2_state;
 
@@ -75,11 +74,9 @@ template <typename T>
 void ManipulatorControlHandler<T>::processRadiusControl() {
   ROS_DEBUG_STREAM(MAGENTA("\nprocessRadiusControl()"));
   // TODO: add local m_joint margin
-  const bool isElbowReached_ =
-      r2d2_math::abs(m_elbow.getRadius() -
-                     m_elbow.calcRadius(m_targetRadius, 5)) < 1; // margin
+  const bool isElbowReached_ = m_elbow.checkAngleDiffByRadius(m_targetRadius);
   const bool isShoulderReached_ =
-      (m_shoulder.getRadius() - m_shoulder.calcRadius(m_targetRadius)) > 0;
+      m_shoulder.checkAngleDiffByRadius(m_targetRadius, false);
 
   ROS_DEBUG_STREAM(BLUE("isElbowReached_ = " << isElbowReached_));
   ROS_DEBUG_STREAM(BLUE("isShoulderReached_ = " << isShoulderReached_));
