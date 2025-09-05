@@ -26,11 +26,8 @@ void ManipulatorControlHandler<T>::callbackManipulator(
    * 5. Опубликовать все переменные
    */
   switch (m_workMode) {
-  // Ранний выход при отключенном автоматическом режиме
   case WorkMode::AUTO:
     ROS_DEBUG_STREAM(YELLOW("WorkMode::AUTO"));
-    //  Проверка блокировки
-    updateAngles();
     processControl();
     publishResults();
     return;
@@ -56,6 +53,7 @@ template <typename T> void ManipulatorControlHandler<T>::calcCurrentRadius() {
 template <typename T> void ManipulatorControlHandler<T>::processControl() {
   setTargetRadius(m_pipe.getRadius());
   calcCurrentRadius();
+  updateAngles();
   switch (m_lockStatus) {
   case LockStatus::UNLOCKED:
     ROS_DEBUG_STREAM(YELLOW("LockStatus::UNLOCKED"));
@@ -65,7 +63,7 @@ template <typename T> void ManipulatorControlHandler<T>::processControl() {
     processForceControl(getTargetForce() - m_payload.getForce());
     break;
   default:
-    updateAngles();
+    return;
   }
 }
 template <typename T>
