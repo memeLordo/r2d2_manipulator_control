@@ -11,8 +11,8 @@
 template <typename T = double> class JointHandler {
 
 private:
-  r2d2_type::elbow_t<T, r2d2_commands::ControlType> m_params{};
-  r2d2_type::elbow16_t m_callbackParams{};
+  r2d2_type::joint_t<T, r2d2_commands::ControlType> m_params{};
+  r2d2_type::joint16_t m_callbackParams{};
 
   ros::Subscriber m_subscriber;
   ros::Publisher m_publisher;
@@ -33,7 +33,7 @@ public:
 private:
   void callbackJoint(const r2d2_msg_pkg::DriverStateConstPtr &msg) {
     m_callbackParams =
-        r2d2_type::elbow16_t{msg->omega, msg->theta, msg->control_word};
+        r2d2_type::joint16_t{msg->omega, msg->theta, msg->control_word};
   };
 
   r2d2_msg_pkg::DriverCommand prepareMsg() const {
@@ -116,8 +116,7 @@ public:
     ROS_DEBUG_STREAM(m_name << "::getAngle() : " << WHITE(m_params.theta));
     return m_params.theta;
   };
-  T getLength() const { return m_length; };
-  T getRadius() const { return getLength() * r2d2_math::sin(getAngle()); };
+  T getRadius() const { return m_length * r2d2_math::sin(getAngle()); };
 
   T calcAngle(T radius, T margin = 0);
 };
