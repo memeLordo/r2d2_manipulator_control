@@ -86,19 +86,15 @@ bool ManipulatorControlHandler<T>::processRadiusControl(T radiusDiff,
   ROS_DEBUG_STREAM(CYAN("Checking for reach..."));
   // bool state_ = m_shoulder.checkAngleDiff() && m_elbow.checkAngleDiff() ||
   //               m_payload.getForce() > 20000;
-  bool state_ = (currentRadius - targetRadius) > -radiusTreshold;
-  if (!state_) {
-    ROS_DEBUG_STREAM(RED("No reach!"));
-    ROS_DEBUG(" ");
+  const bool isRadiusReached_ = radiusDiff < radiusTreshold;
+  if (!isRadiusReached_) {
     ROS_DEBUG_STREAM(CYAN("UPDATING ANGLES"));
-    m_elbow.updateAngleByRadius(m_pipe.getRadius());
-    m_shoulder.updateAngleByRadius(m_pipe.getRadius());
+    m_elbow.updateAngleByRadius(m_targetRadius);
+    m_shoulder.updateAngleByRadius(m_targetRadius);
   } else {
     ROS_DEBUG_STREAM(CYAN("OK!"));
   }
-  // m_elbow.updateSpeed();
-  // m_shoulder.updateSpeed();
-  return state_;
+  return isRadiusReached_;
 }
 template <typename T>
 void ManipulatorControlHandler<T>::processAngleControl(const T angleDiff,
