@@ -1,8 +1,10 @@
 #include "ManipulatorControl.hpp"
 #include "utils/Config.hpp"
 
-using namespace r2d2_state;
+using namespace config;
 using namespace r2d2_math;
+using namespace r2d2_state;
+using namespace r2d2_type;
 
 template <typename T>
 ManipulatorControlHandler<T>::ManipulatorControlHandler(ros::NodeHandle *node)
@@ -89,7 +91,7 @@ template <typename T> void ManipulatorControlHandler<T>::processAngleControl() {
 template <typename T>
 void ManipulatorControlHandler<T>::processForceControl(const T forceDiff) {
   ROS_DEBUG_STREAM(MAGENTA("\nprocessForceControl()"));
-  const T forceDiff_ = sqr(forceDiff) - sqr(m_elbow.getForceTolerance());
+  const T forceDiff_ = sqr(forceDiff) - sqr(getForceTolerance());
   const bool isForceReached_ = forceDiff_ > 0;
 
   ROS_DEBUG_STREAM(BLUE("isForceReached_ = " << isForceReached_));
@@ -101,12 +103,12 @@ template <typename T> void ManipulatorControlHandler<T>::updateNozzleType() {
   ROS_DEBUG_STREAM(MAGENTA("updateNozzleType()"));
   switch (m_nozzleType) {
   case NozzleType::BRUSH:
-    m_params = r2d2_type::manipulator16_t<T>{config::brush::target_force,
-                                             config::brush::radius0};
+    m_params = manipulator16_t<T>{brush::target_force, brush::force_tolerance,
+                                  brush::radius0};
     return;
   case NozzleType::EMA:
-    m_params = r2d2_type::manipulator16_t<T>{config::ema::target_force,
-                                             config::ema::radius0};
+    m_params = manipulator16_t<T>{ema::target_force, ema::force_tolerance,
+                                  ema::radius0};
     return;
   default:
     return;

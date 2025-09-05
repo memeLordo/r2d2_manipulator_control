@@ -107,6 +107,7 @@ public:
     ROS_DEBUG_STREAM("ManipulatorControl::getRadius() : " << WHITE(radius_));
     return radius_;
   };
+  T getForceTolerance() const { return m_params.force_tolerance; };
 };
 
 #endif // R2D2_MANIPULATOR_CONTROL_HPP

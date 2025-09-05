@@ -22,12 +22,14 @@ const int angle_tolerance{0}; // deg
 
 namespace ema {
 const int target_force{10000}; // N
+const int force_tolerance{0};  // N
 const double radius0{347};     // mm
 } // namespace ema
 
 namespace brush {
-const int target_force{15000}; // N
-const double radius0{331};     // mm
+const int target_force{15000};   // N
+const int force_tolerance{1000}; // N
+const double radius0{331};       // mm
 } // namespace brush
 
 } // namespace config
