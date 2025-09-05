@@ -29,7 +29,6 @@ void ManipulatorControlHandler<T>::callbackManipulator(
   case WorkMode::AUTO:
     ROS_DEBUG_STREAM(YELLOW("WorkMode::AUTO"));
     processControl();
-    publishResults();
     return;
 
   case WorkMode::MANUAL:
@@ -50,15 +49,16 @@ template <typename T> void ManipulatorControlHandler<T>::processControl() {
   switch (m_lockStatus) {
   case LockStatus::UNLOCKED:
     ROS_DEBUG_STREAM(YELLOW("LockStatus::UNLOCKED"));
-    if (!processRadiusControl(m_targetRadius - m_currentRadius))
-      return;
+    if (!processRadiusControl(m_currentRadius - m_targetRadius))
+      break;
     processAngleControl(m_elbow.getAngle() -
                         m_elbow.calcAngle(m_targetRadius, 5));
     processForceControl(m_payload.getForce() - getTargetForce());
     break;
   default:
-    return;
+    break;
   }
+  publishResults();
 }
 template <typename T>
 bool ManipulatorControlHandler<T>::processRadiusControl(T radiusDiff,
