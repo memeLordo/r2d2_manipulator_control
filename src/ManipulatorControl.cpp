@@ -57,9 +57,9 @@ template <typename T> void ManipulatorControlHandler<T>::processStop() {
   publishResults();
 }
 template <typename T> void ManipulatorControlHandler<T>::processControl() {
+  updateAngles();
   setTargetRadius(m_pipe.getRadius());
   calcCurrentRadius();
-  updateAngles();
   switch (m_lockStatus) {
   case LockStatus::UNLOCKED:
     ROS_DEBUG_STREAM(YELLOW("LockStatus::UNLOCKED"));
