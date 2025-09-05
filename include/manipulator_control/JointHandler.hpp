@@ -70,7 +70,6 @@ public:
                             << YELLOW("callback = " << m_callbackParams.theta)
                             << ") : " << WHITE(theta_));
     m_params.theta = theta_;
-    setControlByAngle();
   };
   void updateControlWord() {
     auto control_word_ =
@@ -80,6 +79,7 @@ public:
                      << YELLOW("callback = " << m_callbackParams.control_word)
                      << ") ");
     m_params.control_word = control_word_;
+    setHoldControl();
   };
   // void updateSpeed(T omega) {
   //   ROS_DEBUG_STREAM("Joint::updateSpeed(omega = " << WHITE(omega) << ")");
