@@ -79,9 +79,9 @@ template <typename T> void ManipulatorControlHandler<T>::processAngleControl() {
 
   ROS_DEBUG_STREAM(BLUE("isElbowReached_ = " << isElbowReached_));
   ROS_DEBUG_STREAM(BLUE("isShoulderReached_ = " << isShoulderReached_));
-  if (isElbowReached_) 
+  if (isElbowReached_)
     m_elbow.updateAngleByRadius(m_targetRadius);
-  if (!isShoulderReached_)
+  if (isShoulderReached_)
     m_shoulder.updateAngleByRadius(m_targetRadius);
 
   ROS_DEBUG_STREAM(RED("\nend") << MAGENTA("::processRadiusControl()"));
