@@ -132,11 +132,12 @@ public:
   T calcAngle(T radius);
   T calcRadius(T targetRadius) { return getRadius(calcAngle(targetRadius)); };
 
-  bool checkAngleDiffByRadius(T targetRadius, const bool isAbsolute = true) {
+  bool checkAngleDiffByRadius(const T targetRadius,
+                              const bool isAbsolute = true) const {
+    const T angleDiff_ = getAngle() - calcAngle(targetRadius);
     if (isAbsolute)
-      return r2d2_math::abs(getAngle() - calcAngle(targetRadius)) <
-             getAngleTolerance();
-    return (getAngle() - calcAngle(targetRadius)) < getAngleTolerance();
+      return r2d2_math::abs(angleDiff_) < getAngleTolerance();
+    return angleDiff_ < getAngleTolerance();
   };
 };
 
