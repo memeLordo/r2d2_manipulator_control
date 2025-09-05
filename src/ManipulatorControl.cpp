@@ -7,7 +7,7 @@ using namespace r2d2_state;
 template <typename T>
 ManipulatorControlHandler<T>::ManipulatorControlHandler(ros::NodeHandle *node)
     : m_pipe(node), m_payload(node), m_elbow(node), m_shoulder(node) {
-  const T RATE = node->param<T>("control_rate", 20);
+  const double RATE = node->param<T>("control_rate", 20);
   ROS_DEBUG_STREAM("Set RATE: " << RATE);
   m_timer = node->createTimer(
       ros::Duration(1 / RATE),
