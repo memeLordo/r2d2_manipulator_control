@@ -8,14 +8,14 @@ class ManipulatorServiceHandler {
 private:
   static constexpr const char *s_name = "ManipulatorService";
 
-  ManipulatorControlHandler<> &m_manipulatorControl;
+  ManipulatorControlHandler<> *m_manipulatorControl;
   const std::string m_serviceTopic;
 
   ros::ServiceServer m_manipulatorService;
 
 public:
   ManipulatorServiceHandler(ros::NodeHandle *node,
-                            ManipulatorControlHandler<> &);
+                            ManipulatorControlHandler<> *);
 
 private:
   bool callbackService(r2d2_msg_pkg::ManipulatorCommand::Request &req,

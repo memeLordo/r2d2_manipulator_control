@@ -4,9 +4,9 @@
 using namespace r2d2_state;
 
 ManipulatorServiceHandler::ManipulatorServiceHandler(
-    ros::NodeHandle *node, ManipulatorControlHandler<> &manipulator_controlRef)
+    ros::NodeHandle *node, ManipulatorControlHandler<> *manipulatorControlPtr)
     : m_serviceTopic{"/manipulator_command"},
-      m_manipulatorControl(manipulator_controlRef) {
+      m_manipulatorControl{manipulatorControlPtr} {
   m_manipulatorService = node->advertiseService(
       m_serviceTopic, &ManipulatorServiceHandler::callbackService, this);
 }
@@ -28,7 +28,7 @@ bool ManipulatorServiceHandler::callbackModeService(
   case WorkMode::MANUAL:
   case WorkMode::AUTO:
   case WorkMode::STOP:
-    m_manipulatorControl.setMode(work_mode_);
+    m_manipulatorControl->setMode(work_mode_);
     break;
   default:
     ROS_ERROR_STREAM(RED("Got unknown work mode"));
@@ -45,8 +45,8 @@ bool ManipulatorServiceHandler::callbackNozzleService(
   switch (nozzle_type_) {
   case NozzleType::BRUSH:
   case NozzleType::EMA:
-    m_manipulatorControl.setNozzle(nozzle_type_);
-    m_manipulatorControl.updateNozzleType();
+    m_manipulatorControl->setNozzle(nozzle_type_);
+    m_manipulatorControl->updateNozzleType();
     break;
   default:
     ROS_ERROR("Got unknown nozzle type");
@@ -63,7 +63,7 @@ bool ManipulatorServiceHandler::callbackStatusService(
   switch (lock_status_) {
   case LockStatus::LOCKED:
   case LockStatus::UNLOCKED:
-    m_manipulatorControl.setLock(lock_status_);
+    m_manipulatorControl->setLock(lock_status_);
     break;
   default:
     ROS_ERROR("Got unknown lock status");
