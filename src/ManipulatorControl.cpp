@@ -105,8 +105,8 @@ template <typename T>
 void ManipulatorControlHandler<T>::processForceControl(const T forceDiff,
                                                        const T threshold) {
   ROS_DEBUG_STREAM(MAGENTA("\nprocessForceControl()"));
-  const bool isForceHigh_ = forceDiff > threshold;
-  const bool isForceLow_ = forceDiff < -threshold;
+  const bool isForceHigh_ = forceDiff > threshold; // elbow.threshold;
+  const bool isForceLow_ = forceDiff < -threshold; // -elbow.threshold;
   ROS_DEBUG_STREAM(BLUE("isForceHigh_ = " << isForceHigh_));
   ROS_DEBUG_STREAM(BLUE("isForceLow_ = " << isForceLow_));
   ROS_DEBUG_STREAM_COND(isForceHigh_ || isForceLow_, CYAN("OK!"));
