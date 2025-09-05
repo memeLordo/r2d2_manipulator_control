@@ -1,5 +1,4 @@
 #include "ManipulatorService.hpp"
-#include "utils/Debug.hpp"
 
 using namespace r2d2_state;
 
@@ -31,7 +30,7 @@ bool ManipulatorServiceHandler::callbackModeService(
     m_manipulatorControl->setMode(work_mode_);
     break;
   default:
-    ROS_ERROR_STREAM(RED("Got unknown work mode"));
+    ROS_ERROR_STREAM(("Got unknown work mode"));
     res.success &= false;
   }
   return true;
