@@ -36,7 +36,14 @@ void ManipulatorControlHandler<T>::callbackManipulator(
     ROS_DEBUG_STREAM(YELLOW("WorkMode::MANUAL"));
     resetMode();
     return;
-
+  case WorkMode::STOP:
+    ROS_DEBUG_STREAM(YELLOW("WorkMode::STOP"));
+    setTargetRadius(getRadius());
+    // TODO: add config margin
+    if (processRadiusControl(m_currentRadius - m_targetRadius, 0.1))
+      resetMode();
+    publishResults();
+    return;
   default:
     ROS_DEBUG_STREAM(YELLOW("Pending mode"));
     return;

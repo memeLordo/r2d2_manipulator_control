@@ -27,6 +27,7 @@ bool ManipulatorServiceHandler::callbackModeService(
   switch (work_mode_) {
   case WorkMode::MANUAL:
   case WorkMode::AUTO:
+  case WorkMode::STOP:
     m_manipulatorControl.setMode(work_mode_);
     break;
   default:
