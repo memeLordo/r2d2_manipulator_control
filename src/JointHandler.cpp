@@ -1,9 +1,9 @@
 #include "JointHandler.hpp"
-#include "r2d2_msg_pkg/DriverCommand.h"
 #include "utils/Config.hpp"
-#include "utils/Debug.hpp"
 #include "utils/Math.hpp"
 #include "utils/Polynome.hpp"
+
+using namespace config;
 
 template <typename T>
 JointHandler<T>::JointHandler(ros::NodeHandle *node, const std::string &name,
@@ -11,8 +11,7 @@ JointHandler<T>::JointHandler(ros::NodeHandle *node, const std::string &name,
                               const std::string &outputTopic, const T &length,
                               const T &speed, const std::vector<T> &coeffs)
     : m_name{name}, m_inputTopic{inputTopic}, m_outputTopic{outputTopic},
-      m_length{length}, m_speed{speed}, m_offset{}, m_tolerance{}, // TODO: set
-      m_coeffs{coeffs} {
+      m_angleDeviation{}, m_length{length}, m_speed{speed}, m_coeffs{coeffs} {
   waitForTopic();
   m_subscriber =
       node->subscribe(m_outputTopic, 10, &JointHandler::callbackJoint, this);
@@ -28,13 +27,12 @@ template <typename T> T JointHandler<T>::calcAngle(T radius) {
 template <typename T>
 ShoulderHandler<T>::ShoulderHandler(ros::NodeHandle *node)
     : JointHandler<T>(node, "Shoulder", "/shoulder_input", "/shoulder_output",
-                      config::shoulder::length, config::shoulder::speed,
+                      shoulder::length, shoulder::speed,
                       config::shoulder::coeffs) {}
 template <typename T>
 ElbowHandler<T>::ElbowHandler(ros::NodeHandle *node)
     : JointHandler<T>(node, "Elbow", "/elbow_input", "/elbow_output",
-                      config::elbow::length, config::elbow::speed,
-                      config::elbow::coeffs) {}
+                      elbow::length, elbow::speed, elbow::coeffs) {}
 
 template class JointHandler<>;
 template class ShoulderHandler<>;

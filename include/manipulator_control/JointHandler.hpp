@@ -13,6 +13,7 @@ template <typename T = double> class JointHandler {
 private:
   r2d2_type::joint_t<T, r2d2_commands::ControlType> m_params{};
   r2d2_type::joint16_t m_callbackParams{};
+  const r2d2_type::delta_t<T> m_angleDeviation;
 
   ros::Subscriber m_subscriber;
   ros::Publisher m_publisher;
@@ -23,8 +24,6 @@ private:
   const std::vector<T> m_coeffs;
   const T m_length;
   const T m_speed;
-  const r2d2_type::delta_t<T> m_offset;
-  const r2d2_type::delta_t<T> m_tolerance;
 
 public:
   JointHandler() = default;
@@ -134,10 +133,8 @@ public:
   T calcAngle(T radius);
   T calcRadius(T targetRadius) { return getRadius(calcAngle(targetRadius)); };
 
-  T getAngleTolerance() const { return m_tolerance.byAngle; };
-  T getForceTolerance() const { return m_tolerance.byForce; };
-  T getAngleOffset() const { return m_offset.byAngle; };
-  T getForceOffset() const { return m_offset.byForce; };
+  T getAngleTolerance() const { return m_angleDeviation.tolerance; };
+  T getAngleOffset() const { return m_angleDeviation.offset; };
 };
 
 template <typename T = double> class ShoulderHandler : public JointHandler<T> {

@@ -36,6 +36,7 @@ template <typename T1> struct payload_t {
 
 template <typename T1, typename T> struct manipulator_t {
   T1 force_needed{};
+  T1 force_tolerance{};
   T r0{};
 };
 
@@ -46,8 +47,8 @@ template <typename T, typename T2> struct joint_t {
 };
 
 template <typename T> struct delta_t {
-  T byAngle{};
-  T byForce{};
+  T offset{};
+  T tolerance{};
 };
 
 template <typename T> using upipe_t = pipe_t<uint16_t, uint8_t, T>;
