@@ -30,12 +30,21 @@ public:
 private:
   void callbackManipulator(const ros::TimerEvent &);
   void calcCurrentRadius();
-  void updateAngles();
   void processControl();
   bool processRadiusControl(const T radiusDiff, const T radiusTreshold = 5);
   void processAngleControl(const T angleDiff, const T angleTreshold = 0.5);
   void processForceControl(const T forceDiff, const T forceTreshold = 1e3);
-  void publishResults();
+
+private:
+  void updateAngles() {
+    m_elbow.updateAngle();
+    m_shoulder.updateAngle();
+  };
+  void publishResults() {
+    ROS_DEBUG_STREAM(MAGENTA("\npublishResults()"));
+    m_elbow.publish();
+    m_shoulder.publish();
+  };
 
 public:
   void updateNozzleType();

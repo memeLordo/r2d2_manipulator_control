@@ -46,10 +46,6 @@ void ManipulatorControlHandler<T>::callbackManipulator(
     return;
   }
 }
-template <typename T> void ManipulatorControlHandler<T>::updateAngles() {
-  m_elbow.updateAngle();
-  m_shoulder.updateAngle();
-}
 
 template <typename T> void ManipulatorControlHandler<T>::calcCurrentRadius() {
   ROS_DEBUG_STREAM(MAGENTA("calcRadius()"));
@@ -127,11 +123,6 @@ void ManipulatorControlHandler<T>::processForceControl(const T forceDiff,
     m_shoulder.updateAngle();
     return;
   }
-}
-template <typename T> void ManipulatorControlHandler<T>::publishResults() {
-  ROS_DEBUG_STREAM(MAGENTA("\npublishResults()"));
-  m_elbow.publish();
-  m_shoulder.publish();
 }
 template <typename T> void ManipulatorControlHandler<T>::updateNozzleType() {
   ROS_DEBUG_STREAM(MAGENTA("updateNozzleType()"));
