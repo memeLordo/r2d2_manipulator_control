@@ -79,7 +79,7 @@ public:
     m_lockStatus = static_cast<r2d2_state::LockStatus>(value);
   };
 
-  T getForce() const {
+  T getTargetForce() const {
     auto force = static_cast<T>(m_params.force_needed);
     ROS_DEBUG_STREAM("ManipulatorControl::getForce() : " << WHITE(force));
     return force;
