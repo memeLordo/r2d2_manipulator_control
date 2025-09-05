@@ -119,11 +119,9 @@ void ManipulatorControlHandler<T>::processForceControl(const T forceDiff,
   const bool isForceHigh_ = forceDiff > forceTreshold;
   const bool isForceLow_ = forceDiff < -forceTreshold;
   if (isForceHigh_) {
-    m_shoulder.updateAngle(m_shoulder.getAngle() -
-                           0.1); // TODO: increaseAngle(speed)
+    m_shoulder.updateAngleBy(-0.1);
   } else if (isForceLow_) {
-    m_shoulder.updateAngle(m_shoulder.getAngle() +
-                           0.1); // TODO: decreaseAngle(speed)
+    m_shoulder.updateAngleBy(0.1);
   } else {
     ROS_DEBUG_STREAM(CYAN("No change."));
     m_shoulder.updateAngle();

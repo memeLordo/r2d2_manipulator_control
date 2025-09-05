@@ -81,6 +81,12 @@ public:
     m_params.theta = theta;
     setControlByAngle();
   };
+  void updateAngleBy(T theta) {
+    ROS_DEBUG_STREAM(m_name << "::changeAngleBy(theta = " << WHITE(theta)
+                            << ")");
+    m_params.theta += theta;
+    setControlByAngle();
+  };
   void updateAngleByRadius(T radius) { updateAngle(calcAngle(radius)); };
   void setHoldControl() {
     m_params.control_word = r2d2_commands::ControlType::HOLD;
