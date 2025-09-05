@@ -65,7 +65,7 @@ template <typename T>
 bool ManipulatorControlHandler<T>::processRadiusControl(T radiusDiff,
                                                         T threshold) {
   ROS_DEBUG_STREAM(MAGENTA("\nprocessRadiusControl()"));
-  const bool isRadiusReached_ = radiusDiff < threshold;
+  const bool isRadiusReached_ = r2d2_math::abs(radiusDiff) < threshold;
   ROS_DEBUG_STREAM(BLUE("isRadiusReached_ = " << isRadiusReached_));
   ROS_DEBUG_STREAM_COND(isRadiusReached_, CYAN("OK!"));
   if (!isRadiusReached_) {
