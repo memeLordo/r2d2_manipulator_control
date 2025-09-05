@@ -72,7 +72,6 @@ template <typename T> void ManipulatorControlHandler<T>::processControl() {
 }
 template <typename T> void ManipulatorControlHandler<T>::processAngleControl() {
   ROS_DEBUG_STREAM(MAGENTA("\nprocessRadiusControl()"));
-  // TODO: add local m_joint margin
   const bool isElbowReached_ = m_elbow.checkAngleDiffByRadius(m_targetRadius);
   const bool isShoulderReached_ =
       m_shoulder.checkAngleDiffByRadius(m_targetRadius, false);
@@ -88,11 +87,9 @@ template <typename T> void ManipulatorControlHandler<T>::processAngleControl() {
 }
 template <typename T>
 void ManipulatorControlHandler<T>::processForceControl(const T forceDiff) {
-  const T threshold{1e3};
-  // const T threshold = config::elbow::threshold;
   ROS_DEBUG_STREAM(MAGENTA("\nprocessForceControl()"));
-  const bool isForceHigh_ = forceDiff > threshold; // elbow.threshold;
-  const bool isForceLow_ = forceDiff < -threshold; // -elbow.threshold;
+  const bool isForceHigh_ = forceDiff > m_elbow.getForceTolerance();
+  const bool isForceLow_ = forceDiff < -m_elbow.getForceTolerance();
   ROS_DEBUG_STREAM(BLUE("isForceHigh_ = " << isForceHigh_));
   ROS_DEBUG_STREAM(BLUE("isForceLow_ = " << isForceLow_));
   ROS_DEBUG_STREAM_COND(isForceHigh_ || isForceLow_, CYAN("OK!"));

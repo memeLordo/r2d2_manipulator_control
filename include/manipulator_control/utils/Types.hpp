@@ -45,6 +45,11 @@ template <typename T, typename T2> struct joint_t {
   T2 control_word{};
 };
 
+template <typename T> struct delta_t {
+  T byAngle{};
+  T byForce{};
+};
+
 template <typename T> using upipe_t = pipe_t<uint16_t, uint8_t, T>;
 template <typename T> using manipulator16_t = manipulator_t<int16_t, T>;
 
