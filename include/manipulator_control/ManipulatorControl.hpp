@@ -29,7 +29,7 @@ public:
 
 private:
   void callbackManipulator(const ros::TimerEvent &);
-  T calcCurrentRadius();
+  void calcCurrentRadius();
   void processControl();
   bool processRadiusControl(const T correntRadius, const T targetRadius,
                             const T radiusTreshold = 5);
@@ -79,6 +79,10 @@ public:
   void setLock(T value) {
     ROS_DEBUG_STREAM("Set lock(value = " << WHITE(value) << ")");
     m_lockStatus = static_cast<r2d2_state::LockStatus>(value);
+  };
+  void setTargetRadius(T radius) {
+    ROS_DEBUG_STREAM("Set targetRadius(radius = " << WHITE(radius) << ")");
+    m_targetRadius = radius;
   };
 
   T getTargetForce() const {

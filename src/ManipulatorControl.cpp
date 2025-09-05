@@ -47,15 +47,18 @@ void ManipulatorControlHandler<T>::callbackManipulator(
     return;
   }
 }
-template <typename T> T ManipulatorControlHandler<T>::calcCurrentRadius() {
+
+template <typename T> void ManipulatorControlHandler<T>::calcCurrentRadius() {
   ROS_DEBUG_STREAM(MAGENTA("calcRadius()"));
-  T radius_{m_shoulder.getRadius() + m_elbow.getRadius() + getRadius()};
-  ROS_DEBUG_STREAM(RED("calcCurrentRadius())") << " : " << WHITE(radius_));
-  ROS_DEBUG(" ");
-  return radius_;
+  m_currentRadius = m_shoulder.getRadius() + m_elbow.getRadius() + getRadius();
+  ROS_DEBUG_STREAM(RED("calcCurrentRadius()")
+                   << " : " << WHITE(m_currentRadius));
 }
+
 template <typename T> void ManipulatorControlHandler<T>::processControl() {
-  if (!processRadiusControl(m_pipe.getRadius(), calcCurrentRadius()))
+  setTargetRadius(m_pipe.getRadius());
+  calcCurrentRadius();
+  if (!processRadiusControl(m_targetRadius - m_currentRadius))
     return;
   switch (m_lockStatus) {
   case LockStatus::UNLOCKED:
