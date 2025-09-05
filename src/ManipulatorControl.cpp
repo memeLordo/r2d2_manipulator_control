@@ -80,8 +80,7 @@ template <typename T>
 void ManipulatorControlHandler<T>::processAngleControl(const T angleDiff,
                                                        const T threshold) {
   ROS_DEBUG_STREAM(MAGENTA("\nprocessAngleControl()"));
-  const bool isAngleReached_ =
-      r2d2_math::abs(angleDiff + threshold) >= threshold;
+  const bool isAngleReached_ = r2d2_math::abs(angleDiff) >= threshold;
   ROS_DEBUG_STREAM(BLUE("isAngleReached_ = " << isAngleReached_));
   ROS_DEBUG_STREAM_COND(isAngleReached_, CYAN("OK!"));
   if (isAngleReached_)
