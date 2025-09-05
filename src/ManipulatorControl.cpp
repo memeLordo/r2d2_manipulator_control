@@ -63,10 +63,7 @@ template <typename T> void ManipulatorControlHandler<T>::processControl() {
   switch (m_lockStatus) {
   case LockStatus::UNLOCKED:
     ROS_DEBUG_STREAM(YELLOW("LockStatus::UNLOCKED"));
-    if (!processRadiusControl(m_currentRadius - m_targetRadius))
-      break;
-    processAngleControl(m_elbow.getAngle() -
-                        m_elbow.calcAngle(m_targetRadius, 5));
+    processRadiusControl(m_currentRadius, m_targetRadius);
     processForceControl(m_payload.getForce() - getTargetForce());
     break;
   default:
@@ -75,19 +72,24 @@ template <typename T> void ManipulatorControlHandler<T>::processControl() {
   publishResults();
 }
 template <typename T>
-bool ManipulatorControlHandler<T>::processRadiusControl(T radiusDiff,
-                                                        T threshold) {
+void ManipulatorControlHandler<T>::processRadiusControl(const T currentRadius,
+                                                        const T targetRadius) {
   ROS_DEBUG_STREAM(MAGENTA("\nprocessRadiusControl()"));
-  const bool isRadiusReached_ = r2d2_math::abs(radiusDiff) < threshold;
-  ROS_DEBUG_STREAM(BLUE("isRadiusReached_ = " << isRadiusReached_));
-  ROS_DEBUG_STREAM_COND(isRadiusReached_, CYAN("OK!"));
-  if (!isRadiusReached_) {
-    ROS_DEBUG_STREAM(CYAN("UPDATING ANGLES"));
+  // TODO: add local m_joint margin
+  const bool isElbowReached_ =
+      r2d2_math::abs(m_elbow.getRadius() - m_elbow.calcRadius(targetRadius)) <
+      1; // margin
+  const bool isShoulderReached_ =
+      (m_shoulder.getRadius() - m_shoulder.calcRadius(targetRadius)) > 0;
+
+  ROS_DEBUG_STREAM(BLUE("isElbowReached_ = " << isElbowReached_));
+  ROS_DEBUG_STREAM(BLUE("isShoulderReached_ = " << isShoulderReached_));
+  if (isElbowReached_) 
     m_elbow.updateAngleByRadius(m_targetRadius);
-    m_shoulder.updateAngleByRadius(m_targetRadius);
-  }
+  if (isShoulderReached_)
+  m_shoulder.updateAngleByRadius(m_targetRadius);
+  
   ROS_DEBUG_STREAM(RED("\nend") << MAGENTA("::processRadiusControl()"));
-  return isRadiusReached_;
 }
 template <typename T>
 void ManipulatorControlHandler<T>::processAngleControl(const T angleDiff,
