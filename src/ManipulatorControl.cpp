@@ -88,8 +88,9 @@ void ManipulatorControlHandler<T>::processRadiusControl() {
   ROS_DEBUG_STREAM(RED("\nend") << MAGENTA("::processRadiusControl()"));
 }
 template <typename T>
-void ManipulatorControlHandler<T>::processForceControl(const T forceDiff,
-                                                       const T threshold) {
+void ManipulatorControlHandler<T>::processForceControl(const T forceDiff) {
+  const T threshold{1e3};
+  // const T threshold = config::elbow::threshold;
   ROS_DEBUG_STREAM(MAGENTA("\nprocessForceControl()"));
   const bool isForceHigh_ = forceDiff > threshold; // elbow.threshold;
   const bool isForceLow_ = forceDiff < -threshold; // -elbow.threshold;

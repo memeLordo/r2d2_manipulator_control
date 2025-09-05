@@ -32,9 +32,7 @@ private:
   void processStop();
   void processControl();
   void processRadiusControl();
-  void
-  processForceControl(const T forceDiff,
-                      const T threshold = 1e3); // TODO: add threshold config
+  void processForceControl(const T forceDiff);
 
 private:
   void calcCurrentRadius() {
