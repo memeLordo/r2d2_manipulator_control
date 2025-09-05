@@ -36,8 +36,6 @@ void ManipulatorControlHandler<T>::callbackManipulator(
 
   case WorkMode::MANUAL:
     ROS_DEBUG_STREAM(YELLOW("WorkMode::MANUAL"));
-    // m_shoulder.control_word = 1;
-    // m_elbow.control_word = 1;
     resetMode();
     return;
 
@@ -70,7 +68,6 @@ template <typename T> void ManipulatorControlHandler<T>::processControl() {
     processForceControl(getTargetForce() - payloadCurrentForce_);
     break;
   default:
-    // m_elbow.updateSpeed(0);
     updateAngles();
   }
 }
@@ -78,12 +75,6 @@ template <typename T>
 bool ManipulatorControlHandler<T>::processRadiusControl(T radiusDiff,
                                                         T radiusTreshold) {
   ROS_DEBUG_STREAM(YELLOW("\nprocessRadiusControl()"));
-  // TODO: Если заблокированиы - манипуляторы в 0
-  // Обновляем скорости
-
-  ROS_DEBUG_STREAM(CYAN("Checking for reach..."));
-  // bool state_ = m_shoulder.checkAngleDiff() && m_elbow.checkAngleDiff() ||
-  //               m_payload.getForce() > 20000;
   const bool isRadiusReached_ = radiusDiff < radiusTreshold;
   if (!isRadiusReached_) {
     ROS_DEBUG_STREAM(CYAN("UPDATING ANGLES"));
