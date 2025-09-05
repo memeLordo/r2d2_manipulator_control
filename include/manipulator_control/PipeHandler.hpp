@@ -11,7 +11,7 @@ private:
   static constexpr const char *s_name = "Pipe";
 
   const std::string m_outputNode;
-  r2d2_types::upipe_t<T> m_callbackParams{};
+  r2d2_type::upipe_t<T> m_callbackParams{};
   ros::Subscriber m_subscriber;
 
 public:
@@ -20,7 +20,7 @@ public:
 private:
   void callbackPipe(const r2d2_msg_pkg::PipeParametersConstPtr &msg) {
     m_callbackParams =
-        r2d2_types::upipe_t<T>{msg->pipe_diam, msg->pipe_thickness};
+        r2d2_type::upipe_t<T>{msg->pipe_diam, msg->pipe_thickness};
   };
 
 public:

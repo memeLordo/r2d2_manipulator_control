@@ -150,10 +150,10 @@ template <typename T> void ManipulatorControlHandler<T>::updateNozzleType() {
   ROS_DEBUG_STREAM(MAGENTA("updateNozzleType()"));
   switch (m_nozzleType) {
   case NozzleType::BRUSH:
-    m_params = r2d2_types::manipulator16_t<T>{10000, 347.0};
+    m_params = r2d2_type::manipulator16_t<T>{10000, 347.0};
     return;
   case NozzleType::EMA:
-    m_params = r2d2_types::manipulator16_t<T>{15000, 331.0};
+    m_params = r2d2_type::manipulator16_t<T>{15000, 331.0};
     return;
   default:
     return;

@@ -11,7 +11,7 @@ private:
   static constexpr const char *s_name = "Payload";
 
   const std::string m_outputNode;
-  int16_t m_callbackForce{};
+  r2d2_type::payload16_t m_callbackParams{};
   ros::Subscriber m_subscriber;
 
 public:
@@ -19,7 +19,7 @@ public:
 
 private:
   void callbackPayload(const r2d2_msg_pkg::DriverStateConstPtr &msg) {
-    m_callbackForce = msg->force;
+    m_callbackParams = r2d2_type::payload16_t{msg->force};
   };
 
 public:
@@ -28,7 +28,7 @@ public:
     ros::topic::waitForMessage<r2d2_msg_pkg::DriverState>(m_outputNode);
   }
   T getForce() const {
-    auto force = static_cast<T>(m_callbackForce);
+    T force = static_cast<T>(m_callbackParams.force);
     ROS_DEBUG_STREAM(s_name << "::getForce() : " << WHITE(force));
     return force;
   };

@@ -13,7 +13,7 @@ private:
   r2d2_state::NozzleType m_nozzleType{};
   r2d2_state::LockStatus m_lockStatus{};
 
-  r2d2_types::manipulator16_t<T> m_params{};
+  r2d2_type::manipulator16_t<T> m_params{};
 
   PayloadHandler<T> m_payload;
   PipeHandler<T> m_pipe;

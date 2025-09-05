@@ -11,8 +11,8 @@
 template <typename T = double> class JointHandler {
 
 private:
-  r2d2_types::elbow_t<T, r2d2_commands::ControlType> m_params{};
-  r2d2_types::elbow16_t m_callbackParams{};
+  r2d2_type::elbow_t<T, r2d2_commands::ControlType> m_params{};
+  r2d2_type::elbow16_t m_callbackParams{};
 
   ros::Subscriber m_subscriber;
   ros::Publisher m_publisher;
@@ -33,7 +33,7 @@ public:
 private:
   void callbackJoint(const r2d2_msg_pkg::DriverStateConstPtr &msg) {
     m_callbackParams =
-        r2d2_types::elbow16_t{msg->omega, msg->theta, msg->control_word};
+        r2d2_type::elbow16_t{msg->omega, msg->theta, msg->control_word};
   };
 
   r2d2_msg_pkg::DriverCommand prepareMsg() const {
