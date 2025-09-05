@@ -118,7 +118,7 @@ public:
   };
   T getRadius() const { return m_length * r2d2_math::sin(getAngle()); };
 
-  T calcAngle(T radius, T margin = 0);
+  T calcAngle(T radius, const T margin = 0);
 };
 
 template <typename T = double> class ShoulderHandler : public JointHandler<T> {
