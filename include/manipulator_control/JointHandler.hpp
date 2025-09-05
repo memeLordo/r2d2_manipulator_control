@@ -133,15 +133,8 @@ public:
   //                    << WHITE(static_cast<uint16_t>(m_params.control_word)));
   //   return m_params.control_word;
   // };
-  T getLength() const {
-    ROS_DEBUG_STREAM(m_name << "::getLength() : " << WHITE(m_length));
-    return m_length;
-  };
-  T getRadius() const {
-    T radius_ = getLength() * r2d2_math::sin(getAngle());
-    ROS_DEBUG_STREAM(m_name << "::getRadius() : " << WHITE(radius_));
-    return radius_;
-  };
+  T getLength() const { return m_length; };
+  T getRadius() const { return getLength() * r2d2_math::sin(getAngle()); };
 
   T calcAngle(T radius);
 };
