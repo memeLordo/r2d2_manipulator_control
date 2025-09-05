@@ -54,15 +54,13 @@ template <typename T> void ManipulatorControlHandler<T>::calcCurrentRadius() {
 }
 
 template <typename T> void ManipulatorControlHandler<T>::processControl() {
-  setTargetRadius(m_pipe.getRadius()); // TODO: update log
-  calcCurrentRadius();                 // TODO: update log
-
-  if (!processRadiusControl(m_targetRadius - m_currentRadius))
-    return;
+  setTargetRadius(m_pipe.getRadius());
+  calcCurrentRadius();
   switch (m_lockStatus) {
   case LockStatus::UNLOCKED:
     ROS_DEBUG_STREAM(YELLOW("LockStatus::UNLOCKED"));
-    // Основная логика управления
+    if (!processRadiusControl(m_targetRadius - m_currentRadius))
+      return;
     processAngleControl(m_elbow.calcAngle(m_targetRadius) - m_elbow.getAngle());
     processForceControl(getTargetForce() - m_payload.getForce());
     break;
