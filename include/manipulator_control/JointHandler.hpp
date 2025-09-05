@@ -70,15 +70,6 @@ public:
                             << YELLOW("callback = " << m_callbackParams.theta)
                             << ") : " << WHITE(theta_));
     m_params.theta = theta_;
-  };
-  void updateControlWord() {
-    auto control_word_ =
-        static_cast<r2d2_commands::ControlType>(m_callbackParams.control_word);
-    ROS_DEBUG_STREAM(m_name
-                     << "::updateControlWord("
-                     << YELLOW("callback = " << m_callbackParams.control_word)
-                     << ") ");
-    m_params.control_word = control_word_;
     setHoldControl();
   };
   // void updateSpeed(T omega) {
@@ -115,24 +106,10 @@ public:
     m_publisher.publish(prepareMsg());
   };
 
-  // T getSpeed() const {
-  //   ROS_DEBUG_STREAM("Joint::getSpeed() : " << WHITE(m_params.omega));
-  //   return m_params.omega;
-  // };
   T getAngle() const {
     ROS_DEBUG_STREAM(m_name << "::getAngle() : " << WHITE(m_params.theta));
     return m_params.theta;
   };
-  T getInputAngle() const {
-    ROS_DEBUG_STREAM(m_name << "::getInputAngle() : "
-                            << WHITE(m_callbackParams.theta));
-    return r2d2_process::wrap<T>(m_callbackParams.theta);
-  };
-  // r2d2_commands::ControlType getControlWord() const {
-  //   ROS_DEBUG_STREAM("Joint::getControlWord() : "
-  //                    << WHITE(static_cast<uint16_t>(m_params.control_word)));
-  //   return m_params.control_word;
-  // };
   T getLength() const { return m_length; };
   T getRadius() const { return getLength() * r2d2_math::sin(getAngle()); };
 
