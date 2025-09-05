@@ -69,16 +69,16 @@ template <typename T> void ManipulatorControlHandler<T>::processControl() {
 template <typename T>
 bool ManipulatorControlHandler<T>::processRadiusControl(T radiusDiff,
                                                         T radiusTreshold) {
-  ROS_DEBUG_STREAM(YELLOW("\nprocessRadiusControl()"));
-  const bool isRadiusReached_ =
-      radiusDiff < radiusTreshold; // TODO: fix, add log
+  ROS_DEBUG_STREAM(MAGENTA("\nprocessRadiusControl()"));
+  const bool isRadiusReached_ = radiusDiff < radiusTreshold;
+  ROS_DEBUG_STREAM(BLUE("isRadiusReached_ = " << isRadiusReached_));
+  ROS_DEBUG_STREAM_COND(isRadiusReached_, CYAN("OK!"));
   if (!isRadiusReached_) {
     ROS_DEBUG_STREAM(CYAN("UPDATING ANGLES"));
     m_elbow.updateAngleByRadius(m_targetRadius);
     m_shoulder.updateAngleByRadius(m_targetRadius);
-  } else {
-    ROS_DEBUG_STREAM(CYAN("OK!"));
   }
+  ROS_DEBUG_STREAM(RED("\nend") << MAGENTA("::processRadiusControl()"));
   return isRadiusReached_;
 }
 template <typename T>
