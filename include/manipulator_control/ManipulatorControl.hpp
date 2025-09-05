@@ -31,9 +31,7 @@ private:
   void callbackManipulator(const ros::TimerEvent &);
   void processStop();
   void processControl();
-  void
-  processRadiusControl(const T radiusDiff,
-                       const T threshold = 5); // TODO: add threshold config
+  void processRadiusControl();
   void
   processAngleControl(const T angleDiff,
                       const T threshold = 0.5); // TODO: add threshold config

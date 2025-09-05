@@ -117,13 +117,11 @@ public:
     return m_params.theta;
   };
   T getRadius() const { return m_length * r2d2_math::sin(getAngle()); };
-  T getRadius(T initRadius, T theta) const {
-    return initRadius + m_length * r2d2_math::sin(theta);
-  };
+  T getRadius(T theta) const { return m_length * r2d2_math::sin(theta); };
 
   T calcAngle(T radius, const T margin = 0);
-  T calcRadius(T initRadius, T targetRadius, const T margin = 0) {
-    return getRadius(initRadius, calcAngle(targetRadius, margin));
+  T calcRadius(T targetRadius, const T margin = 0) {
+    return getRadius(calcAngle(targetRadius, margin));
   };
 };
 

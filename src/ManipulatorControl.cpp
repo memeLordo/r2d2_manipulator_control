@@ -63,7 +63,7 @@ template <typename T> void ManipulatorControlHandler<T>::processControl() {
   switch (m_lockStatus) {
   case LockStatus::UNLOCKED:
     ROS_DEBUG_STREAM(YELLOW("LockStatus::UNLOCKED"));
-    processRadiusControl(m_currentRadius, m_targetRadius);
+    processRadiusControl();
     processForceControl(m_payload.getForce() - getTargetForce());
     break;
   default:
@@ -72,23 +72,22 @@ template <typename T> void ManipulatorControlHandler<T>::processControl() {
   publishResults();
 }
 template <typename T>
-void ManipulatorControlHandler<T>::processRadiusControl(const T currentRadius,
-                                                        const T targetRadius) {
+void ManipulatorControlHandler<T>::processRadiusControl() {
   ROS_DEBUG_STREAM(MAGENTA("\nprocessRadiusControl()"));
   // TODO: add local m_joint margin
   const bool isElbowReached_ =
-      r2d2_math::abs(m_elbow.getRadius() - m_elbow.calcRadius(targetRadius)) <
-      1; // margin
+      r2d2_math::abs(m_elbow.getRadius() -
+                     m_elbow.calcRadius(m_targetRadius, 5)) < 1; // margin
   const bool isShoulderReached_ =
-      (m_shoulder.getRadius() - m_shoulder.calcRadius(targetRadius)) > 0;
+      (m_shoulder.getRadius() - m_shoulder.calcRadius(m_targetRadius)) > 0;
 
   ROS_DEBUG_STREAM(BLUE("isElbowReached_ = " << isElbowReached_));
   ROS_DEBUG_STREAM(BLUE("isShoulderReached_ = " << isShoulderReached_));
   if (isElbowReached_) 
     m_elbow.updateAngleByRadius(m_targetRadius);
-  if (isShoulderReached_)
-  m_shoulder.updateAngleByRadius(m_targetRadius);
-  
+  if (!isShoulderReached_)
+    m_shoulder.updateAngleByRadius(m_targetRadius);
+
   ROS_DEBUG_STREAM(RED("\nend") << MAGENTA("::processRadiusControl()"));
 }
 template <typename T>
