@@ -23,6 +23,10 @@ private:
   };
 
 public:
+  void waitForTopic() {
+    ROS_INFO_STREAM(CYAN("Waiting for " << s_name << " topic..."));
+    ros::topic::waitForMessage<r2d2_msg_pkg::DriverState>(m_outputNode);
+  }
   T getForce() const {
     auto force = static_cast<T>(m_callbackForce);
     ROS_DEBUG_STREAM(s_name << "::getForce() : " << WHITE(force));

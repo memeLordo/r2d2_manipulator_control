@@ -8,6 +8,7 @@
 #include "utils/Types.hpp"
 #include <ros/console.h>
 #include <ros/node_handle.h>
+#include <ros/topic.h>
 
 template <typename T = double> class JointHandler {
 
@@ -61,6 +62,10 @@ public:
   //                    << ") : " << WHITE(m_speed));
   //   m_params.omega = m_speed;
   // };
+  void waitForTopic() {
+    ROS_INFO_STREAM(CYAN("Waiting for " << m_name << " topic..."));
+    ros::topic::waitForMessage<r2d2_msg_pkg::DriverState>(m_outputTopic);
+  };
   void updateAngle() {
     auto theta_ = r2d2_process::wrap<T>(m_callbackParams.theta);
     ROS_DEBUG_STREAM(m_name << "::updateAngle("
