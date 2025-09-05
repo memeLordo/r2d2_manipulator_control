@@ -1,8 +1,8 @@
 #ifndef R2D2_MANIPULATOR_SERVICE_H
 #define R2D2_MANIPULATOR_SERVICE_H
+
 #include "ManipulatorControl.hpp"
 #include "r2d2_msg_pkg/ManipulatorCommand.h"
-#include <ros/node_handle.h>
 
 class ManipulatorServiceHandler {
 private:

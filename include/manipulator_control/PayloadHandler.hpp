@@ -3,8 +3,8 @@
 
 #include "r2d2_msg_pkg/DriverState.h"
 #include "utils/Debug.hpp"
-#include <cstdint>
-#include <ros/node_handle.h>
+#include "utils/Types.hpp"
+#include <ros/topic.h>
 
 template <typename T = double> class PayloadHandler {
 private:

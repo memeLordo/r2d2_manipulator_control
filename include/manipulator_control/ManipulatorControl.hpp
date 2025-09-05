@@ -5,7 +5,6 @@
 #include "PayloadHandler.hpp"
 #include "PipeHandler.hpp"
 #include "utils/Types.hpp"
-#include <ros/node_handle.h>
 
 template <typename T = double> class ManipulatorControlHandler {
 

@@ -4,7 +4,7 @@
 #include "r2d2_msg_pkg/PipeParameters.h"
 #include "utils/Debug.hpp"
 #include "utils/Types.hpp"
-#include <ros/node_handle.h>
+#include <ros/topic.h>
 
 template <typename T = double> class PipeHandler {
 private:

@@ -1,6 +1,4 @@
 #include "ManipulatorControl.hpp"
-#include "utils/Debug.hpp"
-#include "utils/Math.hpp"
 
 using namespace r2d2_state;
 

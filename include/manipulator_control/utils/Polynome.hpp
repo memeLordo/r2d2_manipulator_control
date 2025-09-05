@@ -1,7 +1,6 @@
 #ifndef R2D2_POLYNOME_HPP
 #define R2D2_POLYNOME_HPP
 
-// #include <cstddef>
 #include <vector>
 
 namespace horner {

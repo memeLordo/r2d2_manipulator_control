@@ -1,6 +1,4 @@
 #include "PayloadHandler.hpp"
-#include <ros/node_handle.h>
-#include <ros/topic.h>
 
 template <typename T>
 PayloadHandler<T>::PayloadHandler(ros::NodeHandle *node)

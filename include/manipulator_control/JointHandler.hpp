@@ -6,8 +6,6 @@
 #include "utils/Debug.hpp"
 #include "utils/Math.hpp"
 #include "utils/Types.hpp"
-#include <ros/console.h>
-#include <ros/node_handle.h>
 #include <ros/topic.h>
 
 template <typename T = double> class JointHandler {
