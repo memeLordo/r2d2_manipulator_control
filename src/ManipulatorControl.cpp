@@ -100,22 +100,15 @@ template <typename T>
 void ManipulatorControlHandler<T>::processAngleControl(const T angleDiff,
                                                        const T angleTreshold) {
   ROS_DEBUG_STREAM(MAGENTA("\nprocessAngleControl()"));
-  ROS_DEBUG_STREAM(CYAN("Calculating angles"));
-
-  ROS_DEBUG_STREAM("ANGLE_THRESHOLD : " << angleTreshold);
-  const auto angleDiff_ =
-      r2d2_math::abs(currentAngle - (targetAngle + angleTreshold));
-  ROS_DEBUG_STREAM("angle_diff : " << WHITE(angleDiff_));
-  ROS_DEBUG_STREAM(RED("if(angel_dif >= ANGLE_THRESHOLD)"));
-  if (angleDiff_ >= angleTreshold) {
-    ROS_DEBUG_STREAM(CYAN("Success angle control"));
-    m_shoulder.updateAngleByRadius(calcCurrentRadius());
+  const bool isAngleReached_ =
+      r2d2_math::abs(angleDiff + angleTreshold) >= angleTreshold;
+  if (isAngleReached_) {
+    // Success angle control
+    m_shoulder.updateAngleByRadius(m_targetRadius);
   } else {
-    ROS_DEBUG_STREAM(CYAN("No success."));
+    // No success
     m_shoulder.updateAngle();
   }
-  // m_elbow.control_word = 10;
-  // m_shoulder.control_word = 10;
 }
 template <typename T>
 void ManipulatorControlHandler<T>::processForceControl(const T forceDiff,
