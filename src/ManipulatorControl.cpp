@@ -43,13 +43,6 @@ void ManipulatorControlHandler<T>::callbackManipulator(
   }
 }
 
-template <typename T> void ManipulatorControlHandler<T>::calcCurrentRadius() {
-  ROS_DEBUG_STREAM(MAGENTA("calcRadius()"));
-  m_currentRadius = m_shoulder.getRadius() + m_elbow.getRadius() + getRadius();
-  ROS_DEBUG_STREAM(RED("calcCurrentRadius()")
-                   << " : " << WHITE(m_currentRadius));
-}
-
 template <typename T> void ManipulatorControlHandler<T>::processControl() {
   setTargetRadius(m_pipe.getRadius());
   calcCurrentRadius();

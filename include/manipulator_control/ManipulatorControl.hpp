@@ -29,13 +29,18 @@ public:
 
 private:
   void callbackManipulator(const ros::TimerEvent &);
-  void calcCurrentRadius();
   void processControl();
   bool processRadiusControl(const T radiusDiff, const T radiusTreshold = 5);
   void processAngleControl(const T angleDiff, const T angleTreshold = 0.5);
   void processForceControl(const T forceDiff, const T forceTreshold = 1e3);
 
 private:
+  void calcCurrentRadius() {
+    ROS_DEBUG_STREAM(MAGENTA("calcCurrentRadius()"));
+    m_currentRadius =
+        m_shoulder.getRadius() + m_elbow.getRadius() + getRadius();
+    ROS_DEBUG_STREAM(RED("Current radius : ") << WHITE(m_currentRadius));
+  };
   void updateAngles() {
     m_elbow.updateAngle();
     m_shoulder.updateAngle();
