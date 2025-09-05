@@ -1,4 +1,5 @@
 #include "ManipulatorControl.hpp"
+#include "utils/Config.hpp"
 
 using namespace r2d2_state;
 
@@ -118,10 +119,12 @@ template <typename T> void ManipulatorControlHandler<T>::updateNozzleType() {
   ROS_DEBUG_STREAM(MAGENTA("updateNozzleType()"));
   switch (m_nozzleType) {
   case NozzleType::BRUSH:
-    m_params = r2d2_type::manipulator16_t<T>{10000, 347.0}; // TODO: add config
+    m_params = r2d2_type::manipulator16_t<T>{config::brush::target_force,
+                                             config::brush::radius0};
     return;
   case NozzleType::EMA:
-    m_params = r2d2_type::manipulator16_t<T>{15000, 331.0}; // TODO: add config
+    m_params = r2d2_type::manipulator16_t<T>{config::ema::target_force,
+                                             config::ema::radius0};
     return;
   default:
     return;
