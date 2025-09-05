@@ -8,8 +8,8 @@ class ManipulatorServiceHandler {
 private:
   static constexpr const char *s_name = "ManipulatorService";
 
-  const std::string m_serviceNode;
   ManipulatorControlHandler<> &m_manipulatorControl;
+  const std::string m_serviceTopic;
 
   ros::ServiceServer m_manipulatorService;
 

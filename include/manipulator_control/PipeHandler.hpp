@@ -10,7 +10,7 @@ template <typename T = double> class PipeHandler {
 private:
   static constexpr const char *s_name = "Pipe";
 
-  const std::string m_outputNode;
+  const std::string m_outputTopic;
   r2d2_type::upipe_t<T> m_callbackParams{};
   ros::Subscriber m_subscriber;
 
@@ -26,7 +26,7 @@ private:
 public:
   void waitForTopic() {
     ROS_INFO_STREAM(CYAN("Waiting for " << s_name << " topic..."));
-    ros::topic::waitForMessage<r2d2_msg_pkg::PipeParameters>(m_outputNode);
+    ros::topic::waitForMessage<r2d2_msg_pkg::PipeParameters>(m_outputTopic);
   }
   T getRadius() const {
     T radius_ = m_callbackParams.radius();

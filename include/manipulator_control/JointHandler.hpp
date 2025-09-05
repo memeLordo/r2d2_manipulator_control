@@ -18,8 +18,8 @@ private:
   ros::Publisher m_publisher;
 
   const std::string m_name;
-  const std::string m_inputNode;
-  const std::string m_outputNode;
+  const std::string m_inputTopic;
+  const std::string m_outputTopic;
   const std::vector<T> m_coeffs;
   const T m_length;
   const T m_speed;
@@ -27,7 +27,7 @@ private:
 public:
   JointHandler() = default;
   JointHandler(ros::NodeHandle *node, const std::string &name,
-               const std::string &inputNode, const std::string &outputNode,
+               const std::string &inputTopic, const std::string &outputTopic,
                const T &length, const T &speed, const std::vector<T> &coeffs);
 
 private:

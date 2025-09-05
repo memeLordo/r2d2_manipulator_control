@@ -7,15 +7,15 @@
 
 template <typename T>
 JointHandler<T>::JointHandler(ros::NodeHandle *node, const std::string &name,
-                              const std::string &inputNode,
-                              const std::string &outputNode, const T &length,
+                              const std::string &inputTopic,
+                              const std::string &outputTopic, const T &length,
                               const T &speed, const std::vector<T> &coeffs)
-    : m_name{name}, m_inputNode{inputNode}, m_outputNode{outputNode},
+    : m_name{name}, m_inputTopic{inputTopic}, m_outputTopic{outputTopic},
       m_length{length}, m_speed{speed}, m_coeffs{coeffs} {
   waitForTopic();
   m_subscriber =
-      node->subscribe(m_outputNode, 10, &JointHandler::callbackJoint, this);
-  m_publisher = node->advertise<r2d2_msg_pkg::DriverCommand>(m_inputNode, 10);
+      node->subscribe(m_outputTopic, 10, &JointHandler::callbackJoint, this);
+  m_publisher = node->advertise<r2d2_msg_pkg::DriverCommand>(m_inputTopic, 10);
 }
 template <typename T> T JointHandler<T>::calcAngle(T radius, T margin) {
   T radius_ = horner::polynome(m_coeffs, radius);

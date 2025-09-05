@@ -2,9 +2,9 @@
 
 template <typename T>
 PayloadHandler<T>::PayloadHandler(ros::NodeHandle *node)
-    : m_outputNode{"/payload_output"} {
+    : m_outputTopic{"/payload_output"} {
   waitForTopic();
-  m_subscriber =
-      node->subscribe(m_outputNode, 10, &PayloadHandler::callbackPayload, this);
+  m_subscriber = node->subscribe(m_outputTopic, 10,
+                                 &PayloadHandler::callbackPayload, this);
 }
 template class PayloadHandler<>;

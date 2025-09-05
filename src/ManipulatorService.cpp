@@ -5,10 +5,10 @@ using namespace r2d2_state;
 
 ManipulatorServiceHandler::ManipulatorServiceHandler(
     ros::NodeHandle *node, ManipulatorControlHandler<> &manipulator_controlRef)
-    : m_serviceNode{"/manipulator_command"},
+    : m_serviceTopic{"/manipulator_command"},
       m_manipulatorControl(manipulator_controlRef) {
   m_manipulatorService = node->advertiseService(
-      m_serviceNode, &ManipulatorServiceHandler::callbackService, this);
+      m_serviceTopic, &ManipulatorServiceHandler::callbackService, this);
 }
 bool ManipulatorServiceHandler::callbackService(
     r2d2_msg_pkg::ManipulatorCommand::Request &req,

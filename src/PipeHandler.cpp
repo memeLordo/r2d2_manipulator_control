@@ -2,9 +2,9 @@
 
 template <typename T>
 PipeHandler<T>::PipeHandler(ros::NodeHandle *node)
-    : m_outputNode{"/parameters/pipe"} {
+    : m_outputTopic{"/parameters/pipe"} {
   waitForTopic();
   m_subscriber =
-      node->subscribe(m_outputNode, 10, &PipeHandler::callbackPipe, this);
+      node->subscribe(m_outputTopic, 10, &PipeHandler::callbackPipe, this);
 }
 template class PipeHandler<>;
