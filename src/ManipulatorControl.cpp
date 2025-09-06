@@ -32,7 +32,7 @@ void ManipulatorControlHandler<T>::callbackManipulator(
   switch (m_workMode) {
   case WorkMode::AUTO:
     ROS_DEBUG_STREAM(YELLOW("WorkMode::AUTO"));
-    processControl();
+    processControl(m_pipe.getRadius(), m_payload.getForce());
     return;
 
   case WorkMode::MANUAL:
@@ -58,15 +58,17 @@ void ManipulatorControlHandler<T>::processStop(const T radius) {
   processAngleControl(radius);
   publishResults();
 }
-template <typename T> void ManipulatorControlHandler<T>::processControl() {
+template <typename T>
+void ManipulatorControlHandler<T>::processControl(const T radius,
+                                                  const T force) {
   updateAngles();
   setTargetRadius(m_pipe.getRadius());
   calcCurrentRadius();
   switch (m_lockStatus) {
   case LockStatus::UNLOCKED:
     ROS_DEBUG_STREAM(YELLOW("LockStatus::UNLOCKED"));
-    processAngleControl();
-    processForceControl(m_payload.getForce() - getTargetForce());
+    processAngleControl(radius);
+    processForceControl(force);
     break;
   default:
     break;

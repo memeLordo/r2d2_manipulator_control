@@ -30,7 +30,7 @@ public:
 private:
   void callbackManipulator(const ros::TimerEvent &);
   void processStop(const T radius);
-  void processControl();
+  void processControl(const T radius, const T force);
   void processAngleControl(const T radius);
   void processForceControl(const T force);
 
