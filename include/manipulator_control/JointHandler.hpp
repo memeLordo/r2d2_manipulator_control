@@ -80,7 +80,12 @@ public:
     m_params.theta += theta_;
     setControlByAngle();
   };
-  void updateAngleByRadius(T radius) { updateAngle(getTargetAngle(radius)); };
+  void updateAngleByRadius(T radius, const bool isAbsolute = true) {
+    if (checkAngleDiff(radius, isAbsolute))
+      updateAngle(getTargetAngle(radius));
+    else
+      updateAngle();
+  };
   void setHoldControl() {
     m_params.control_word = r2d2_commands::ControlType::HOLD;
     ROS_DEBUG_STREAM(

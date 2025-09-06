@@ -74,10 +74,8 @@ void ManipulatorControlHandler<T>::processControl(const T radius,
 template <typename T>
 void ManipulatorControlHandler<T>::processAngleControl(const T radius) {
   ROS_DEBUG_STREAM(MAGENTA("\nprocessRadiusControl()"));
-  if (m_elbow.checkAngleDiff(radius))
-    m_elbow.updateAngleByRadius(radius);
-  if (m_shoulder.checkAngleDiff(radius, false))
-    m_shoulder.updateAngleByRadius(radius);
+  m_elbow.updateAngleByRadius(radius);
+  m_shoulder.updateAngleByRadius(radius, true);
   ROS_DEBUG_STREAM(RED("\nend") << MAGENTA("::processRadiusControl()"));
 }
 template <typename T>
