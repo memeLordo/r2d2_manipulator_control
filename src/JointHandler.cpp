@@ -19,7 +19,7 @@ JointHandler<T>::JointHandler(ros::NodeHandle *node, const std::string &name,
       node->subscribe(m_outputTopic, 10, &JointHandler::callbackJoint, this);
   m_publisher = node->advertise<r2d2_msg_pkg::DriverCommand>(m_inputTopic, 10);
 }
-template <typename T> T JointHandler<T>::calcAngle(T radius) {
+template <typename T> T JointHandler<T>::getTargetAngle(T radius) {
   const T theta_ = horner::polynome(m_coeffs, radius) + getAngleOffset();
   ROS_DEBUG_STREAM(m_name << "::calcAngle(radius = " << WHITE(radius)
                           << ") : " << WHITE(theta_));

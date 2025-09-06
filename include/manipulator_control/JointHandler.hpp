@@ -79,7 +79,7 @@ public:
     m_params.theta += theta;
     setControlByAngle();
   };
-  void updateAngleByRadius(T radius) { updateAngle(calcAngle(radius)); };
+  void updateAngleByRadius(T radius) { updateAngle(getTargetAngle(radius)); };
   void setHoldControl() {
     m_params.control_word = r2d2_commands::ControlType::HOLD;
     ROS_DEBUG_STREAM(
@@ -113,7 +113,7 @@ public:
   T getAngleOffset() const { return m_angleOffset; };
   T getAngleTolerance() const { return m_angleTolerance; };
 
-  T calcAngle(T radius);
+  T getTargetAngle(T radius);
 
   bool checkAngleDiff(const T targetRadius,
                       const bool isAbsolute = true) const {
