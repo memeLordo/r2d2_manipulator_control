@@ -117,10 +117,12 @@ public:
   T getTargetAngle(T radius);
 
   bool checkAngleDiff(const T radius, const bool isAbsolute = true) {
-    const T angleDiff_ = getAngle() - getTargetAngle(radius);
-    if (isAbsolute)
-      return std::abs(angleDiff_) < getAngleTolerance();
-    return angleDiff_ < getAngleTolerance();
+    const T angleDiff_{getAngle() - getTargetAngle(radius)};
+    const T diff_{isAbsolute ? std::abs(angleDiff_) : angleDiff_};
+    const bool needsAngleControl_{diff_ < getAngleTolerance()};
+    ROS_DEBUG_STREAM(
+        BLUE(m_name << "::needsAngleControl_ = " << needsAngleControl_));
+    return needsAngleControl_;
   };
 };
 
