@@ -14,7 +14,6 @@ private:
   r2d2_state::LockStatus m_lockStatus{};
 
   r2d2_type::manipulator16_t<T> m_params{};
-  T m_currentRadius{};
   T m_targetRadius{};
 
   PayloadHandler<T> m_payload;
@@ -35,12 +34,6 @@ private:
   void processForceControl(const T force);
 
 private:
-  void calcCurrentRadius() {
-    ROS_DEBUG_STREAM(MAGENTA("calcCurrentRadius()"));
-    m_currentRadius =
-        m_shoulder.getRadius() + m_elbow.getRadius() + getRadius();
-    ROS_DEBUG_STREAM(RED("Current radius : ") << WHITE(m_currentRadius));
-  };
   void updateAngles() {
     m_elbow.updateAngle();
     m_shoulder.updateAngle();
