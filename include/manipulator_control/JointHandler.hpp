@@ -56,13 +56,6 @@ private:
   };
 
 public:
-  // void updateSpeed() {
-  //   // auto omega_ = m_callbackParams.omega;
-  //   ROS_DEBUG_STREAM("Joint::updateSpeed("
-  //                    << YELLOW("callback = " << m_callbackParams.omega)
-  //                    << ") : " << WHITE(m_speed));
-  //   m_params.omega = m_speed;
-  // };
   void waitForTopic() {
     ROS_INFO_STREAM(CYAN("Waiting for " << m_name << " topic..."));
     ros::topic::waitForMessage<r2d2_msg_pkg::DriverState>(m_outputTopic);
@@ -75,10 +68,6 @@ public:
     m_params.theta = theta_;
     setHoldControl();
   };
-  // void updateSpeed(T omega) {
-  //   ROS_DEBUG_STREAM("Joint::updateSpeed(omega = " << WHITE(omega) << ")");
-  //   m_params.omega = omega;
-  // };
   void updateAngle(T theta) {
     ROS_DEBUG_STREAM(m_name << "::updateAngle(theta = " << WHITE(theta) << ")");
     m_params.theta = theta;
@@ -115,24 +104,16 @@ public:
     m_publisher.publish(prepareMsg());
   };
 
-  // T getSpeed() const {
-  //   ROS_DEBUG_STREAM("Joint::getSpeed() : " << WHITE(m_params.omega));
-  //   return m_params.omega;
-  // };
   T getAngle() const {
     ROS_DEBUG_STREAM(m_name << "::getAngle() : " << WHITE(m_params.theta));
     return m_params.theta;
   };
   T getRadius() const { return m_length * r2d2_math::sin(getAngle()); };
-  T getRadius(T theta) const { return m_length * r2d2_math::sin(theta); };
 
   T getAngleOffset() const { return m_angleOffset; };
   T getAngleTolerance() const { return m_angleTolerance; };
 
   T calcAngle(T radius);
-  T calcRadius(T targetRadius) const {
-    return getRadius(calcAngle(targetRadius));
-  };
 
   bool checkAngleDiff(const T targetRadius,
                       const bool isAbsolute = true) const {
