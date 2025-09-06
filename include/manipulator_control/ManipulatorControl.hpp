@@ -32,7 +32,7 @@ private:
   void processStop(const T radius);
   void processControl();
   void processAngleControl(const T radius);
-  void processForceControl(const T forceDiff);
+  void processForceControl(const T force);
 
 private:
   void calcCurrentRadius() {
