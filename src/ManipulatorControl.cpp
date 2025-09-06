@@ -1,9 +1,7 @@
 #include "ManipulatorControl.hpp"
 #include "utils/Config.hpp"
-#include "utils/Math.hpp"
 
 using namespace config;
-using namespace r2d2_math;
 using namespace r2d2_state;
 using namespace r2d2_type;
 
@@ -91,12 +89,7 @@ void ManipulatorControlHandler<T>::processAngleControl(const T radius) {
 template <typename T>
 void ManipulatorControlHandler<T>::processForceControl(const T force) {
   ROS_DEBUG_STREAM(MAGENTA("\nprocessForceControl()"));
-  const T forceDiff_ = force - getTargetForce();
-  const bool isForceReached_{std::abs(forceDiff_) > getForceTolerance()};
-
-  ROS_DEBUG_STREAM(BLUE("isForceReached_ = " << isForceReached_));
-  if (isForceReached_)
-    m_elbow.updateAngleBy(-sign(forceDiff_) * 0.1);
+  m_elbow.updateAngleBy(checkForceDiff(force));
   ROS_DEBUG_STREAM(RED("\nend") << MAGENTA("::processForceControl()"));
 }
 template <typename T> void ManipulatorControlHandler<T>::updateNozzleType() {

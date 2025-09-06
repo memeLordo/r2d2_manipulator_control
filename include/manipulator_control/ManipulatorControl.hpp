@@ -4,6 +4,7 @@
 #include "JointHandler.hpp"
 #include "PayloadHandler.hpp"
 #include "PipeHandler.hpp"
+#include "utils/Math.hpp"
 #include "utils/Types.hpp"
 
 template <typename T = double> class ManipulatorControlHandler {
@@ -33,6 +34,15 @@ private:
   void processForceControl(const T force);
 
 private:
+  short checkForceDiff(const T force) {
+    const T forceDiff_ = force - getTargetForce();
+    ROS_DEBUG_STREAM(BLUE("forceDiff_ = " << forceDiff_));
+    const bool needsForceControl_{std::abs(forceDiff_) > getForceTolerance()};
+    ROS_DEBUG_STREAM(BLUE("needsForceControl_ = " << needsForceControl_));
+    if (needsForceControl_)
+      return -r2d2_math::sign(forceDiff_);
+    return 0;
+  }
   void updateAngles() {
     m_elbow.updateAngle();
     m_shoulder.updateAngle();
