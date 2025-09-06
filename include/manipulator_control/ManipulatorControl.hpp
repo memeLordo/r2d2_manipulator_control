@@ -14,7 +14,6 @@ private:
   r2d2_state::LockStatus m_lockStatus{};
 
   r2d2_type::manipulator16_t<T> m_params{};
-  T m_targetRadius{};
 
   PayloadHandler<T> m_payload;
   PipeHandler<T> m_pipe;
@@ -42,10 +41,6 @@ private:
     ROS_DEBUG_STREAM(MAGENTA("\npublishResults()"));
     m_elbow.publish();
     m_shoulder.publish();
-  };
-  void setTargetRadius(T radius) {
-    ROS_DEBUG_STREAM(RED("targetRadius = ") << WHITE(m_targetRadius));
-    m_targetRadius = radius;
   };
 
 public:

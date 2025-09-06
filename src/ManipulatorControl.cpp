@@ -62,7 +62,6 @@ template <typename T>
 void ManipulatorControlHandler<T>::processControl(const T radius,
                                                   const T force) {
   updateAngles();
-  setTargetRadius(m_pipe.getRadius());
   switch (m_lockStatus) {
   case LockStatus::UNLOCKED:
     ROS_DEBUG_STREAM(YELLOW("LockStatus::UNLOCKED"));
