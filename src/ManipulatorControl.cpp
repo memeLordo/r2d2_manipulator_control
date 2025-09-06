@@ -41,7 +41,7 @@ void ManipulatorControlHandler<T>::callbackManipulator(
 
   case WorkMode::STOP:
     ROS_DEBUG_STREAM(YELLOW("WorkMode::STOP"));
-    processStop();
+    processStop(getRadius());
     return;
 
   default:
@@ -50,12 +50,11 @@ void ManipulatorControlHandler<T>::callbackManipulator(
   }
 }
 
-template <typename T> void ManipulatorControlHandler<T>::processStop() {
+template <typename T>
+void ManipulatorControlHandler<T>::processStop(const T radius) {
   ROS_DEBUG_STREAM(YELLOW("WorkMode::STOP"));
   updateAngles();
-  setTargetRadius(getRadius());
-  // if (processRadiusControl(m_currentRadius - m_targetRadius, 0.1))
-  //   resetMode();
+  processAngleControl();
   publishResults();
 }
 template <typename T> void ManipulatorControlHandler<T>::processControl() {
