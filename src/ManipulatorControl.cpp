@@ -33,14 +33,14 @@ void ManipulatorControlHandler<T>::callbackManipulator(
     processControl(m_pipe.getRadius(), m_payload.getForce());
     return;
 
-  case WorkMode::MANUAL:
-    ROS_DEBUG_STREAM(YELLOW("WorkMode::MANUAL"));
-    resetMode();
-    return;
-
   case WorkMode::STOP:
     ROS_DEBUG_STREAM(YELLOW("WorkMode::STOP"));
     processStop(getRadius());
+    return;
+
+  case WorkMode::MANUAL:
+    ROS_DEBUG_STREAM(YELLOW("WorkMode::MANUAL"));
+    resetMode();
     return;
 
   default:
