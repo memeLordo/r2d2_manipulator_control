@@ -115,11 +115,10 @@ public:
 
   T getTargetAngle(T radius);
 
-  bool checkAngleDiff(const T targetRadius,
-                      const bool isAbsolute = true) const {
-    const T angleDiff_ = getAngle() - calcAngle(targetRadius);
+  bool checkAngleDiff(const T radius, const bool isAbsolute = true) {
+    const T angleDiff_ = getAngle() - getTargetAngle(radius);
     if (isAbsolute)
-      return r2d2_math::abs(angleDiff_) < getAngleTolerance();
+      return std::abs(angleDiff_) < getAngleTolerance();
     return angleDiff_ < getAngleTolerance();
   };
 };
