@@ -54,7 +54,7 @@ template <typename T>
 void ManipulatorControlHandler<T>::processStop(const T radius) {
   ROS_DEBUG_STREAM(YELLOW("WorkMode::STOP"));
   updateAngles();
-  processAngleControl();
+  processAngleControl(radius);
   publishResults();
 }
 template <typename T> void ManipulatorControlHandler<T>::processControl() {
@@ -72,18 +72,18 @@ template <typename T> void ManipulatorControlHandler<T>::processControl() {
   }
   publishResults();
 }
-template <typename T> void ManipulatorControlHandler<T>::processAngleControl() {
+template <typename T>
+void ManipulatorControlHandler<T>::processAngleControl(const T radius) {
   ROS_DEBUG_STREAM(MAGENTA("\nprocessRadiusControl()"));
-  const bool isElbowReached_ = m_elbow.checkAngleDiff(m_targetRadius);
-  const bool isShoulderReached_ =
-      m_shoulder.checkAngleDiff(m_targetRadius, false);
+  const bool isElbowReached_ = m_elbow.checkAngleDiff(radius);
+  const bool isShoulderReached_ = m_shoulder.checkAngleDiff(radius, false);
 
   ROS_DEBUG_STREAM(BLUE("isElbowReached_ = " << isElbowReached_));
   ROS_DEBUG_STREAM(BLUE("isShoulderReached_ = " << isShoulderReached_));
-  if (isElbowReached_)
-    m_elbow.updateAngleByRadius(m_targetRadius);
-  if (isShoulderReached_)
-    m_shoulder.updateAngleByRadius(m_targetRadius);
+  if (!isElbowReached_)
+    m_elbow.updateAngleByRadius(radius);
+  if (!isShoulderReached_)
+    m_shoulder.updateAngleByRadius(radius);
 
   ROS_DEBUG_STREAM(RED("\nend") << MAGENTA("::processRadiusControl()"));
 }
