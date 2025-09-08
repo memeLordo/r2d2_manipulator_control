@@ -9,25 +9,39 @@
 #include "utils/Types.hpp"
 #include <ros/topic.h>
 
-template <typename T> class JointConfig : public IConfigJson<T> {
+template <typename T> class JointConfig : private IConfigJson<T> {
 protected:
-  T m_length;
-  T m_speed;
-  T m_angleOffset;
-  T m_angleTolerance;
-  std::vector<T> m_coeffs;
+  const std::string m_name;
+  const std::string m_inputTopic;
+  const std::string m_outputTopic;
+  const T m_length;
+  const T m_speed;
+  const T m_angleOffset;
+  const T m_angleTolerance;
+  const std::vector<T> m_coeffs;
 
-public:
   explicit JointConfig(const std::string &name)
-      : IConfigJson<T>(name), m_length(this->getParam("length")),
+      : IConfigJson<T>(name), m_name{name}, m_inputTopic{getInputTopic()},
+        m_outputTopic{getOutputTopic()}, m_length(this->getParam("length")),
         m_speed(this->getParam("speed")),
         m_angleOffset(this->getParam("angle_offset")),
         m_angleTolerance(this->getParam("angle_tolerance")),
         m_coeffs(this->getVector("coeffs")) {};
+
+private:
+  std::string getInputTopic() const {
+    return "/" + this->lower(m_name) + "_input";
+  };
+  std::string getOutputTopic() const {
+    return "/" + this->lower(m_name) + "_output";
+  };
 };
 
-template <typename T = double> class JointHandler : JointConfig<T> {
+template <typename T = double> class JointHandler : private JointConfig<T> {
 private:
+  using JointConfig<T>::m_name;
+  using JointConfig<T>::m_inputTopic;
+  using JointConfig<T>::m_outputTopic;
   using JointConfig<T>::m_length;
   using JointConfig<T>::m_speed;
   using JointConfig<T>::m_angleOffset;
@@ -40,21 +54,12 @@ private:
   ros::Subscriber m_subscriber;
   ros::Publisher m_publisher;
 
-  const std::string m_name;
-  const std::string m_inputTopic;
-  const std::string m_outputTopic;
-
   bool m_needsTolerance{false};
   bool m_needsRefresh{true};
 
 public:
   JointHandler() = default;
-  JointHandler(ros::NodeHandle *node, const std::string &name,
-               const std::string &input, const std::string &output);
-  JointHandler(ros::NodeHandle *node, const std::string &name,
-               const std::string &inputTopic, const std::string &outputTopic,
-               const T &length, const T &speed, const T &offset,
-               const T &tolerance, const std::vector<T> &coeffs);
+  JointHandler(ros::NodeHandle *node, const std::string &name);
 
 private:
   void callbackJoint(const r2d2_msg_pkg::DriverStateConstPtr &msg) {

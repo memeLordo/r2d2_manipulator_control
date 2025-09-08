@@ -3,17 +3,14 @@
 #include "utils/Polynome.hpp"
 
 template <typename T>
-JointHandler<T>::JointHandler(ros::NodeHandle *node, const std::string &name,
-                              const std::string &input,
-                              const std::string &output)
-    : JointConfig<T>(name), m_name{name}, m_inputTopic{input},
-      m_outputTopic{output} {
+JointHandler<T>::JointHandler(ros::NodeHandle *node, const std::string &name)
+    : JointConfig<T>(name) {
   waitForTopic();
   m_subscriber =
       node->subscribe(m_outputTopic, 10, &JointHandler::callbackJoint, this);
   m_publisher = node->advertise<r2d2_msg_pkg::DriverCommand>(m_inputTopic, 10);
 }
-template <typename T> T JointHandler<T>::getTargetAngle(T radius) {
+template <typename T> T JointHandler<T>::getTargetAngle(T radius) const {
   const T theta_ = horner::polynome(m_coeffs, radius) + m_angleOffset;
   ROS_DEBUG_STREAM(m_name << "::calcAngle(radius = " << WHITE(radius)
                           << ") : " << WHITE(theta_));
@@ -22,11 +19,10 @@ template <typename T> T JointHandler<T>::getTargetAngle(T radius) {
 
 template <typename T>
 ShoulderHandler<T>::ShoulderHandler(ros::NodeHandle *node)
-    : JointHandler<T>(node, "Shoulder", "/shoulder_input", "/shoulder_output") {
-}
+    : JointHandler<T>(node, "Shoulder") {}
 template <typename T>
 ElbowHandler<T>::ElbowHandler(ros::NodeHandle *node)
-    : JointHandler<T>(node, "Elbow", "/elbow_input", "/elbow_output") {}
+    : JointHandler<T>(node, "Elbow") {}
 
 template class JointHandler<>;
 template class ShoulderHandler<>;
