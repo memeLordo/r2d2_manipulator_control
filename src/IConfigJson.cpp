@@ -4,11 +4,12 @@
 #include <ros/package.h>
 
 template <typename T>
-IConfigJson<T>::IConfigJson(const std::string &name)
-    : m_path{ros::package::getPath("manipulator_control") + "/" + m_dirname +
-             "/"} {
+std::string IConfigJson<T>::getPath(std::string &&package_name) {
+  return ros::package::getPath(package_name) + "/" + m_dirname + "/";
+}
+template <typename T> IConfigJson<T>::IConfigJson(const std::string &name) {
   try {
-    std::ifstream file(m_path + lower(name) + ".json");
+    std::ifstream file(getPath("manipulator_control") + lower(name) + ".json");
     if (!file)
       throw std::runtime_error("Cannot open config file");
     file >> m_json;

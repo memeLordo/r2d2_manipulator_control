@@ -12,8 +12,8 @@ template <typename T = double> class IConfigJson {
 private:
   Json m_json;
   const std::string m_dirname{"config"};
-  const std::string m_packgeName;
-  const std::string m_path;
+
+  std::string getPath(std::string &&package_name);
 
 protected:
   IConfigJson(const std::string &name);
