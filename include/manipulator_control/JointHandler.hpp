@@ -25,6 +25,7 @@ private:
   const T m_speed;
   const T m_angleOffset;
   const T m_angleTolerance;
+  bool m_needsTolerance{false};
 
 public:
   JointHandler() = default;
@@ -39,7 +40,9 @@ private:
         r2d2_type::joint16_t{msg->omega, msg->theta, msg->control_word};
   };
 
-  T getAngleTolerance() const { return m_angleTolerance; };
+  T getAngleTolerance() const {
+    return m_needsTolerance ? m_angleTolerance : 0;
+  };
   bool checkAngleDiff(const T radius) {
     const T angleDiff_{std::abs(getAngle() - getTargetAngle(radius))};
     const bool needsAngleControl_{angleDiff_ < getAngleTolerance()};
@@ -95,6 +98,7 @@ public:
     else
       updateAngle();
   };
+  void enableTolerance() { m_needsTolerance |= true; };
   void setHoldControl() {
     m_params.control_word = r2d2_commands::ControlType::HOLD;
     ROS_DEBUG_STREAM(
