@@ -1,28 +1,36 @@
-#ifndef R2D2_CONFIG_JSON_H
-#define R2D2_CONFIG_JSON_H
+#ifndef R2D2_CONFIG_JSON_HPP
+#define R2D2_CONFIG_JSON_HPP
 
 #include <algorithm>
 #include <cctype>
 #include <nlohmann/json.hpp>
+#include <vector>
 
-template <typename T> class IConfigJson {
+template <typename T = double> class IConfigJson {
   using Json = nlohmann::json;
 
 private:
-  struct Config {
-    std::string name;
-    std::string type;
-    T value;
-  };
   Json m_json;
+  const std::string m_dirname{"config"};
+  const std::string m_packgeName;
+  const std::string m_path;
 
-public:
-  IConfigJson(const std::string &class_name);
-  Json get();
-  void parse();
-  std::string lower(std::string &str) {
-    std::transform(str.begin(), str.end(), str.begin(), ::tolower);
-    return str;
+protected:
+  IConfigJson(const std::string &name);
+
+  std::string lower(std::string name) {
+    std::transform(name.begin(), name.end(), name.begin(), ::tolower);
+    return name;
+  };
+  T getParam(const std::string &key) {
+    if (m_json.contains(key))
+      return m_json.at(key).get<T>();
+    return T{0};
+  };
+  std::vector<T> getVector(const std::string &key) {
+    if (m_json.contains(key))
+      return m_json.at(key).get<std::vector<T>>();
+    return std::vector<T>{0};
   };
 };
-#endif // R2D2_CONFIG_JSON_H
+#endif // R2D2_CONFIG_JSON_HPP
