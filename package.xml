@@ -13,6 +13,7 @@
 
   <author email="s.kripachev@rtc.ru">memeLordo</author>
 
+  <depend>roslib</depend>
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>roscpp</build_depend>
   <build_depend>r2d2_msg_pkg</build_depend>
