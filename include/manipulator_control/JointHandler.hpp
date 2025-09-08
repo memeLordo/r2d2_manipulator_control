@@ -39,6 +39,16 @@ private:
         r2d2_type::joint16_t{msg->omega, msg->theta, msg->control_word};
   };
 
+  T getAngleTolerance() const { return m_angleTolerance; };
+  bool checkAngleDiff(const T radius, const bool isAbsolute) {
+    const T angleDiff_{getAngle() - getTargetAngle(radius)};
+    const T diff_{isAbsolute ? std::abs(angleDiff_) : angleDiff_};
+    const bool needsAngleControl_{diff_ < getAngleTolerance()};
+    ROS_DEBUG_STREAM(
+        BLUE(m_name << "::needsAngleControl_ = " << needsAngleControl_));
+    return needsAngleControl_;
+  };
+
   r2d2_msg_pkg::DriverCommand prepareMsg() const {
     auto omega_ = m_speed;
     auto theta_ = r2d2_process::unwrap<int16_t>(m_params.theta);
@@ -61,7 +71,7 @@ public:
     ros::topic::waitForMessage<r2d2_msg_pkg::DriverState>(m_outputTopic);
   };
   void updateAngle() {
-    auto theta_ = r2d2_process::wrap<T>(m_callbackParams.theta);
+    T theta_{r2d2_process::wrap<T>(m_callbackParams.theta)};
     ROS_DEBUG_STREAM(m_name << "::updateAngle("
                             << YELLOW("callback = " << m_callbackParams.theta)
                             << ") : " << WHITE(theta_));
@@ -110,24 +120,14 @@ public:
     m_publisher.publish(prepareMsg());
   };
 
+  T getRadius() const { return m_length * r2d2_math::sin(getAngle()); };
+
   T getAngle() const {
     ROS_DEBUG_STREAM(m_name << "::getAngle() : " << WHITE(m_params.theta));
     return m_params.theta;
   };
-  T getRadius() const { return m_length * r2d2_math::sin(getAngle()); };
-
-  T getAngleTolerance() const { return m_angleTolerance; };
 
   T getTargetAngle(T radius);
-
-  bool checkAngleDiff(const T radius, const bool isAbsolute = true) {
-    const T angleDiff_{getAngle() - getTargetAngle(radius)};
-    const T diff_{isAbsolute ? std::abs(angleDiff_) : angleDiff_};
-    const bool needsAngleControl_{diff_ < getAngleTolerance()};
-    ROS_DEBUG_STREAM(
-        BLUE(m_name << "::needsAngleControl_ = " << needsAngleControl_));
-    return needsAngleControl_;
-  };
 };
 
 template <typename T = double> class ShoulderHandler : public JointHandler<T> {
