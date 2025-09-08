@@ -5,7 +5,7 @@
 #include <cctype>
 #include <nlohmann/json.hpp>
 
-template <typename T> class ConfigJSON {
+template <typename T> class IConfigJson {
   using Json = nlohmann::json;
 
 private:
@@ -17,7 +17,7 @@ private:
   Json m_json;
 
 public:
-  ConfigJSON(const std::string &class_name);
+  IConfigJson(const std::string &class_name);
   Json get();
   void parse();
   std::string lower(std::string &str) {
