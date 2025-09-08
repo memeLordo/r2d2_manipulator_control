@@ -92,9 +92,11 @@ void ManipulatorControlHandler<T>::processAngleControl(const T radius) {
 }
 template <typename T>
 void ManipulatorControlHandler<T>::processForceControl(const T force) {
-  ROS_DEBUG_STREAM(MAGENTA("\nprocessForceControl()"));
-  m_elbow.updateAngleByDiff(checkForceDiff(force));
-  ROS_DEBUG_STREAM(RED("\nend") << MAGENTA("::processForceControl()"));
+  if (!m_needsSetup) {
+    ROS_DEBUG_STREAM(MAGENTA("\nprocessForceControl()"));
+    m_elbow.updateAngleByDiff(checkForceDiff(force));
+    ROS_DEBUG_STREAM(RED("\nend") << MAGENTA("::processForceControl()"));
+  }
 }
 template <typename T> void ManipulatorControlHandler<T>::updateNozzleType() {
   ROS_DEBUG_STREAM(MAGENTA("updateNozzleType()"));
