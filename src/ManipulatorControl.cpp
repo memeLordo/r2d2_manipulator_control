@@ -63,14 +63,12 @@ void ManipulatorControlHandler<T>::checkSetup(const T radius) {
 template <typename T>
 void ManipulatorControlHandler<T>::processStop(const T radius) {
   ROS_DEBUG_STREAM(YELLOW("WorkMode::STOP"));
-  updateAngles();
   processAngleControl(radius);
   publishResults();
 }
 template <typename T>
 void ManipulatorControlHandler<T>::processControl(const T radius,
                                                   const T force) {
-  updateAngles();
   switch (m_lockStatus) {
   case LockStatus::UNLOCKED:
     ROS_DEBUG_STREAM(YELLOW("LockStatus::UNLOCKED"));

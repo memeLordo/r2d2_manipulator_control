@@ -48,10 +48,6 @@ private:
   T calcCurrentRadius() {
     return m_shoulder.getRadius() + m_elbow.getRadius() + getRadius();
   };
-  void updateAngles() {
-    m_elbow.updateAngle();
-    m_shoulder.updateAngle();
-  };
   void publishResults() {
     ROS_DEBUG_STREAM(MAGENTA("\npublishResults()"));
     m_elbow.publish();
