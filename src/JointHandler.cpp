@@ -1,19 +1,16 @@
 #include "JointHandler.hpp"
-#include "utils/Config.hpp"
 #include "utils/Math.hpp"
 #include "utils/Polynome.hpp"
-
-using namespace config;
 
 template <typename T>
 JointHandler<T>::JointHandler(ros::NodeHandle *node, const std::string &name,
                               const std::string &input,
-                              const std::string &output, const T &length,
-                              const T &speed, const T &offset,
-                              const T &tolerance, const std::vector<T> &coeffs)
-    : m_name{name}, m_inputTopic{input}, m_outputTopic{output},
-      m_length{length}, m_speed{speed}, m_angleOffset{offset},
-      m_angleTolerance{tolerance}, m_coeffs{coeffs} {
+                              const std::string &output)
+    : IConfigJson<T>(name), m_name{name}, m_inputTopic{input},
+      m_outputTopic{output}, m_length{getParam("length")},
+      m_speed{getParam("speed")}, m_angleOffset{getParam("angle_offset")},
+      m_angleTolerance{getParam("angle_tolerance")},
+      m_coeffs{getVector("coeffs")} {
   waitForTopic();
   m_subscriber =
       node->subscribe(m_outputTopic, 10, &JointHandler::callbackJoint, this);
@@ -28,14 +25,11 @@ template <typename T> T JointHandler<T>::getTargetAngle(T radius) {
 
 template <typename T>
 ShoulderHandler<T>::ShoulderHandler(ros::NodeHandle *node)
-    : JointHandler<T>(node, "Shoulder", "/shoulder_input", "/shoulder_output",
-                      shoulder::length, shoulder::speed, shoulder::angle_offset,
-                      shoulder::angle_tolerance, shoulder::coeffs) {}
+    : JointHandler<T>(node, "Shoulder", "/shoulder_input", "/shoulder_output") {
+}
 template <typename T>
 ElbowHandler<T>::ElbowHandler(ros::NodeHandle *node)
-    : JointHandler<T>(node, "Elbow", "/elbow_input", "/elbow_output",
-                      elbow::length, elbow::speed, elbow::angle_offset,
-                      elbow::angle_tolerance, elbow::coeffs) {}
+    : JointHandler<T>(node, "Elbow", "/elbow_input", "/elbow_output") {}
 
 template class JointHandler<>;
 template class ShoulderHandler<>;

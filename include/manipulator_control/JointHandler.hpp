@@ -4,11 +4,14 @@
 #include "r2d2_msg_pkg/DriverCommand.h"
 #include "r2d2_msg_pkg/DriverState.h"
 #include "utils/Debug.hpp"
+#include "utils/IConfigJson.hpp"
 #include "utils/Math.hpp"
 #include "utils/Types.hpp"
 #include <ros/topic.h>
 
-template <typename T = double> class JointHandler {
+template <typename T = double> class JointHandler : private IConfigJson<T> {
+  using IConfigJson<T>::getParam;
+  using IConfigJson<T>::getVector;
 
 private:
   r2d2_type::joint_t<T, r2d2_commands::ControlType> m_params{};
@@ -25,11 +28,14 @@ private:
   const T m_speed;
   const T m_angleOffset;
   const T m_angleTolerance;
+
   bool m_needsTolerance{false};
   bool m_needsRefresh{true};
 
 public:
   JointHandler() = default;
+  JointHandler(ros::NodeHandle *node, const std::string &name,
+               const std::string &input, const std::string &output);
   JointHandler(ros::NodeHandle *node, const std::string &name,
                const std::string &inputTopic, const std::string &outputTopic,
                const T &length, const T &speed, const T &offset,
