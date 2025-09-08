@@ -10,24 +10,25 @@ template <typename T = double> class IConfigJson {
   using Json = nlohmann::json;
 
 private:
-  Json m_json;
   const std::string m_dirname{"config"};
 
-  std::string getPath(std::string &&package_name);
+  Json m_json;
+
+  std::string getPath(std::string &&package_name) const;
 
 protected:
   IConfigJson(const std::string &name);
 
-  std::string lower(std::string name) {
+  std::string lower(std::string name) const {
     std::transform(name.begin(), name.end(), name.begin(), ::tolower);
     return name;
   };
-  T getParam(const std::string &key) {
+  T getParam(const std::string &key) const {
     if (m_json.contains(key))
       return m_json.at(key).get<T>();
     return T{0};
   };
-  std::vector<T> getVector(const std::string &key) {
+  std::vector<T> getVector(const std::string &key) const {
     if (m_json.contains(key))
       return m_json.at(key).get<std::vector<T>>();
     return std::vector<T>{0};

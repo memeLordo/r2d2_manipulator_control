@@ -35,7 +35,7 @@ private:
   void processForceControl(const T force);
 
 private:
-  short checkForceDiff(const T force) {
+  short checkForceDiff(const T force) const {
     const T forceDiff_ = force - getTargetForce();
     ROS_DEBUG_STREAM(BLUE("forceDiff_ = " << forceDiff_));
     const bool needsForceControl_{std::abs(forceDiff_) > getForceTolerance()};
@@ -44,7 +44,7 @@ private:
       return -r2d2_math::sign(forceDiff_);
     return 0;
   }
-  T getCurrentRadius() {
+  T getCurrentRadius() const {
     const T currentRadius_ =
         m_shoulder.getRadius() + m_elbow.getRadius() + getRadius();
     ROS_DEBUG_STREAM(RED("Current radius : ") << WHITE(currentRadius_));

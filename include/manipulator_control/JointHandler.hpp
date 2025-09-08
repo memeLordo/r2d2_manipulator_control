@@ -168,7 +168,7 @@ public:
     return m_params.theta;
   };
 
-  T getTargetAngle(T radius);
+  T getTargetAngle(T radius) const;
 };
 
 template <typename T = double> class ShoulderHandler : public JointHandler<T> {

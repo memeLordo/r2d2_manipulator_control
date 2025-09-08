@@ -4,7 +4,7 @@
 #include <ros/package.h>
 
 template <typename T>
-std::string IConfigJson<T>::getPath(std::string &&package_name) {
+std::string IConfigJson<T>::getPath(std::string &&package_name) const {
   return ros::package::getPath(package_name) + "/" + m_dirname + "/";
 }
 template <typename T> IConfigJson<T>::IConfigJson(const std::string &name) {
