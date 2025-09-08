@@ -54,8 +54,8 @@ void ManipulatorControlHandler<T>::checkSetup(const T radius) {
     ROS_DEBUG_STREAM(MAGENTA("checkSetup()"));
     const bool hasRadiusReached_{calcCurrentRadius() >= radius};
     if (hasRadiusReached_) {
-      m_shoulder.enableTolerance();
       m_elbow.enableTolerance();
+      m_shoulder.stopRefresh();
       m_needsSetup &= false;
     }
   }

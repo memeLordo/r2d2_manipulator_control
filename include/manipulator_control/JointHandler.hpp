@@ -26,6 +26,7 @@ private:
   const T m_angleOffset;
   const T m_angleTolerance;
   bool m_needsTolerance{false};
+  bool m_needsRefresh{true};
 
 public:
   JointHandler() = default;
@@ -93,12 +94,14 @@ public:
     setControlByAngle();
   };
   void updateAngleByRadius(T radius) {
-    if (checkAngleDiff(radius))
+    if (checkAngleDiff(radius) && m_needsRefresh)
       updateAngle(getTargetAngle(radius));
     else
       updateAngle();
   };
   void enableTolerance() { m_needsTolerance |= true; };
+  void setRefresh() { m_needsRefresh |= true; };
+  void stopRefresh() { m_needsRefresh &= false; };
   void setHoldControl() {
     m_params.control_word = r2d2_commands::ControlType::HOLD;
     ROS_DEBUG_STREAM(
