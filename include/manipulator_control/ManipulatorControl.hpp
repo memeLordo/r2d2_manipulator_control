@@ -7,7 +7,6 @@
 #include "utils/Types.hpp"
 
 template <typename T = double> class ManipulatorControlHandler {
-
 private:
   r2d2_state::WorkMode m_workMode{};
   r2d2_state::NozzleType m_nozzleType{};
