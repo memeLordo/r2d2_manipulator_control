@@ -73,7 +73,7 @@ public:
     m_params.theta = theta;
     setControlByAngle();
   };
-  void updateAngleBy(short diff, const T dTheta = 0.1) {
+  void updateAngleByDiff(short diff, const T dTheta = 0.1) {
     const T theta_{diff * dTheta};
     ROS_DEBUG_STREAM(m_name << "::changeAngleBy(diff = " << WHITE(diff)
                             << ", dTheta = " << WHITE(dTheta) << ")");
