@@ -116,7 +116,6 @@ public:
   };
   T getRadius() const { return m_length * r2d2_math::sin(getAngle()); };
 
-  T getAngleOffset() const { return m_angleOffset; };
   T getAngleTolerance() const { return m_angleTolerance; };
 
   T getTargetAngle(T radius);
