@@ -17,7 +17,7 @@ ManipulatorControlHandler<T>::ManipulatorControlHandler(ros::NodeHandle *node)
 template <typename T>
 void ManipulatorControlHandler<T>::callbackManipulator(
     const ros::TimerEvent &) {
-  ROS_DEBUG_STREAM(MAGENTA("\ncallbackManipulator()"));
+  ROS_DEBUG_STREAM("\ncallbackManipulator()");
   /**
    * INFO:
    * 0. Получить данные для манипулятора (и трубы)
@@ -51,14 +51,17 @@ void ManipulatorControlHandler<T>::callbackManipulator(
 template <typename T>
 void ManipulatorControlHandler<T>::checkSetup(const T radius) {
   if (m_needsSetup) {
-    ROS_DEBUG_STREAM(MAGENTA("checkSetup()"));
-    const bool hasRadiusReached_{calcCurrentRadius() >= radius};
+    ROS_DEBUG_STREAM(MAGENTA("\ncheckSetup()"));
+    const bool hasRadiusReached_{getCurrentRadius() >= radius};
+    ROS_DEBUG_STREAM(CYAN("hasRadiusReached_ = " << hasRadiusReached_));
     if (hasRadiusReached_) {
       m_elbow.enableTolerance();
       m_shoulder.stopRefresh();
       m_needsSetup &= false;
     }
-  }
+    ROS_DEBUG_STREAM(RED("\nend") << MAGENTA("::checkSetup()"));
+  } else
+    ROS_DEBUG_STREAM(CYAN("Control radius reached!"));
 }
 template <typename T>
 void ManipulatorControlHandler<T>::processStop(const T radius) {

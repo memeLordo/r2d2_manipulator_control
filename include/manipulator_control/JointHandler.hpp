@@ -48,7 +48,7 @@ private:
     const T angleDiff_{std::abs(getAngle() - getTargetAngle(radius))};
     const bool needsAngleControl_{angleDiff_ < getAngleTolerance()};
     ROS_DEBUG_STREAM(
-        BLUE(m_name << "::needsAngleControl_ = " << needsAngleControl_));
+        CYAN(m_name << "::needsAngleControl_ = " << needsAngleControl_));
     return needsAngleControl_;
   };
 
@@ -99,9 +99,18 @@ public:
     else
       updateAngle();
   };
-  void enableTolerance() { m_needsTolerance |= true; };
-  void setRefresh() { m_needsRefresh |= true; };
-  void stopRefresh() { m_needsRefresh &= false; };
+  void enableTolerance() {
+    ROS_DEBUG_STREAM(m_name << "::enableTolerance()");
+    m_needsTolerance |= true;
+  };
+  void setRefresh() {
+    ROS_DEBUG_STREAM(m_name << "::setRefresh()");
+    m_needsRefresh |= true;
+  };
+  void stopRefresh() {
+    ROS_DEBUG_STREAM(m_name << "::stopRefresh()");
+    m_needsRefresh &= false;
+  };
   void setHoldControl() {
     m_params.control_word = r2d2_commands::ControlType::HOLD;
     ROS_DEBUG_STREAM(

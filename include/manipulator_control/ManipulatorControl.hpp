@@ -45,8 +45,11 @@ private:
       return -r2d2_math::sign(forceDiff_);
     return 0;
   }
-  T calcCurrentRadius() {
-    return m_shoulder.getRadius() + m_elbow.getRadius() + getRadius();
+  T getCurrentRadius() {
+    const T currentRadius_ =
+        m_shoulder.getRadius() + m_elbow.getRadius() + getRadius();
+    ROS_DEBUG_STREAM(RED("Current radius : ") << WHITE(currentRadius_));
+    return currentRadius_;
   };
   void publishResults() {
     ROS_DEBUG_STREAM(MAGENTA("\npublishResults()"));
