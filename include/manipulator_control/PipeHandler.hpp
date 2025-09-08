@@ -15,6 +15,7 @@ private:
   ros::Subscriber m_subscriber;
 
 public:
+  PipeHandler() = default;
   PipeHandler(ros::NodeHandle *node);
 
 private:

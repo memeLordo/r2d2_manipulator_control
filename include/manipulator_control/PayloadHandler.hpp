@@ -15,6 +15,7 @@ private:
   ros::Subscriber m_subscriber;
 
 public:
+  PayloadHandler() = default;
   PayloadHandler(ros::NodeHandle *node);
 
 private:
