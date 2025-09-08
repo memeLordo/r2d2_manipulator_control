@@ -15,6 +15,8 @@ private:
 
   r2d2_type::manipulator16_t<T> m_params{};
 
+  bool m_needsSetup{true};
+
   PayloadHandler<T> m_payload;
   PipeHandler<T> m_pipe;
   ElbowHandler<T> m_elbow;
@@ -27,6 +29,7 @@ public:
 
 private:
   void callbackManipulator(const ros::TimerEvent &);
+  void checkSetup(const T radius);
   void processStop(const T radius);
   void processControl(const T radius, const T force);
   void processAngleControl(const T radius);

@@ -48,7 +48,18 @@ void ManipulatorControlHandler<T>::callbackManipulator(
     return;
   }
 }
-
+template <typename T>
+void ManipulatorControlHandler<T>::checkSetup(const T radius) {
+  if (m_needsSetup) {
+    ROS_DEBUG_STREAM(MAGENTA("checkSetup()"));
+    const bool hasRadiusReached_{calcCurrentRadius() >= radius};
+    if (hasRadiusReached_) {
+      m_shoulder.enableTolerance();
+      m_elbow.enableTolerance();
+      m_needsSetup &= false;
+    }
+  }
+}
 template <typename T>
 void ManipulatorControlHandler<T>::processStop(const T radius) {
   ROS_DEBUG_STREAM(YELLOW("WorkMode::STOP"));
@@ -63,6 +74,7 @@ void ManipulatorControlHandler<T>::processControl(const T radius,
   switch (m_lockStatus) {
   case LockStatus::UNLOCKED:
     ROS_DEBUG_STREAM(YELLOW("LockStatus::UNLOCKED"));
+    checkSetup(radius);
     processAngleControl(radius);
     processForceControl(force);
     break;
