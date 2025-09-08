@@ -9,11 +9,31 @@
 #include "utils/Types.hpp"
 #include <ros/topic.h>
 
-template <typename T = double> class JointHandler : private IConfigJson<T> {
-  using IConfigJson<T>::getParam;
-  using IConfigJson<T>::getVector;
+template <typename T> class JointConfig : public IConfigJson<T> {
+protected:
+  T m_length;
+  T m_speed;
+  T m_angleOffset;
+  T m_angleTolerance;
+  std::vector<T> m_coeffs;
 
+public:
+  explicit JointConfig(const std::string &name)
+      : IConfigJson<T>(name), m_length(this->getParam("length")),
+        m_speed(this->getParam("speed")),
+        m_angleOffset(this->getParam("angle_offset")),
+        m_angleTolerance(this->getParam("angle_tolerance")),
+        m_coeffs(this->getVector("coeffs")) {};
+};
+
+template <typename T = double> class JointHandler : JointConfig<T> {
 private:
+  using JointConfig<T>::m_length;
+  using JointConfig<T>::m_speed;
+  using JointConfig<T>::m_angleOffset;
+  using JointConfig<T>::m_angleTolerance;
+  using JointConfig<T>::m_coeffs;
+
   r2d2_type::joint_t<T, r2d2_commands::ControlType> m_params{};
   r2d2_type::joint16_t m_callbackParams{};
 
@@ -23,11 +43,6 @@ private:
   const std::string m_name;
   const std::string m_inputTopic;
   const std::string m_outputTopic;
-  const std::vector<T> m_coeffs;
-  const T m_length;
-  const T m_speed;
-  const T m_angleOffset;
-  const T m_angleTolerance;
 
   bool m_needsTolerance{false};
   bool m_needsRefresh{true};

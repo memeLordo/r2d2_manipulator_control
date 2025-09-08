@@ -6,11 +6,8 @@ template <typename T>
 JointHandler<T>::JointHandler(ros::NodeHandle *node, const std::string &name,
                               const std::string &input,
                               const std::string &output)
-    : IConfigJson<T>(name), m_name{name}, m_inputTopic{input},
-      m_outputTopic{output}, m_length{getParam("length")},
-      m_speed{getParam("speed")}, m_angleOffset{getParam("angle_offset")},
-      m_angleTolerance{getParam("angle_tolerance")},
-      m_coeffs{getVector("coeffs")} {
+    : JointConfig<T>(name), m_name{name}, m_inputTopic{input},
+      m_outputTopic{output} {
   waitForTopic();
   m_subscriber =
       node->subscribe(m_outputTopic, 10, &JointHandler::callbackJoint, this);
