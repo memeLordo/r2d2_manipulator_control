@@ -40,10 +40,9 @@ private:
   };
 
   T getAngleTolerance() const { return m_angleTolerance; };
-  bool checkAngleDiff(const T radius, const bool isAbsolute) {
-    const T angleDiff_{getAngle() - getTargetAngle(radius)};
-    const T diff_{isAbsolute ? std::abs(angleDiff_) : angleDiff_};
-    const bool needsAngleControl_{diff_ < getAngleTolerance()};
+  bool checkAngleDiff(const T radius) {
+    const T angleDiff_{std::abs(getAngle() - getTargetAngle(radius))};
+    const bool needsAngleControl_{angleDiff_ < getAngleTolerance()};
     ROS_DEBUG_STREAM(
         BLUE(m_name << "::needsAngleControl_ = " << needsAngleControl_));
     return needsAngleControl_;
@@ -90,8 +89,8 @@ public:
     m_params.theta += theta_;
     setControlByAngle();
   };
-  void updateAngleByRadius(T radius, const bool isAbsolute = true) {
-    if (checkAngleDiff(radius, isAbsolute))
+  void updateAngleByRadius(T radius) {
+    if (checkAngleDiff(radius))
       updateAngle(getTargetAngle(radius));
     else
       updateAngle();
