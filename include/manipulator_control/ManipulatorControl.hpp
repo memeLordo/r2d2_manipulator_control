@@ -12,9 +12,9 @@ class ManipulatorConfig
     : public IConfigJsonTypes<r2d2_type::manipulator16_t<T>> {
 
 protected:
-  r2d2_state::WorkMode m_workMode{};
-  r2d2_state::NozzleType m_nozzleType{};
-  r2d2_state::LockStatus m_lockStatus{};
+  r2d2_state::WorkModePair m_workMode{};
+  r2d2_state::NozzleTypePair m_nozzleType{};
+  r2d2_state::LockStatusPair m_lockStatus{};
   r2d2_type::manipulator16_t<T> m_params;
   ManipulatorConfig()
       : IConfigJsonTypes<r2d2_type::manipulator16_t<T>>{"manipulator"} {};
@@ -22,12 +22,12 @@ protected:
 public:
   bool setMode(const T value) {
     ROS_DEBUG_STREAM("Set mode(value = " << WHITE(value) << ")");
-    const auto workMode_ = static_cast<r2d2_state::WorkMode>(value);
-    switch (workMode_) {
+    m_workMode.type = static_cast<r2d2_state::WorkMode>(value);
+    std::string key_{};
+    switch (m_workMode.type) {
     case r2d2_state::WorkMode::AUTO:
     case r2d2_state::WorkMode::MANUAL:
     case r2d2_state::WorkMode::STOP:
-      m_workMode = workMode_;
       break;
     default:
       ROS_ERROR_STREAM("Got unknown work mode");
@@ -37,11 +37,13 @@ public:
   };
   bool setNozzle(const T value) {
     ROS_DEBUG_STREAM("Set nozzle(value = " << WHITE(value) << ")");
-    const auto workMode_ = static_cast<r2d2_state::NozzleType>(value);
-    switch (workMode_) {
+    m_nozzleType.type = static_cast<r2d2_state::NozzleType>(value);
+    switch (m_nozzleType.type) {
     case r2d2_state::NozzleType::BRUSH:
+      m_nozzleType.key = "brush";
+      break;
     case r2d2_state::NozzleType::EMA:
-      m_nozzleType = workMode_;
+      m_nozzleType.key = "ema";
       break;
     default:
       ROS_ERROR_STREAM("Got unknown nozzle type");
@@ -51,11 +53,10 @@ public:
   };
   bool setLock(const T value) {
     ROS_DEBUG_STREAM("Set lock(value = " << WHITE(value) << ")");
-    const auto lockStatus_ = static_cast<r2d2_state::LockStatus>(value);
-    switch (lockStatus_) {
+    m_lockStatus.type = static_cast<r2d2_state::LockStatus>(value);
+    switch (m_lockStatus.type) {
     case r2d2_state::LockStatus::LOCKED:
     case r2d2_state::LockStatus::UNLOCKED:
-      m_lockStatus = lockStatus_;
       break;
     default:
       ROS_ERROR_STREAM("Got unknown lock status");
@@ -63,9 +64,7 @@ public:
     }
     return true;
   };
-  void updateNozzleType(const r2d2_state::NozzleType nozzleType) {
-    m_params = this->getParam(r2d2_state::toString(nozzleType));
-  };
+  void updateNozzleType() { m_params = this->getParams(m_nozzleType.key); };
 };
 
 template <typename T = double>

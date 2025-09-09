@@ -26,7 +26,7 @@ void ManipulatorControlHandler<T>::callbackManipulator(
    * 4. Обновить оставшиеся переменные
    * 5. Опубликовать все переменные
    */
-  switch (m_workMode) {
+  switch (m_workMode.type) {
   case WorkMode::AUTO:
     ROS_DEBUG_STREAM(YELLOW("WorkMode::AUTO"));
     processControl(m_pipe.getRadius(), m_payload.getForce());
@@ -39,7 +39,7 @@ void ManipulatorControlHandler<T>::callbackManipulator(
 
   case WorkMode::MANUAL:
     ROS_DEBUG_STREAM(YELLOW("WorkMode::MANUAL"));
-    resetMode();
+    this->resetMode();
     return;
 
   default:
@@ -71,7 +71,7 @@ void ManipulatorControlHandler<T>::processStop(const T radius) {
 template <typename T>
 void ManipulatorControlHandler<T>::processControl(const T radius,
                                                   const T force) {
-  switch (m_lockStatus) {
+  switch (m_lockStatus.type) {
   case LockStatus::UNLOCKED:
     ROS_DEBUG_STREAM(YELLOW("LockStatus::UNLOCKED"));
     checkSetup(radius);
