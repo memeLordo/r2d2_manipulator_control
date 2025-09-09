@@ -53,9 +53,9 @@ private:
   };
 
   r2d2_msg_pkg::DriverCommand prepareMsg() const {
-    auto omega_ = m_speed;
-    auto theta_ = r2d2_process::unwrap<int16_t>(m_params.theta);
-    auto control_word_ = static_cast<uint16_t>(m_params.control_word);
+    const auto omega_{m_speed};
+    const auto theta_{r2d2_process::unwrap<int16_t>(m_params.theta)};
+    const auto control_word_{static_cast<uint16_t>(m_params.control_word)};
     ROS_DEBUG_STREAM(m_name << "::prepareMsg() |" << YELLOW(" omeha : ")
                             << WHITE(omega_) << " " << YELLOW(" theta : ")
                             << WHITE(theta_) << YELLOW(" control_word : ")
@@ -74,14 +74,14 @@ public:
     ros::topic::waitForMessage<r2d2_msg_pkg::DriverState>(m_outputTopic);
   };
   void updateAngle() {
-    T theta_{r2d2_process::wrap<T>(m_callbackParams.theta)};
+    const T theta_{r2d2_process::wrap<T>(m_callbackParams.theta)};
     ROS_DEBUG_STREAM(m_name << "::updateAngle("
                             << YELLOW("callback = " << m_callbackParams.theta)
                             << ") : " << WHITE(theta_));
     m_params.theta = theta_;
     setHoldControl();
   };
-  void updateAngle(T theta) {
+  void updateAngle(const T theta) {
     ROS_DEBUG_STREAM(m_name << "::updateAngle(theta = " << WHITE(theta) << ")");
     m_params.theta = theta;
     setControlByAngle();
@@ -93,7 +93,7 @@ public:
     m_params.theta += theta_;
     setControlByAngle();
   };
-  void updateAngleByRadius(T radius) {
+  void updateAngleByRadius(const T radius) {
     if (checkAngleDiff(radius) && m_needsRefresh)
       updateAngle(getTargetAngle(radius));
     else
@@ -136,13 +136,11 @@ public:
   };
 
   T getRadius() const { return m_length * r2d2_math::sin(getAngle()); };
-
   T getAngle() const {
     ROS_DEBUG_STREAM(m_name << "::getAngle() : " << WHITE(m_params.theta));
     return m_params.theta;
   };
-
-  T getTargetAngle(T radius);
+  T getTargetAngle(const T radius) const;
 };
 
 template <typename T = double> class ShoulderHandler : public JointHandler<T> {
