@@ -20,16 +20,6 @@ enum class LockStatus : uint8_t { NONE = 0, LOCKED, UNLOCKED };
 enum class WorkMode : uint8_t { NONE = 0, MANUAL, AUTO, STOP = 0x80 };
 enum class NozzleType : uint8_t { NONE = 0, BRUSH, EMA };
 
-inline const char *toString(NozzleType t) {
-  switch (t) {
-  case NozzleType::BRUSH:
-    return "brush";
-  case NozzleType::EMA:
-    return "ema";
-  default:
-    return "unknown";
-  }
-}
 
 } // namespace r2d2_state
 
