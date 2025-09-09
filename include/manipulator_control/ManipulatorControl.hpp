@@ -4,15 +4,26 @@
 #include "JointHandler.hpp"
 #include "PayloadHandler.hpp"
 #include "PipeHandler.hpp"
+#include "utils/IConfigJson.hpp"
 #include "utils/Types.hpp"
 
-template <typename T = double> class ManipulatorControlHandler {
+template <typename T>
+class ManipulatorConfig : public IConfigJson<r2d2_type::manipulator16_t<T>> {
+
+protected:
+  r2d2_type::manipulator16_t<T> m_params;
+  ManipulatorConfig()
+      : IConfigJson<r2d2_type::manipulator16_t<T>>("manipulator") {};
+};
+
+template <typename T = double>
+class ManipulatorControlHandler : public ManipulatorConfig<T> {
 private:
+  // using ManipulatorConfig<T>::m_paramsMap;
+  using ManipulatorConfig<T>::m_params;
   r2d2_state::WorkMode m_workMode{};
   r2d2_state::NozzleType m_nozzleType{};
   r2d2_state::LockStatus m_lockStatus{};
-
-  r2d2_type::manipulator16_t<T> m_params{};
 
   bool m_needsSetup{true};
 
