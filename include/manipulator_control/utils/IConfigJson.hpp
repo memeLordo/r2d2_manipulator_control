@@ -17,10 +17,8 @@ inline std::string lower(std::string name) {
 } // namespace r2d2_json
 
 template <typename T = double> class IConfigJson {
-private:
-  nlohmann::json m_json;
-
 protected:
+  nlohmann::json m_json;
   IConfigJson(const std::string &name);
 
   T getParam(const std::string &key) const {

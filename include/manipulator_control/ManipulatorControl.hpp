@@ -8,12 +8,13 @@
 #include "utils/Types.hpp"
 
 template <typename T>
-class ManipulatorConfig : public IConfigJson<r2d2_type::manipulator16_t<T>> {
+class ManipulatorConfig
+    : public IConfigJsonTypes<r2d2_type::manipulator16_t<T>> {
 
 protected:
   r2d2_type::manipulator16_t<T> m_params;
   ManipulatorConfig()
-      : IConfigJson<r2d2_type::manipulator16_t<T>>("manipulator") {};
+      : IConfigJsonTypes<r2d2_type::manipulator16_t<T>>{"manipulator"} {};
 };
 
 template <typename T = double>
