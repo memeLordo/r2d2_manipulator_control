@@ -21,7 +21,6 @@ private:
   nlohmann::json m_json;
 
 protected:
-  IConfigJson();
   IConfigJson(const std::string &name);
 
   T getParam(const std::string &key) const {
@@ -34,5 +33,10 @@ protected:
       return m_json.at(key).get<std::vector<T>>();
     return std::vector<T>{0};
   };
+};
+
+template <typename U> class IConfigJsonTypes : public IConfigJson<U> {
+  IConfigJsonTypes(const std::string &name);
+  U getParams(const std::string &key) const;
 };
 #endif // R2D2_CONFIG_JSON_HPP
