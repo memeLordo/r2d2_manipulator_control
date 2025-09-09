@@ -68,9 +68,6 @@ private:
   };
 
 public:
-  void updateNozzleType();
-
-public:
   void resetMode() {
     ROS_DEBUG("Reset mode");
     m_workMode = r2d2_state::WorkMode::NONE;
