@@ -6,23 +6,24 @@
 #include <nlohmann/json.hpp>
 #include <vector>
 
+namespace r2d2_json {
+inline std::string getPath(const std::string &&package_name,
+                           const std::string &&dirname = "config");
+
+inline std::string lower(std::string name) {
+  std::transform(name.begin(), name.end(), name.begin(), ::tolower);
+  return name;
+};
+} // namespace r2d2_json
+
 template <typename T = double> class IConfigJson {
-  using Json = nlohmann::json;
-
 private:
-  const std::string m_dirname{"config"};
-
-  Json m_json;
-
-  std::string getPath(std::string &&package_name) const;
+  nlohmann::json m_json;
 
 protected:
+  IConfigJson();
   IConfigJson(const std::string &name);
 
-  std::string lower(std::string name) const {
-    std::transform(name.begin(), name.end(), name.begin(), ::tolower);
-    return name;
-  };
   T getParam(const std::string &key) const {
     if (m_json.contains(key))
       return m_json.at(key).get<T>();

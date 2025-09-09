@@ -9,11 +9,11 @@
 #include "utils/Types.hpp"
 #include <ros/topic.h>
 
-template <typename T> class JointConfig : private IConfigJson<T> {
+template <typename T> class JointConfig : public IConfigJson<T> {
 protected:
   const std::string m_name;
-  const std::string m_inputTopic{"/" + this->lower(m_name) + "_input"};
-  const std::string m_outputTopic{"/" + this->lower(m_name) + "_output"};
+  const std::string m_inputTopic{"/" + r2d2_json::lower(m_name) + "_input"};
+  const std::string m_outputTopic{"/" + r2d2_json::lower(m_name) + "_output"};
   const T m_length;
   const T m_speed;
   const T m_angleOffset;
