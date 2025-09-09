@@ -2,6 +2,7 @@
 #define R2D2_CONTROL_WORD_HPP
 
 #include <cstdint>
+#include <string>
 
 namespace r2d2_commands {
 
@@ -16,11 +17,18 @@ enum class ControlType : uint16_t {
 
 namespace r2d2_state {
 
-enum class LockStatus : uint8_t { NONE = 0, LOCKED, UNLOCKED };
-enum class WorkMode : uint8_t { NONE = 0, MANUAL, AUTO, STOP = 0x80 };
+template <typename E> struct EnumPair {
+  E type{};
+  std::string key{};
+};
+
 enum class NozzleType : uint8_t { NONE = 0, BRUSH, EMA };
+enum class WorkMode : uint8_t { NONE = 0, MANUAL, AUTO, STOP = 0x80 };
+enum class LockStatus : uint8_t { NONE = 0, LOCKED, UNLOCKED };
 
-
+using NozzleTypePair = EnumPair<NozzleType>;
+using WorkModePair = EnumPair<WorkMode>;
+using LockStatusPair = EnumPair<LockStatus>;
 } // namespace r2d2_state
 
 namespace r2d2_type {
