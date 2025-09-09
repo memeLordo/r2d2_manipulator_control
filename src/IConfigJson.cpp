@@ -35,7 +35,6 @@ void from_json(const nlohmann::json &j, manipulator16_t<T> &p) {
 template <typename U> class IConfigJson<manipulator16_t<U>> {
 private:
   nlohmann::json m_json;
-  std::unordered_map<std::string, manipulator16_t<U>> m_paramsMap;
 
 protected:
   manipulator16_t<U> m_params;
