@@ -12,8 +12,8 @@
 template <typename T> class JointConfig : private IConfigJson<T> {
 protected:
   const std::string m_name;
-  const std::string m_inputTopic;
-  const std::string m_outputTopic;
+  const std::string m_inputTopic{"/" + this->lower(m_name) + "_input"};
+  const std::string m_outputTopic{"/" + this->lower(m_name) + "_output"};
   const T m_length;
   const T m_speed;
   const T m_angleOffset;
@@ -21,20 +21,11 @@ protected:
   const std::vector<T> m_coeffs;
 
   explicit JointConfig(const std::string &name)
-      : IConfigJson<T>(name), m_name{name}, m_inputTopic{getInputTopic()},
-        m_outputTopic{getOutputTopic()}, m_length(this->getParam("length")),
-        m_speed(this->getParam("speed")),
+      : IConfigJson<T>(name), m_name{name}, //
+        m_length(this->getParam("length")), m_speed(this->getParam("speed")),
         m_angleOffset(this->getParam("angle_offset")),
         m_angleTolerance(this->getParam("angle_tolerance")),
         m_coeffs(this->getVector("coeffs")) {};
-
-private:
-  std::string getInputTopic() const {
-    return "/" + this->lower(m_name) + "_input";
-  };
-  std::string getOutputTopic() const {
-    return "/" + this->lower(m_name) + "_output";
-  };
 };
 
 template <typename T = double> class JointHandler : private JointConfig<T> {
