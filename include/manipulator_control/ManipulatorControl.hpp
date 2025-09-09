@@ -12,19 +12,69 @@ class ManipulatorConfig
     : public IConfigJsonTypes<r2d2_type::manipulator16_t<T>> {
 
 protected:
+  r2d2_state::WorkMode m_workMode{};
+  r2d2_state::NozzleType m_nozzleType{};
+  r2d2_state::LockStatus m_lockStatus{};
   r2d2_type::manipulator16_t<T> m_params;
   ManipulatorConfig()
       : IConfigJsonTypes<r2d2_type::manipulator16_t<T>>{"manipulator"} {};
+
+public:
+  bool setMode(const T value) {
+    ROS_DEBUG_STREAM("Set mode(value = " << WHITE(value) << ")");
+    const auto workMode_ = static_cast<r2d2_state::WorkMode>(value);
+    switch (workMode_) {
+    case r2d2_state::WorkMode::AUTO:
+    case r2d2_state::WorkMode::MANUAL:
+    case r2d2_state::WorkMode::STOP:
+      m_workMode = workMode_;
+      break;
+    default:
+      ROS_ERROR_STREAM("Got unknown work mode");
+      return false;
+    }
+    return true;
+  };
+  bool setNozzle(const T value) {
+    ROS_DEBUG_STREAM("Set nozzle(value = " << WHITE(value) << ")");
+    const auto workMode_ = static_cast<r2d2_state::NozzleType>(value);
+    switch (workMode_) {
+    case r2d2_state::NozzleType::BRUSH:
+    case r2d2_state::NozzleType::EMA:
+      m_nozzleType = workMode_;
+      break;
+    default:
+      ROS_ERROR_STREAM("Got unknown nozzle type");
+      return false;
+    }
+    return true;
+  };
+  bool setLock(const T value) {
+    ROS_DEBUG_STREAM("Set lock(value = " << WHITE(value) << ")");
+    const auto lockStatus_ = static_cast<r2d2_state::LockStatus>(value);
+    switch (lockStatus_) {
+    case r2d2_state::LockStatus::LOCKED:
+    case r2d2_state::LockStatus::UNLOCKED:
+      m_lockStatus = lockStatus_;
+      break;
+    default:
+      ROS_ERROR_STREAM("Got unknown lock status");
+      return false;
+    }
+    return true;
+  };
+  void updateNozzleType(const r2d2_state::NozzleType nozzleType) {
+    m_params = this->getParam(r2d2_state::toString(nozzleType));
+  };
 };
 
 template <typename T = double>
 class ManipulatorControlHandler : public ManipulatorConfig<T> {
 private:
-  // using ManipulatorConfig<T>::m_paramsMap;
+  using ManipulatorConfig<T>::m_workMode;
+  using ManipulatorConfig<T>::m_nozzleType;
+  using ManipulatorConfig<T>::m_lockStatus;
   using ManipulatorConfig<T>::m_params;
-  r2d2_state::WorkMode m_workMode{};
-  r2d2_state::NozzleType m_nozzleType{};
-  r2d2_state::LockStatus m_lockStatus{};
 
   bool m_needsSetup{true};
 
@@ -73,38 +123,9 @@ public:
     ROS_DEBUG("Reset mode");
     m_workMode = r2d2_state::WorkMode::NONE;
   };
-  void resetNozzle() {
-    ROS_DEBUG("Reset nozzle");
-    m_nozzleType = r2d2_state::NozzleType::NONE;
-  };
   void resetLock() {
     ROS_DEBUG("Reset lock");
     m_lockStatus = r2d2_state::LockStatus::NONE;
-  };
-
-  void setMode(r2d2_state::WorkMode value) {
-    ROS_DEBUG_STREAM("Set mode(WorkMode)");
-    m_workMode = value;
-  };
-  void setNozzle(r2d2_state::NozzleType value) {
-    ROS_DEBUG_STREAM("Set nozzle(NozzleType)");
-    m_nozzleType = value;
-  };
-  void setLock(r2d2_state::LockStatus value) {
-    ROS_DEBUG_STREAM("Set lock(LockStatus)");
-    m_lockStatus = value;
-  };
-  void setMode(T value) {
-    ROS_DEBUG_STREAM("Set mode(value = " << WHITE(value) << ")");
-    m_workMode = static_cast<r2d2_state::WorkMode>(value);
-  };
-  void setNozzle(T value) {
-    ROS_DEBUG_STREAM("Set nozzle(value = " << WHITE(value) << ")");
-    m_nozzleType = static_cast<r2d2_state::NozzleType>(value);
-  };
-  void setLock(T value) {
-    ROS_DEBUG_STREAM("Set lock(value = " << WHITE(value) << ")");
-    m_lockStatus = static_cast<r2d2_state::LockStatus>(value);
   };
 
   T getTargetForce() const {
