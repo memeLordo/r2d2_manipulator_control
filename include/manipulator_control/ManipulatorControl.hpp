@@ -20,6 +20,14 @@ protected:
       : IConfigJsonTypes<r2d2_type::manipulator16_t<T>>{"manipulator"} {};
 
 public:
+  void resetMode() {
+    ROS_DEBUG("Reset mode");
+    m_workMode.type = r2d2_state::WorkMode::NONE;
+  };
+  void resetLock() {
+    ROS_DEBUG("Reset lock");
+    m_lockStatus.type = r2d2_state::LockStatus::NONE;
+  };
   bool setMode(const T value) {
     ROS_DEBUG_STREAM("Set mode(value = " << WHITE(value) << ")");
     m_workMode.type = static_cast<r2d2_state::WorkMode>(value);
@@ -118,15 +126,6 @@ private:
   };
 
 public:
-  void resetMode() {
-    ROS_DEBUG("Reset mode");
-    m_workMode = r2d2_state::WorkMode::NONE;
-  };
-  void resetLock() {
-    ROS_DEBUG("Reset lock");
-    m_lockStatus = r2d2_state::LockStatus::NONE;
-  };
-
   T getTargetForce() const {
     T force_ = static_cast<T>(m_params.force_needed);
     ROS_DEBUG_STREAM("ManipulatorControl::getForce() : " << WHITE(force_));
