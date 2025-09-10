@@ -1,0 +1,12 @@
+{
+  "ema": {
+    "target_force": 0,
+    "force_tolerance": 0,
+    "init_radius": 0
+  },
+  "brush": {
+    "target_force": 0,
+    "force_tolerance": 0,
+    "init_radius": 0
+  }
+}

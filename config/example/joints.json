@@ -1,0 +1,16 @@
+{
+  "shoulder": {
+    "coeffs": [0],
+    "length": 0,
+    "speed": 0,
+    "angle_offset": 0,
+    "angle_tolerance": 0
+  },
+  "elbow": {
+    "coeffs": [0],
+    "length": 0,
+    "speed": 0,
+    "angle_offset": 0,
+    "angle_tolerance": 0
+  }
+}
