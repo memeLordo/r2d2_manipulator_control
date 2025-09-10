@@ -14,8 +14,8 @@ private:
   ros::ServiceServer m_manipulatorService;
 
 public:
-  ManipulatorServiceHandler(ros::NodeHandle *node,
-                            ManipulatorControlHandler<> *);
+  explicit ManipulatorServiceHandler(ros::NodeHandle *node,
+                                     ManipulatorControlHandler<> *);
 
 private:
   bool callbackService(r2d2_msg_pkg::ManipulatorCommand::Request &req,

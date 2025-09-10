@@ -80,7 +80,7 @@ private:
   ros::Timer m_timer;
 
 public:
-  ManipulatorControlHandler(ros::NodeHandle *node);
+  explicit ManipulatorControlHandler(ros::NodeHandle *node);
 
 private:
   void callbackManipulator(const ros::TimerEvent &);
@@ -92,7 +92,7 @@ private:
 
 private:
   short checkForceDiff(const T force) const {
-    const T forceDiff_ = force - getTargetForce();
+    const T forceDiff_{force - getTargetForce()};
     ROS_DEBUG_STREAM(BLUE("forceDiff_ = " << forceDiff_));
     const bool needsForceControl_{std::abs(forceDiff_) > getForceTolerance()};
     ROS_DEBUG_STREAM(BLUE("needsForceControl_ = " << needsForceControl_));
@@ -101,8 +101,8 @@ private:
     return 0;
   }
   T getCurrentRadius() const {
-    const T currentRadius_ =
-        m_shoulder.getRadius() + m_elbow.getRadius() + getRadius();
+    const T currentRadius_{m_shoulder.getRadius() + m_elbow.getRadius() +
+                           getRadius()};
     ROS_DEBUG_STREAM(RED("Current radius : ") << WHITE(currentRadius_));
     return currentRadius_;
   };
@@ -114,7 +114,7 @@ private:
 
 public:
   T getTargetForce() const {
-    T force_ = static_cast<T>(m_params.force_needed);
+    const T force_{static_cast<T>(m_params.force_needed)};
     ROS_DEBUG_STREAM("ManipulatorControl::getForce() : " << WHITE(force_));
     return force_;
   };
@@ -122,7 +122,7 @@ public:
     return static_cast<T>(m_params.force_tolerance);
   };
   T getRadius() const {
-    T radius_ = m_params.r0;
+    const T radius_{m_params.r0};
     ROS_DEBUG_STREAM("ManipulatorControl::getRadius() : " << WHITE(radius_));
     return radius_;
   };

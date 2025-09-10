@@ -11,7 +11,7 @@ JointHandler<T>::JointHandler(ros::NodeHandle *node, const std::string &name)
   m_publisher = node->advertise<r2d2_msg_pkg::DriverCommand>(m_inputTopic, 10);
 }
 template <typename T> T JointHandler<T>::getTargetAngle(T radius) const {
-  const T theta_ = horner::polynome(m_coeffs, radius) + m_angleOffset;
+  const T theta_{horner::polynome(m_coeffs, radius) - m_angleOffset};
   ROS_DEBUG_STREAM(m_name << "::calcAngle(radius = " << WHITE(radius)
                           << ") : " << WHITE(theta_));
   return r2d2_math::max<T>(theta_, 0);

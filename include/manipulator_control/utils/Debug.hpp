@@ -17,7 +17,7 @@
 #define ANSI_COLOR_WHITE "\033[0;37m"
 #define ANSI_COLOR_RESET ANSI_COLOR_GREEN
 
-// Color stream manipulators
+// Color stream
 #define RED(x) ANSI_COLOR_RED << x << ANSI_COLOR_RESET
 #define GREEN(x) ANSI_COLOR_GREEN << x << ANSI_COLOR_RESET
 #define YELLOW(x) ANSI_COLOR_YELLOW << x << ANSI_COLOR_RESET

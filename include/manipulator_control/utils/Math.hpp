@@ -28,24 +28,13 @@ template <typename T> constexpr T sign(const T a) {
 namespace r2d2_process {
 
 constexpr double K{-100};
-template <typename T> const T wrap(T a) {
-  return a / K;
-  // ROS_DEBUG_STREAM(CYAN("wrap(") << WHITE(a) << CYAN(") -> ") << WHITE(res));
-};
-template <typename T> const T unwrap(T a) {
-  return a * K;
-  // ROS_DEBUG_STREAM(CYAN("unwrap(") << WHITE(a) << CYAN(") -> ") <<
-  // WHITE(res));
-};
-template <typename T, typename T2> const T wrap(T2 a) {
+template <typename T> constexpr T wrap(const T a) { return a / K; };
+template <typename T> constexpr T unwrap(const T a) { return a * K; };
+template <typename T, typename T2> constexpr T wrap(const T2 a) {
   return static_cast<T>(a / K);
-  // ROS_DEBUG_STREAM(CYAN("convert wrap(")
-  //                  << WHITE(a) << CYAN(") -> ") << WHITE(res));
 };
-template <typename T, typename T2> const T unwrap(T2 a) {
+template <typename T, typename T2> constexpr T unwrap(const T2 a) {
   return static_cast<T>(a * K);
-  // ROS_DEBUG_STREAM(CYAN("convert unwrap(")
-  //                  << WHITE(a) << CYAN(") -> ") << WHITE(res));
 };
 
 } // namespace r2d2_process
