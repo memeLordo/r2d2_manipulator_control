@@ -21,8 +21,8 @@ protected:
   const T m_angleTolerance;
   const std::vector<T> m_coeffs;
 
-  explicit JointConfig(const std::string &name)
-      : IConfigJson<T>{name}, m_name{name}, //
+  explicit JointConfig(const std::string &name, const std::string &fileName = "joints")
+      : IConfigJson<T>{fileName}, m_name{name}, //
         m_length{this->getParam("length")}, m_speed{this->getParam("speed")},
         m_angleOffset{this->getParam("angle_offset")},
         m_angleTolerance{this->getParam("angle_tolerance")},
