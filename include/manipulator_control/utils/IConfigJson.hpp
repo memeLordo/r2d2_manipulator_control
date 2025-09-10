@@ -12,9 +12,9 @@ namespace r2d2_json {
 inline std::string getPath(const std::string &packageName,
                            const std::string &dirname = "config");
 
-inline std::string lower(std::string name) {
-  std::transform(name.begin(), name.end(), name.begin(), ::tolower);
-  return name;
+inline std::string lower(std::string str) {
+  std::transform(str.begin(), str.end(), str.begin(), ::tolower);
+  return str;
 };
 } // namespace r2d2_json
 
