@@ -10,17 +10,17 @@
 template <typename T>
 class ManipulatorConfig
     : public IConfigJsonMap<r2d2_type::config::manipulator_t<T>> {
-
-protected:
+ protected:
   r2d2_state::WorkModePair m_workMode{};
   r2d2_state::NozzleTypePair m_nozzleType{};
   r2d2_state::LockStatusPair m_lockStatus{};
   r2d2_type::callback::manipulator16_t<T> m_params;
 
+ protected:
   explicit ManipulatorConfig(const std::string &fileName = "manipulator")
       : IConfigJsonMap<r2d2_type::config::manipulator_t<T>>{fileName} {};
 
-public:
+ public:
   void updateNozzleType() { m_params = this->getParams(m_nozzleType.key); };
   void resetMode() {
     ROS_DEBUG("Reset mode");
@@ -65,25 +65,22 @@ public:
 
 template <typename T = double>
 class ManipulatorControlHandler : public ManipulatorConfig<T> {
-private:
+ private:
   using ManipulatorConfig<T>::m_workMode;
   using ManipulatorConfig<T>::m_nozzleType;
   using ManipulatorConfig<T>::m_lockStatus;
   using ManipulatorConfig<T>::m_params;
-
   bool m_needsSetup{true};
-
   PayloadHandler<T> m_payload;
   PipeHandler<T> m_pipe;
   ElbowHandler<T> m_elbow;
   ShoulderHandler<T> m_shoulder;
-
   ros::Timer m_timer;
 
-public:
+ public:
   explicit ManipulatorControlHandler(ros::NodeHandle *node);
 
-private:
+ private:
   void callbackManipulator(const ros::TimerEvent &);
   void checkSetup(const T radius);
   void processStop(const T radius);
@@ -91,16 +88,17 @@ private:
   void processAngleControl(const T radius);
   void processForceControl(const T force);
 
-private:
+ protected:
   short checkForceDiff(const T force) const {
     const T forceDiff_{force - getTargetForce()};
     ROS_DEBUG_STREAM(BLUE("forceDiff_ = " << forceDiff_));
+
     const bool needsForceControl_{std::abs(forceDiff_) > getForceTolerance()};
     ROS_DEBUG_STREAM(BLUE("needsForceControl_ = " << needsForceControl_));
-    if (needsForceControl_)
-      return -r2d2_math::sign(forceDiff_);
+
+    if (needsForceControl_) return -r2d2_math::sign(forceDiff_);
     return 0;
-  }
+  };
   T getCurrentRadius() const {
     const T currentRadius_{m_shoulder.getRadius() + m_elbow.getRadius() +
                            getRadius()};
@@ -113,7 +111,7 @@ private:
     m_shoulder.publish();
   };
 
-public:
+ public:
   T getTargetForce() const {
     const T force_{static_cast<T>(m_params.force_needed)};
     ROS_DEBUG_STREAM("ManipulatorControl::getForce() : " << WHITE(force_));
@@ -128,4 +126,4 @@ public:
     return radius_;
   };
 };
-#endif // R2D2_MANIPULATOR_CONTROL_HPP
+#endif  // R2D2_MANIPULATOR_CONTROL_HPP

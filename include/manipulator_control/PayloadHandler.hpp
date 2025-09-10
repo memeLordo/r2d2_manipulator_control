@@ -1,20 +1,23 @@
 #ifndef R2D2_PAYLOAD_HANDLER_HPP
 #define R2D2_PAYLOAD_HANDLER_HPP
 
+#include <ros/topic.h>
+
 #include "r2d2_msg_pkg/DriverState.h"
 #include "utils/Debug.hpp"
 #include "utils/Types.hpp"
-#include <ros/topic.h>
 
-template <typename T = double> class PayloadHandler {
-private:
+template <typename T = double>
+class PayloadHandler {
+ private:
   static constexpr const char *s_name = "Payload";
 
+ private:
   const std::string m_outputTopic;
   r2d2_type::callback::payload16_t m_callbackParams{};
   ros::Subscriber m_subscriber;
 
-public:
+ public:
   PayloadHandler() = default;
   explicit PayloadHandler(ros::NodeHandle *node)
       : m_outputTopic{"/payload_output"} {
@@ -23,20 +26,20 @@ public:
                                    &PayloadHandler::callbackPayload, this);
   };
 
-private:
+ private:
   void callbackPayload(const r2d2_msg_pkg::DriverStateConstPtr &msg) {
     m_callbackParams = r2d2_type::callback::payload16_t{msg->force};
   };
 
-public:
+ public:
   void waitForTopic() {
     ROS_INFO_STREAM(CYAN("Waiting for " << s_name << " topic..."));
     ros::topic::waitForMessage<r2d2_msg_pkg::DriverState>(m_outputTopic);
-  }
+  };
   T getForce() const {
     const T force_{static_cast<T>(m_callbackParams.force)};
     ROS_DEBUG_STREAM(s_name << "::getForce() : " << WHITE(force_));
     return force_;
   };
 };
-#endif // PIPE_HANDLER_HPP
+#endif  // PIPE_HANDLER_HPP
