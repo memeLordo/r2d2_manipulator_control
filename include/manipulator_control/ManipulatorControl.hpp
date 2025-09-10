@@ -16,8 +16,9 @@ protected:
   r2d2_state::NozzleTypePair m_nozzleType{};
   r2d2_state::LockStatusPair m_lockStatus{};
   r2d2_type::callback::manipulator16_t<T> m_params;
-  explicit ManipulatorConfig()
-      : IConfigJsonMap<r2d2_type::config::manipulator_t<T>>{"manipulator"} {};
+
+  explicit ManipulatorConfig(const std::string &fileName = "manipulator")
+      : IConfigJsonMap<r2d2_type::config::manipulator_t<T>>{fileName} {};
 
 public:
   void updateNozzleType() { m_params = this->getParams(m_nozzleType.key); };
