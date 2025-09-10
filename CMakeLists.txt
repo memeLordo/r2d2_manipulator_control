@@ -33,7 +33,6 @@ include_directories(
 add_library(${PROJECT_NAME}
   src/IConfigJson.cpp
   src/ManipulatorControl.cpp
-  src/ManipulatorService.cpp
 )
 
 add_executable(${PROJECT_NAME}_node 
