@@ -4,7 +4,6 @@
 #include <algorithm>
 #include <cctype>
 #include <fstream>
-#include <iostream>
 #include <nlohmann/json.hpp>
 #include <vector>
 
@@ -20,15 +19,10 @@ template <typename T = double> class IConfigJson {
 protected:
   nlohmann::json m_json;
   IConfigJson(const std::string &fileName) {
-    try {
-      std::ifstream file(r2d2_json::getFilePath(fileName));
-      if (!file)
-        throw std::runtime_error("Cannot open config file");
-      file >> m_json;
-    } catch (const std::exception &e) {
-      std::cerr << e.what() << std::endl;
-      m_json = nlohmann::json::object();
-    }
+    std::ifstream file(r2d2_json::getFilePath(fileName));
+    if (!file)
+      throw std::runtime_error("File " + fileName + ".json not found!");
+    file >> m_json;
   };
 
   T getParam(const std::string &key) const {
