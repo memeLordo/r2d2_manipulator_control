@@ -10,34 +10,25 @@
 #include "utils/Types.hpp"
 #include <ros/topic.h>
 
-template <typename T> class JointConfig : public IConfigJson<T> {
+template <typename T>
+class JointConfig : public IConfigJsonMap<r2d2_type::config::joint_t<T>> {
 protected:
   const std::string m_name;
   const std::string m_inputTopic{"/" + r2d2_json::lower(m_name) + "_input"};
   const std::string m_outputTopic{"/" + r2d2_json::lower(m_name) + "_output"};
-  const T m_length;
-  const T m_speed;
-  const T m_angleOffset;
-  const T m_angleTolerance;
-  const std::vector<T> m_coeffs;
+  const r2d2_type::config::joint_t<T> m_config;
 
-  explicit JointConfig(const std::string &name, const std::string &fileName = "joints")
-      : IConfigJson<T>{fileName}, m_name{name}, //
-        m_length{this->getParam("length")}, m_speed{this->getParam("speed")},
-        m_angleOffset{this->getParam("angle_offset")},
-        m_angleTolerance{this->getParam("angle_tolerance")},
-        m_coeffs{this->getVector("coeffs")} {};
+  explicit JointConfig(const std::string &name,
+                       const std::string &fileName = "joints")
+      : IConfigJsonMap<r2d2_type::config::joint_t<T>>{fileName}, m_name{name},
+        m_config{this->getParams(r2d2_json::lower(name))} {};
 };
 template <typename T = double> class JointHandler : private JointConfig<T> {
 private:
   using JointConfig<T>::m_name;
   using JointConfig<T>::m_inputTopic;
   using JointConfig<T>::m_outputTopic;
-  using JointConfig<T>::m_length;
-  using JointConfig<T>::m_speed;
-  using JointConfig<T>::m_angleOffset;
-  using JointConfig<T>::m_angleTolerance;
-  using JointConfig<T>::m_coeffs;
+  using JointConfig<T>::m_config;
 
   r2d2_type::callback::joint_t<T> m_params{};
   r2d2_type::callback::joint16_t m_callbackParams{};
@@ -66,7 +57,7 @@ private:
   };
 
   T getAngleTolerance() const {
-    return m_needsTolerance ? m_angleTolerance : 0;
+    return m_needsTolerance ? m_config.angle_tolerance : 0;
   };
   bool checkAngleDiff(const T radius) {
     const T angleDiff_{std::abs(getAngle() - getTargetAngle(radius))};
@@ -77,7 +68,7 @@ private:
   };
 
   r2d2_msg_pkg::DriverCommand prepareMsg() const {
-    const auto omega_{m_speed};
+    const auto omega_{m_config.speed};
     const auto theta_{r2d2_process::unwrap<int16_t>(m_params.theta)};
     const auto control_word_{static_cast<uint16_t>(m_params.control_word)};
     ROS_DEBUG_STREAM(m_name << "::prepareMsg() |" << YELLOW(" omeha : ")
@@ -127,7 +118,7 @@ public:
     ROS_DEBUG_STREAM(m_name << "::enableTolerance()");
     m_needsTolerance |= true;
   };
-  void setRefresh() {
+  void updateRefresh() {
     ROS_DEBUG_STREAM(m_name << "::setRefresh()");
     m_needsRefresh |= true;
   };
@@ -159,13 +150,14 @@ public:
     m_publisher.publish(prepareMsg());
   };
 
-  T getRadius() const { return m_length * r2d2_math::sin(getAngle()); };
+  T getRadius() const { return m_config.length * r2d2_math::sin(getAngle()); };
   T getAngle() const {
     ROS_DEBUG_STREAM(m_name << "::getAngle() : " << WHITE(m_params.theta));
     return m_params.theta;
   };
   T getTargetAngle(T radius) const {
-    const T theta_{horner::polynome(m_coeffs, radius) - m_angleOffset};
+    const T theta_{horner::polynome(m_config.coeffs, radius) -
+                   m_config.angle_offset};
     ROS_DEBUG_STREAM(m_name << "::calcAngle(radius = " << WHITE(radius)
                             << ") : " << WHITE(theta_));
     return r2d2_math::max<T>(theta_, 0);
