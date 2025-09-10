@@ -1,6 +1,8 @@
 #ifndef R2D2_JOINT_HANDLER_HPP
 #define R2D2_JOINT_HANDLER_HPP
 
+#include <ros/topic.h>
+
 #include "r2d2_msg_pkg/DriverCommand.h"
 #include "r2d2_msg_pkg/DriverState.h"
 #include "utils/Debug.hpp"
@@ -8,38 +10,38 @@
 #include "utils/Math.hpp"
 #include "utils/Polynome.hpp"
 #include "utils/Types.hpp"
-#include <ros/topic.h>
 
 template <typename T>
 class JointConfig : public IConfigJsonMap<r2d2_type::config::joint_t<T>> {
-protected:
+ protected:
   const std::string m_name;
   const std::string m_inputTopic{"/" + r2d2_json::lower(m_name) + "_input"};
   const std::string m_outputTopic{"/" + r2d2_json::lower(m_name) + "_output"};
   const r2d2_type::config::joint_t<T> m_config;
 
+ protected:
   explicit JointConfig(const std::string &name,
                        const std::string &fileName = "joints")
-      : IConfigJsonMap<r2d2_type::config::joint_t<T>>{fileName}, m_name{name},
+      : IConfigJsonMap<r2d2_type::config::joint_t<T>>{fileName},
+        m_name{name},
         m_config{this->getParams(r2d2_json::lower(name))} {};
 };
-template <typename T = double> class JointHandler : private JointConfig<T> {
-private:
+
+template <typename T = double>
+class JointHandler : public JointConfig<T> {
+ private:
   using JointConfig<T>::m_name;
   using JointConfig<T>::m_inputTopic;
   using JointConfig<T>::m_outputTopic;
   using JointConfig<T>::m_config;
-
   r2d2_type::callback::joint_t<T> m_params{};
   r2d2_type::callback::joint16_t m_callbackParams{};
-
   ros::Subscriber m_subscriber;
   ros::Publisher m_publisher;
-
   bool m_needsTolerance{false};
   bool m_needsRefresh{true};
 
-public:
+ public:
   JointHandler() = default;
   explicit JointHandler(ros::NodeHandle *node, const std::string &name)
       : JointConfig<T>(name) {
@@ -50,12 +52,13 @@ public:
         node->advertise<r2d2_msg_pkg::DriverCommand>(m_inputTopic, 10);
   };
 
-private:
+ private:
   void callbackJoint(const r2d2_msg_pkg::DriverStateConstPtr &msg) {
     m_callbackParams = r2d2_type::callback::joint16_t{msg->omega, msg->theta,
                                                       msg->control_word};
   };
 
+ protected:
   T getAngleTolerance() const {
     return m_needsTolerance ? m_config.angle_tolerance : 0;
   };
@@ -66,7 +69,6 @@ private:
         CYAN(m_name << "::needsAngleControl_ = " << needsAngleControl_));
     return needsAngleControl_;
   };
-
   r2d2_msg_pkg::DriverCommand prepareMsg() const {
     const auto omega_{m_config.speed};
     const auto theta_{r2d2_process::unwrap<int16_t>(m_params.theta)};
@@ -83,7 +85,7 @@ private:
     return msg;
   };
 
-public:
+ public:
   void waitForTopic() {
     ROS_INFO_STREAM(CYAN("Waiting for " << m_name << " topic..."));
     ros::topic::waitForMessage<r2d2_msg_pkg::DriverState>(m_outputTopic);
@@ -144,13 +146,15 @@ public:
         BLUE(m_name << "::set control_word to "
                     << YELLOW(static_cast<uint16_t>(m_params.control_word))));
   };
-
   void publish() {
     ROS_DEBUG_STREAM(BLUE(m_name << "::publish()"));
     m_publisher.publish(prepareMsg());
   };
-
-  T getRadius() const { return m_config.length * r2d2_math::sin(getAngle()); };
+  T getRadius() const {
+    const T radius_{m_config.length * r2d2_math::sin(getAngle())};
+    // ROS_DEBUG_STREAM(m_name << "::getRadius() : " << WHITE(radius_));
+    return radius_;
+  };
   T getAngle() const {
     ROS_DEBUG_STREAM(m_name << "::getAngle() : " << WHITE(m_params.theta));
     return m_params.theta;
@@ -161,14 +165,17 @@ public:
     ROS_DEBUG_STREAM(m_name << "::calcAngle(radius = " << WHITE(radius)
                             << ") : " << WHITE(theta_));
     return r2d2_math::max<T>(theta_, 0);
-  }
+  };
 };
-template <typename T = double> class ShoulderHandler : public JointHandler<T> {
-public:
+
+template <typename T = double>
+class ShoulderHandler : public JointHandler<T> {
+ public:
   ShoulderHandler(ros::NodeHandle *node) : JointHandler<T>(node, "Shoulder") {};
 };
-template <typename T = double> class ElbowHandler : public JointHandler<T> {
-public:
+template <typename T = double>
+class ElbowHandler : public JointHandler<T> {
+ public:
   ElbowHandler(ros::NodeHandle *node) : JointHandler<T>(node, "Elbow") {};
 };
-#endif // R2D2_JOINT_HANDLER_HPP
+#endif  // R2D2_JOINT_HANDLER_HPP

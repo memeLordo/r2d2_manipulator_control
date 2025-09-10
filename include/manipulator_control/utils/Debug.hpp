@@ -2,8 +2,9 @@
 #define PR_PALETTE_DEBUG_HPP
 
 // #include <algorithm>
-#include <cstring>
 #include <ros/console.h>
+
+#include <cstring>
 // #include <sstream>
 // #include <vector>
 
@@ -159,4 +160,4 @@
 //       func, [](const std::string &msg) { std::cout << msg << std::endl; }, \
 //       __VA_ARGS__)
 
-#endif // PR_PALETTE_DEBUG_HPP
+#endif  // PR_PALETTE_DEBUG_HPP
