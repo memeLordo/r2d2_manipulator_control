@@ -20,6 +20,7 @@ protected:
       : IConfigJsonTypes<r2d2_type::manipulator16_t<T>>{"manipulator"} {};
 
 public:
+  void updateNozzleType() { m_params = this->getParams(m_nozzleType.key); };
   void resetMode() {
     ROS_DEBUG("Reset mode");
     m_workMode.type = r2d2_state::WorkMode::NONE;
@@ -72,7 +73,6 @@ public:
     }
     return true;
   };
-  void updateNozzleType() { m_params = this->getParams(m_nozzleType.key); };
 };
 
 template <typename T = double>
