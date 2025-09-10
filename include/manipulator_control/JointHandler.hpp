@@ -130,21 +130,21 @@ class JointHandler : public JointConfig<T> {
   };
   void setHoldControl() {
     m_params.control_word = r2d2_commands::ControlType::HOLD;
-    ROS_DEBUG_STREAM(
-        BLUE(m_name << "::set control_word to "
-                    << YELLOW(static_cast<uint16_t>(m_params.control_word))));
+    ROS_DEBUG_STREAM(BLUE(m_name
+                          << "::set control_word to "
+                          << YELLOW(static_cast<int>(m_params.control_word))));
   };
   void setControlByAngle() {
     m_params.control_word = r2d2_commands::ControlType::CONTROL_ANGLE;
-    ROS_DEBUG_STREAM(
-        BLUE(m_name << "::set control_word to "
-                    << YELLOW(static_cast<uint16_t>(m_params.control_word))));
+    ROS_DEBUG_STREAM(BLUE(m_name
+                          << "::set control_word to "
+                          << YELLOW(static_cast<int>(m_params.control_word))));
   };
   void setControlBySpeed() {
     m_params.control_word = r2d2_commands::ControlType::CONTROL_SPEED;
-    ROS_DEBUG_STREAM(
-        BLUE(m_name << "::set control_word to "
-                    << YELLOW(static_cast<uint16_t>(m_params.control_word))));
+    ROS_DEBUG_STREAM(BLUE(m_name
+                          << "::set control_word to "
+                          << YELLOW(static_cast<int>(m_params.control_word))));
   };
   void publish() {
     ROS_DEBUG_STREAM(BLUE(m_name << "::publish()"));
