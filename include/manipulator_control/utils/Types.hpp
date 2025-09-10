@@ -19,7 +19,7 @@ template <typename E> struct EnumPair {
   E type{};
   std::string key{};
 
-  void toString();
+  void updateKey();
 };
 enum class NozzleType : uint8_t { NONE = 0, BRUSH, EMA };
 enum class WorkMode : uint8_t { NONE = 0, MANUAL, AUTO, STOP = 0x80 };
@@ -29,7 +29,7 @@ using NozzleTypePair = EnumPair<NozzleType>;
 using WorkModePair = EnumPair<WorkMode>;
 using LockStatusPair = EnumPair<LockStatus>;
 
-template <> inline void WorkModePair::toString() {
+template <> inline void WorkModePair::updateKey() {
   switch (type) {
   case WorkMode::AUTO:
   case WorkMode::MANUAL:
@@ -40,7 +40,7 @@ template <> inline void WorkModePair::toString() {
     key = "";
   }
 };
-template <> inline void LockStatusPair::toString() {
+template <> inline void LockStatusPair::updateKey() {
   switch (type) {
   case LockStatus::LOCKED:
   case LockStatus::UNLOCKED:
@@ -50,7 +50,7 @@ template <> inline void LockStatusPair::toString() {
     key = "";
   }
 };
-template <> inline void NozzleTypePair::toString() {
+template <> inline void NozzleTypePair::updateKey() {
   switch (type) {
   case NozzleType::BRUSH:
     key = "brush";
