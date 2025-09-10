@@ -32,13 +32,8 @@ public:
   bool setMode(const T value) {
     ROS_DEBUG_STREAM("Set mode(value = " << WHITE(value) << ")");
     m_workMode.type = static_cast<r2d2_state::WorkMode>(value);
-    std::string key_{};
-    switch (m_workMode.type) {
-    case r2d2_state::WorkMode::AUTO:
-    case r2d2_state::WorkMode::MANUAL:
-    case r2d2_state::WorkMode::STOP:
-      break;
-    default:
+    m_workMode.toString();
+    if (m_workMode.key.empty()) {
       ROS_ERROR_STREAM("Got unknown work mode");
       return false;
     }
@@ -47,27 +42,19 @@ public:
   bool setNozzle(const T value) {
     ROS_DEBUG_STREAM("Set nozzle(value = " << WHITE(value) << ")");
     m_nozzleType.type = static_cast<r2d2_state::NozzleType>(value);
-    switch (m_nozzleType.type) {
-    case r2d2_state::NozzleType::BRUSH:
-      m_nozzleType.key = "brush";
-      break;
-    case r2d2_state::NozzleType::EMA:
-      m_nozzleType.key = "ema";
-      break;
-    default:
+    m_nozzleType.toString();
+    if (m_nozzleType.key.empty()) {
       ROS_ERROR_STREAM("Got unknown nozzle type");
       return false;
     }
+    updateNozzleType();
     return true;
   };
   bool setLock(const T value) {
     ROS_DEBUG_STREAM("Set lock(value = " << WHITE(value) << ")");
     m_lockStatus.type = static_cast<r2d2_state::LockStatus>(value);
-    switch (m_lockStatus.type) {
-    case r2d2_state::LockStatus::LOCKED:
-    case r2d2_state::LockStatus::UNLOCKED:
-      break;
-    default:
+    m_lockStatus.toString();
+    if (m_lockStatus.key.empty()) {
       ROS_ERROR_STREAM("Got unknown lock status");
       return false;
     }
