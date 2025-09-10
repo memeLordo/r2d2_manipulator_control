@@ -3,7 +3,6 @@
 #include "utils/Types.hpp"
 #include <fstream>
 #include <ros/package.h>
-// #include <unordered_map>
 
 using namespace r2d2_type;
 
@@ -25,7 +24,7 @@ template <typename T> IConfigJson<T>::IConfigJson(const std::string &fileName) {
 }
 namespace nlohmann {
 template <typename T>
-void from_json(const json &j, r2d2_type::manipulator16_t<T> &p) {
+void from_json(const json &j, config::manipulator_t<T> &p) {
   j.at("target_force").get_to(p.force_needed);
   j.at("force_tolerance").get_to(p.force_tolerance);
   j.at("init_radius").get_to(p.r0);
@@ -51,4 +50,4 @@ U IConfigJsonMap<U>::getParams(const std::string &key) const {
 };
 
 template class IConfigJson<>;
-template class IConfigJsonMap<manipulator16_t<>>;
+template class IConfigJsonMap<config::manipulator_t<>>;

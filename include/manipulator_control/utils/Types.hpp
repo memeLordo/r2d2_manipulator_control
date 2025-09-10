@@ -86,7 +86,7 @@ template <typename T, typename T1> struct jointbase_t {
   T theta{};
   T1 control_word{};
 };
-// TODO: add namespace callback {}
+namespace callback {
 template <typename T = double> //
 using pipe_t = pipebase_t<T, uint16_t, uint8_t>;
 template <typename T = double> //
@@ -96,7 +96,7 @@ using joint_t = jointbase_t<T, T1>;
 
 typedef payloadbase_t<int16_t> payload16_t;
 typedef jointbase_t<int16_t, uint16_t> joint16_t;
-
+} // namespace callback
 namespace config {
 template <typename T = double> struct joint_t {
   T length{};
@@ -106,7 +106,7 @@ template <typename T = double> struct joint_t {
   std::vector<T> coeffs{};
 };
 template <typename T = double> //
-using manipulator_t = manipulator16_t<T>;
+using manipulator_t = callback::manipulator16_t<T>;
 } // namespace config
 
 } // namespace r2d2_type

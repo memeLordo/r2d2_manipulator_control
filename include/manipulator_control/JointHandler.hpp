@@ -39,8 +39,8 @@ private:
   using JointConfig<T>::m_angleTolerance;
   using JointConfig<T>::m_coeffs;
 
-  r2d2_type::joint_t<T> m_params{};
-  r2d2_type::joint16_t m_callbackParams{};
+  r2d2_type::callback::joint_t<T> m_params{};
+  r2d2_type::callback::joint16_t m_callbackParams{};
 
   ros::Subscriber m_subscriber;
   ros::Publisher m_publisher;
@@ -61,8 +61,8 @@ public:
 
 private:
   void callbackJoint(const r2d2_msg_pkg::DriverStateConstPtr &msg) {
-    m_callbackParams =
-        r2d2_type::joint16_t{msg->omega, msg->theta, msg->control_word};
+    m_callbackParams = r2d2_type::callback::joint16_t{msg->omega, msg->theta,
+                                                      msg->control_word};
   };
 
   T getAngleTolerance() const {

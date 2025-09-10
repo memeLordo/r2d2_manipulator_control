@@ -11,7 +11,7 @@ private:
   static constexpr const char *s_name = "Payload";
 
   const std::string m_outputTopic;
-  r2d2_type::payload16_t m_callbackParams{};
+  r2d2_type::callback::payload16_t m_callbackParams{};
   ros::Subscriber m_subscriber;
 
 public:
@@ -25,7 +25,7 @@ public:
 
 private:
   void callbackPayload(const r2d2_msg_pkg::DriverStateConstPtr &msg) {
-    m_callbackParams = r2d2_type::payload16_t{msg->force};
+    m_callbackParams = r2d2_type::callback::payload16_t{msg->force};
   };
 
 public:

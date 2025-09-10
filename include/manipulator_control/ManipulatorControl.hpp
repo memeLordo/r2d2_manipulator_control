@@ -8,15 +8,16 @@
 #include "utils/Types.hpp"
 
 template <typename T>
-class ManipulatorConfig : public IConfigJsonMap<r2d2_type::manipulator16_t<T>> {
+class ManipulatorConfig
+    : public IConfigJsonMap<r2d2_type::config::manipulator_t<T>> {
 
 protected:
   r2d2_state::WorkModePair m_workMode{};
   r2d2_state::NozzleTypePair m_nozzleType{};
   r2d2_state::LockStatusPair m_lockStatus{};
-  r2d2_type::manipulator16_t<T> m_params;
+  r2d2_type::callback::manipulator16_t<T> m_params;
   explicit ManipulatorConfig()
-      : IConfigJsonMap<r2d2_type::manipulator16_t<T>>{"manipulator"} {};
+      : IConfigJsonMap<r2d2_type::config::manipulator_t<T>>{"manipulator"} {};
 
 public:
   void updateNozzleType() { m_params = this->getParams(m_nozzleType.key); };
