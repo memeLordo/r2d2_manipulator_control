@@ -97,6 +97,16 @@ using joint_t = jointbase_t<T, T1>;
 typedef payloadbase_t<int16_t> payload16_t;
 typedef jointbase_t<int16_t, uint16_t> joint16_t;
 
+namespace config {
+template <typename T = double> struct joint_t {
+  int length{};
+  T speed{};
+  T angle_offset{};
+  T angle_tolerance{};
+  std::vector<T> coeffs{};
+};
+} // namespace config
+
 } // namespace r2d2_type
 
 #endif // R2D2_CONTROL_WORD_HPP
