@@ -5,8 +5,8 @@ using namespace r2d2_type;
 
 template <typename T>
 ManipulatorControlHandler<T>::ManipulatorControlHandler(ros::NodeHandle *node)
-    : ManipulatorConfig<T>(), m_pipe(node), m_payload(node), m_elbow(node),
-      m_shoulder(node) {
+    : ManipulatorConfig<T>{}, m_pipe{node}, m_payload{node}, m_elbow{node},
+      m_shoulder{node} {
   const double RATE = node->param<T>("control_rate", 20);
   ROS_DEBUG_STREAM("Set RATE: " << RATE);
   m_timer = node->createTimer(

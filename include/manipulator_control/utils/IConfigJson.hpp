@@ -24,12 +24,12 @@ protected:
   T getParam(const std::string &key) const {
     if (m_json.contains(key))
       return m_json.at(key).get<T>();
-    return T{0};
+    return T{};
   };
   std::vector<T> getVector(const std::string &key) const {
     if (m_json.contains(key))
       return m_json.at(key).get<std::vector<T>>();
-    return std::vector<T>{0};
+    return std::vector<T>{};
   };
 };
 

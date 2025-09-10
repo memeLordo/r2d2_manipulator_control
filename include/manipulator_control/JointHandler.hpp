@@ -22,11 +22,11 @@ protected:
   const std::vector<T> m_coeffs;
 
   explicit JointConfig(const std::string &name)
-      : IConfigJson<T>(name), m_name{name}, //
-        m_length(this->getParam("length")), m_speed(this->getParam("speed")),
-        m_angleOffset(this->getParam("angle_offset")),
-        m_angleTolerance(this->getParam("angle_tolerance")),
-        m_coeffs(this->getVector("coeffs")) {};
+      : IConfigJson<T>{name}, m_name{name}, //
+        m_length{this->getParam("length")}, m_speed{this->getParam("speed")},
+        m_angleOffset{this->getParam("angle_offset")},
+        m_angleTolerance{this->getParam("angle_tolerance")},
+        m_coeffs{this->getVector("coeffs")} {};
 };
 template <typename T = double> class JointHandler : private JointConfig<T> {
 private:
