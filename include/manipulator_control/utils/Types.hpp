@@ -65,35 +65,37 @@ template <> inline void NozzleTypePair::toString() {
 } // namespace r2d2_state
 
 namespace r2d2_type {
-
-template <typename T1, typename T2, typename T> struct pipe_t {
+template <typename T, typename T1, typename T2> struct pipebase_t {
   T1 diameter{};
   T2 thickness{};
   T radius() const { return (T)diameter / T{2} - (T)thickness; };
 };
 
-template <typename T1> struct payload_t {
+template <typename T1> struct payloadbase_t {
   T1 force{};
 };
 
-template <typename T1, typename T> struct manipulator_t {
+template <typename T, typename T1> struct manipulatorbase_t {
   T1 force_needed{};
   T1 force_tolerance{};
   T r0{};
 };
 
-template <typename T, typename T2> struct joint_t {
+template <typename T, typename T1> struct jointbase_t {
   T omega{};
   T theta{};
-  T2 control_word{};
+  T1 control_word{};
 };
 
-template <typename T = double> using upipe_t = pipe_t<uint16_t, uint8_t, T>;
-template <typename T = double>
-using manipulator16_t = manipulator_t<int16_t, T>;
+template <typename T = double> //
+using pipe_t = pipebase_t<T, uint16_t, uint8_t>;
+template <typename T = double> //
+using manipulator16_t = manipulatorbase_t<T, int16_t>;
+template <typename T = double, typename T1 = r2d2_commands::ControlType> //
+using joint_t = jointbase_t<T, T1>;
 
-typedef payload_t<int16_t> payload16_t;
-typedef joint_t<int16_t, uint16_t> joint16_t;
+typedef payloadbase_t<int16_t> payload16_t;
+typedef jointbase_t<int16_t, uint16_t> joint16_t;
 
 } // namespace r2d2_type
 

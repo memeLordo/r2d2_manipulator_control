@@ -39,7 +39,7 @@ private:
   using JointConfig<T>::m_angleTolerance;
   using JointConfig<T>::m_coeffs;
 
-  r2d2_type::joint_t<T, r2d2_commands::ControlType> m_params{};
+  r2d2_type::joint_t<T> m_params{};
   r2d2_type::joint16_t m_callbackParams{};
 
   ros::Subscriber m_subscriber;
