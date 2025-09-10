@@ -7,8 +7,8 @@
 #include <vector>
 
 namespace r2d2_json {
-inline std::string getPath(const std::string &&packageName,
-                           const std::string &&dirname = "config");
+inline std::string getPath(const std::string &packageName,
+                           const std::string &dirname = "config");
 
 inline std::string lower(std::string name) {
   std::transform(name.begin(), name.end(), name.begin(), ::tolower);

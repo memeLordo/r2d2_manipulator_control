@@ -6,8 +6,8 @@
 
 using namespace r2d2_type;
 
-std::string r2d2_json::getPath(const std::string &&packageName,
-                               const std::string &&dirName) {
+std::string r2d2_json::getPath(const std::string &packageName,
+                               const std::string &dirName) {
   return ros::package::getPath(packageName) + "/" + dirName + "/";
 }
 template <typename T> IConfigJson<T>::IConfigJson(const std::string &fileName) {
