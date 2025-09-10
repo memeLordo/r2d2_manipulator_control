@@ -25,10 +25,10 @@ template <typename T> IConfigJson<T>::IConfigJson(const std::string &fileName) {
 }
 namespace nlohmann {
 template <typename T>
-void from_json(const nlohmann::json &j, manipulator16_t<T> &p) {
-  p.force_needed = j.at("target_force").get<T>();
-  p.force_tolerance = j.at("force_tolerance").get<T>();
-  p.r0 = j.at("init_radius").get<T>();
+void from_json(const json &j, r2d2_type::manipulator16_t<T> &p) {
+  j.at("target_force").get_to(p.force_needed);
+  j.at("force_tolerance").get_to(p.force_tolerance);
+  j.at("init_radius").get_to(p.r0);
 }
 } // namespace nlohmann
 
