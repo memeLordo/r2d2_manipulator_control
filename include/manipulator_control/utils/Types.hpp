@@ -86,7 +86,7 @@ template <typename T, typename T1> struct jointbase_t {
   T theta{};
   T1 control_word{};
 };
-
+// TODO: add namespace callback {}
 template <typename T = double> //
 using pipe_t = pipebase_t<T, uint16_t, uint8_t>;
 template <typename T = double> //
@@ -99,12 +99,14 @@ typedef jointbase_t<int16_t, uint16_t> joint16_t;
 
 namespace config {
 template <typename T = double> struct joint_t {
-  int length{};
+  T length{};
   T speed{};
   T angle_offset{};
   T angle_tolerance{};
   std::vector<T> coeffs{};
 };
+template <typename T = double> //
+using manipulator_t = manipulator16_t<T>;
 } // namespace config
 
 } // namespace r2d2_type
