@@ -1,7 +1,5 @@
 #include "utils/IConfigJson.hpp"
-#include "utils/Debug.hpp"
 #include "utils/Types.hpp"
-#include <fstream>
 #include <ros/package.h>
 
 using namespace r2d2_type;
@@ -9,18 +7,6 @@ using namespace r2d2_type;
 std::string r2d2_json::getPath(const std::string &packageName,
                                const std::string &dirName) {
   return ros::package::getPath(packageName) + "/" + dirName + "/";
-}
-template <typename T> IConfigJson<T>::IConfigJson(const std::string &fileName) {
-  using namespace r2d2_json;
-  try {
-    std::ifstream file(getPath("manipulator_control") + fileName + ".json");
-    if (!file)
-      throw std::runtime_error("Cannot open config file");
-    file >> m_json;
-  } catch (const std::exception &e) {
-    ROS_ERROR_STREAM(RED(e.what()));
-    m_json = nlohmann::json::object();
-  }
 }
 namespace nlohmann {
 template <typename T> //
@@ -47,6 +33,5 @@ IConfigJsonMap<U>::IConfigJsonMap(const std::string &fileName)
   }
 };
 
-template class IConfigJson<>;
 template class IConfigJsonMap<config::joint_t<>>;
 template class IConfigJsonMap<config::manipulator_t<>>;

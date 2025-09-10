@@ -3,6 +3,8 @@
 
 #include <algorithm>
 #include <cctype>
+#include <fstream>
+#include <iostream>
 #include <nlohmann/json.hpp>
 #include <vector>
 
@@ -19,7 +21,18 @@ inline std::string lower(std::string name) {
 template <typename T = double> class IConfigJson {
 protected:
   nlohmann::json m_json;
-  IConfigJson(const std::string &fileName);
+  IConfigJson(const std::string &fileName) {
+    using namespace r2d2_json;
+    try {
+      std::ifstream file(getPath("manipulator_control") + fileName + ".json");
+      if (!file)
+        throw std::runtime_error("Cannot open config file");
+      file >> m_json;
+    } catch (const std::exception &e) {
+      std::cerr << e.what() << std::endl;
+      m_json = nlohmann::json::object();
+    }
+  };
 
   T getParam(const std::string &key) const {
     if (m_json.contains(key))
