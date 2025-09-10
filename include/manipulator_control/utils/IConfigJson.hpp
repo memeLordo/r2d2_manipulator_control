@@ -7,7 +7,7 @@
 #include <vector>
 
 namespace r2d2_json {
-inline std::string getPath(const std::string &&package_name,
+inline std::string getPath(const std::string &&packageName,
                            const std::string &&dirname = "config");
 
 inline std::string lower(std::string name) {
@@ -19,7 +19,7 @@ inline std::string lower(std::string name) {
 template <typename T = double> class IConfigJson {
 protected:
   nlohmann::json m_json;
-  IConfigJson(const std::string &name);
+  IConfigJson(const std::string &fileName);
 
   T getParam(const std::string &key) const {
     if (m_json.contains(key))
