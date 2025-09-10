@@ -16,7 +16,7 @@ private:
 
 public:
   PipeHandler() = default;
-  PipeHandler(ros::NodeHandle *node);
+  explicit PipeHandler(ros::NodeHandle *node);
 
 private:
   void callbackPipe(const r2d2_msg_pkg::PipeParametersConstPtr &msg) {

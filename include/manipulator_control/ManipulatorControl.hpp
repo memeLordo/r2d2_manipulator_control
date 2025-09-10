@@ -25,7 +25,7 @@ private:
   ros::Timer m_timer;
 
 public:
-  ManipulatorControlHandler(ros::NodeHandle *node);
+  explicit ManipulatorControlHandler(ros::NodeHandle *node);
 
 private:
   void callbackManipulator(const ros::TimerEvent &);

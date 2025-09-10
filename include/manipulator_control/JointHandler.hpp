@@ -30,10 +30,11 @@ private:
 
 public:
   JointHandler() = default;
-  JointHandler(ros::NodeHandle *node, const std::string &name,
-               const std::string &inputTopic, const std::string &outputTopic,
-               const T &length, const T &speed, const T &offset,
-               const T &tolerance, const std::vector<T> &coeffs);
+  explicit JointHandler(ros::NodeHandle *node, const std::string &name,
+                        const std::string &inputTopic,
+                        const std::string &outputTopic, const T &length,
+                        const T &speed, const T &offset, const T &tolerance,
+                        const std::vector<T> &coeffs);
 
 private:
   void callbackJoint(const r2d2_msg_pkg::DriverStateConstPtr &msg) {

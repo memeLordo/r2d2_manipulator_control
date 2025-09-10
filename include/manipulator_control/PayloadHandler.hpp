@@ -16,7 +16,7 @@ private:
 
 public:
   PayloadHandler() = default;
-  PayloadHandler(ros::NodeHandle *node);
+  explicit PayloadHandler(ros::NodeHandle *node);
 
 private:
   void callbackPayload(const r2d2_msg_pkg::DriverStateConstPtr &msg) {
