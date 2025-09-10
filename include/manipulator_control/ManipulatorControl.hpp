@@ -15,7 +15,7 @@ protected:
   r2d2_state::NozzleTypePair m_nozzleType{};
   r2d2_state::LockStatusPair m_lockStatus{};
   r2d2_type::manipulator16_t<T> m_params;
-  ManipulatorConfig()
+  explicit ManipulatorConfig()
       : IConfigJsonMap<r2d2_type::manipulator16_t<T>>{"manipulator"} {};
 
 public:
@@ -126,5 +126,4 @@ public:
     return radius_;
   };
 };
-
 #endif // R2D2_MANIPULATOR_CONTROL_HPP
