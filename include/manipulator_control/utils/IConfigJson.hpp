@@ -38,7 +38,7 @@ private:
   std::unordered_map<std::string, U> m_paramsMap;
 
 protected:
-  IConfigJsonMap(const std::string &name);
+  IConfigJsonMap(const std::string &fileName);
   U getParams(const std::string &key) const;
 };
 #endif // R2D2_CONFIG_JSON_HPP

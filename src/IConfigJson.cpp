@@ -7,14 +7,14 @@
 
 using namespace r2d2_type;
 
-std::string r2d2_json::getPath(const std::string &&package_name,
-                               const std::string &&dirname) {
-  return ros::package::getPath(package_name) + "/" + dirname + "/";
+std::string r2d2_json::getPath(const std::string &&packageName,
+                               const std::string &&dirName) {
+  return ros::package::getPath(packageName) + "/" + dirName + "/";
 }
-template <typename T> IConfigJson<T>::IConfigJson(const std::string &name) {
+template <typename T> IConfigJson<T>::IConfigJson(const std::string &fileName) {
   using namespace r2d2_json;
   try {
-    std::ifstream file(getPath("manipulator_control") + lower(name) + ".json");
+    std::ifstream file(getPath("manipulator_control") + fileName + ".json");
     if (!file)
       throw std::runtime_error("Cannot open config file");
     file >> m_json;
@@ -33,8 +33,8 @@ void from_json(const nlohmann::json &j, manipulator16_t<T> &p) {
 } // namespace nlohmann
 
 template <typename U>
-IConfigJsonMap<U>::IConfigJsonMap(const std::string &name)
-    : IConfigJson<U>(name) {
+IConfigJsonMap<U>::IConfigJsonMap(const std::string &fileName)
+    : IConfigJson<U>(fileName) {
   for (auto &el : this->m_json.items()) {
     m_paramsMap[el.key()] = el.value().template get<U>();
   }
