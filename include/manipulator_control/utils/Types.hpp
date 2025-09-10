@@ -3,25 +3,24 @@
 
 #include <cstdint>
 #include <string>
+#include <vector>
 
 namespace r2d2_commands {
-
 enum class ControlType : uint16_t {
   HOLD = 0x00,
   CONTROL_SPEED = 0x07,
   CONTROL_ANGLE = 0x0A,
   CHECK_ID = 0x800
 };
-
 } // namespace r2d2_commands
 
 namespace r2d2_state {
-
 template <typename E> struct EnumPair {
   E type{};
   std::string key{};
-};
 
+  void toString();
+};
 enum class NozzleType : uint8_t { NONE = 0, BRUSH, EMA };
 enum class WorkMode : uint8_t { NONE = 0, MANUAL, AUTO, STOP = 0x80 };
 enum class LockStatus : uint8_t { NONE = 0, LOCKED, UNLOCKED };
@@ -29,6 +28,40 @@ enum class LockStatus : uint8_t { NONE = 0, LOCKED, UNLOCKED };
 using NozzleTypePair = EnumPair<NozzleType>;
 using WorkModePair = EnumPair<WorkMode>;
 using LockStatusPair = EnumPair<LockStatus>;
+
+template <> inline void WorkModePair::toString() {
+  switch (type) {
+  case WorkMode::AUTO:
+  case WorkMode::MANUAL:
+  case WorkMode::STOP:
+    key = "none";
+    break;
+  default:
+    key = "";
+  }
+};
+template <> inline void LockStatusPair::toString() {
+  switch (type) {
+  case LockStatus::LOCKED:
+  case LockStatus::UNLOCKED:
+    key = "none";
+    break;
+  default:
+    key = "";
+  }
+};
+template <> inline void NozzleTypePair::toString() {
+  switch (type) {
+  case NozzleType::BRUSH:
+    key = "brush";
+    break;
+  case NozzleType::EMA:
+    key = "ema";
+    break;
+  default:
+    key = "";
+  }
+};
 } // namespace r2d2_state
 
 namespace r2d2_type {
