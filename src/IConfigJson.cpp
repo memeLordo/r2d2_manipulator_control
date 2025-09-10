@@ -47,16 +47,6 @@ IConfigJsonMap<U>::IConfigJsonMap(const std::string &fileName)
   }
 };
 
-template <typename U>
-U IConfigJsonMap<U>::getParams(const std::string &key) const {
-  auto it{m_paramsMap.find(key)};
-  if (it != m_paramsMap.end()) {
-    return it->second;
-  }
-  ROS_ERROR_STREAM(RED("Invalid key!"));
-  return U{};
-};
-
 template class IConfigJson<>;
 template class IConfigJsonMap<config::joint_t<>>;
 template class IConfigJsonMap<config::manipulator_t<>>;

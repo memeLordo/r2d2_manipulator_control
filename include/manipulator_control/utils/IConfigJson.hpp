@@ -39,6 +39,12 @@ private:
 
 protected:
   IConfigJsonMap(const std::string &fileName);
-  U getParams(const std::string &key) const;
+  U getParams(const std::string &key) const {
+    auto it{m_paramsMap.find(key)};
+    if (it != m_paramsMap.end()) {
+      return it->second;
+    }
+    return U{};
+  };
 };
 #endif // R2D2_CONFIG_JSON_HPP
