@@ -16,7 +16,12 @@ private:
 
 public:
   PipeHandler() = default;
-  explicit PipeHandler(ros::NodeHandle *node);
+  explicit PipeHandler(ros::NodeHandle *node)
+      : m_outputTopic{"/parameters/pipe"} {
+    waitForTopic();
+    m_subscriber =
+        node->subscribe(m_outputTopic, 10, &PipeHandler::callbackPipe, this);
+  };
 
 private:
   void callbackPipe(const r2d2_msg_pkg::PipeParametersConstPtr &msg) {
@@ -35,5 +40,4 @@ public:
     return radius_;
   };
 };
-
 #endif // R2D2_PIPE_HANDLER_HPP

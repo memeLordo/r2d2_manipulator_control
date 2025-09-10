@@ -14,8 +14,13 @@ private:
   ros::ServiceServer m_manipulatorService;
 
 public:
-  explicit ManipulatorServiceHandler(ros::NodeHandle *node,
-                                     ManipulatorControlHandler<> *);
+  explicit ManipulatorServiceHandler(
+      ros::NodeHandle *node, ManipulatorControlHandler<> *manipulatorControlPtr)
+      : m_serviceTopic{"/manipulator_command"},
+        m_manipulatorControl{manipulatorControlPtr} {
+    m_manipulatorService = node->advertiseService(
+        m_serviceTopic, &ManipulatorServiceHandler::callbackService, this);
+  }
 
 private:
   bool callbackService(r2d2_msg_pkg::ManipulatorCommand::Request &req,

@@ -16,7 +16,12 @@ private:
 
 public:
   PayloadHandler() = default;
-  explicit PayloadHandler(ros::NodeHandle *node);
+  explicit PayloadHandler(ros::NodeHandle *node)
+      : m_outputTopic{"/payload_output"} {
+    waitForTopic();
+    m_subscriber = node->subscribe(m_outputTopic, 10,
+                                   &PayloadHandler::callbackPayload, this);
+  };
 
 private:
   void callbackPayload(const r2d2_msg_pkg::DriverStateConstPtr &msg) {
@@ -34,5 +39,4 @@ public:
     return force_;
   };
 };
-
 #endif // PIPE_HANDLER_HPP

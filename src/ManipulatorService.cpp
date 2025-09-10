@@ -3,13 +3,6 @@
 using namespace r2d2_state;
 using namespace r2d2_msg_pkg;
 
-ManipulatorServiceHandler::ManipulatorServiceHandler(
-    ros::NodeHandle *node, ManipulatorControlHandler<> *manipulatorControlPtr)
-    : m_serviceTopic{"/manipulator_command"},
-      m_manipulatorControl{manipulatorControlPtr} {
-  m_manipulatorService = node->advertiseService(
-      m_serviceTopic, &ManipulatorServiceHandler::callbackService, this);
-}
 bool ManipulatorServiceHandler::callbackService(
     ManipulatorCommand::Request &req, ManipulatorCommand::Response &res) {
   res.success = true;

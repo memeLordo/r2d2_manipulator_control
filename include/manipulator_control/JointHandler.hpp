@@ -6,6 +6,7 @@
 #include "utils/Debug.hpp"
 #include "utils/IConfigJson.hpp"
 #include "utils/Math.hpp"
+#include "utils/Polynome.hpp"
 #include "utils/Types.hpp"
 #include <ros/topic.h>
 
@@ -27,7 +28,6 @@ protected:
         m_angleTolerance(this->getParam("angle_tolerance")),
         m_coeffs(this->getVector("coeffs")) {};
 };
-
 template <typename T = double> class JointHandler : private JointConfig<T> {
 private:
   using JointConfig<T>::m_name;
@@ -50,7 +50,14 @@ private:
 
 public:
   JointHandler() = default;
-  explicit JointHandler(ros::NodeHandle *node, const std::string &name);
+  explicit JointHandler(ros::NodeHandle *node, const std::string &name)
+      : JointConfig<T>(name) {
+    waitForTopic();
+    m_subscriber =
+        node->subscribe(m_outputTopic, 10, &JointHandler::callbackJoint, this);
+    m_publisher =
+        node->advertise<r2d2_msg_pkg::DriverCommand>(m_inputTopic, 10);
+  };
 
 private:
   void callbackJoint(const r2d2_msg_pkg::DriverStateConstPtr &msg) {
@@ -157,16 +164,19 @@ public:
     ROS_DEBUG_STREAM(m_name << "::getAngle() : " << WHITE(m_params.theta));
     return m_params.theta;
   };
-  T getTargetAngle(const T radius) const;
+  T getTargetAngle(T radius) const {
+    const T theta_{horner::polynome(m_coeffs, radius) - m_angleOffset};
+    ROS_DEBUG_STREAM(m_name << "::calcAngle(radius = " << WHITE(radius)
+                            << ") : " << WHITE(theta_));
+    return r2d2_math::max<T>(theta_, 0);
+  }
 };
-
 template <typename T = double> class ShoulderHandler : public JointHandler<T> {
 public:
-  ShoulderHandler(ros::NodeHandle *node);
+  ShoulderHandler(ros::NodeHandle *node) : JointHandler<T>(node, "Shoulder") {};
 };
 template <typename T = double> class ElbowHandler : public JointHandler<T> {
 public:
-  ElbowHandler(ros::NodeHandle *node);
+  ElbowHandler(ros::NodeHandle *node) : JointHandler<T>(node, "Elbow") {};
 };
-
 #endif // R2D2_JOINT_HANDLER_HPP
