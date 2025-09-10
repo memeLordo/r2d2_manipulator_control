@@ -1,11 +1,8 @@
 #ifndef R2D2_CONFIG_JSON_HPP
 #define R2D2_CONFIG_JSON_HPP
 
-#include <algorithm>
-#include <cctype>
 #include <fstream>
 #include <nlohmann/json.hpp>
-#include <vector>
 
 namespace r2d2_json {
 inline std::string getFilePath(const std::string &fileName);

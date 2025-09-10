@@ -1,10 +1,8 @@
 #ifndef R2D2_MATH_HPP
 #define R2D2_MATH_HPP
 
-// #include "utils/Debug.hpp"
 #include <algorithm>
 #include <cmath>
-#include <cstdlib>
 
 namespace r2d2_math {
 template <typename T>
