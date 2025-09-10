@@ -4,9 +4,11 @@
 
 using namespace r2d2_type::config;
 
-std::string r2d2_json::getPath(const std::string &packageName,
-                               const std::string &dirName) {
-  return ros::package::getPath(packageName) + "/" + dirName + "/";
+std::string r2d2_json::getFilePath(const std::string &fileName) {
+  const std::string dirName_{"config"};
+  const std::string packageName_{"manipulator_control"};
+  return {ros::package::getPath(packageName_) + "/" + dirName_ + "/" +
+          fileName + ".json"};
 }
 namespace nlohmann {
 template <typename T> void from_json(const json &j, joint_t<T> &p) {

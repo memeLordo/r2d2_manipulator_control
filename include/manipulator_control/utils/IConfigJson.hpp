@@ -9,9 +9,7 @@
 #include <vector>
 
 namespace r2d2_json {
-inline std::string getPath(const std::string &packageName,
-                           const std::string &dirname = "config");
-
+inline std::string getFilePath(const std::string &fileName);
 inline std::string lower(std::string str) {
   std::transform(str.begin(), str.end(), str.begin(), ::tolower);
   return str;
@@ -22,9 +20,8 @@ template <typename T = double> class IConfigJson {
 protected:
   nlohmann::json m_json;
   IConfigJson(const std::string &fileName) {
-    using namespace r2d2_json;
     try {
-      std::ifstream file(getPath("manipulator_control") + fileName + ".json");
+      std::ifstream file(r2d2_json::getFilePath(fileName));
       if (!file)
         throw std::runtime_error("Cannot open config file");
       file >> m_json;
