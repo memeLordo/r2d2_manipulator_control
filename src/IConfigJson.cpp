@@ -33,7 +33,7 @@ void from_json(const nlohmann::json &j, manipulator16_t<T> &p) {
 } // namespace nlohmann
 
 template <typename U>
-IConfigJsonTypes<U>::IConfigJsonTypes(const std::string &name)
+IConfigJsonMap<U>::IConfigJsonMap(const std::string &name)
     : IConfigJson<U>(name) {
   for (auto &el : this->m_json.items()) {
     m_paramsMap[el.key()] = el.value().template get<U>();
@@ -41,7 +41,7 @@ IConfigJsonTypes<U>::IConfigJsonTypes(const std::string &name)
 };
 
 template <typename U>
-U IConfigJsonTypes<U>::getParams(const std::string &key) const {
+U IConfigJsonMap<U>::getParams(const std::string &key) const {
   auto it{m_paramsMap.find(key)};
   if (it != m_paramsMap.end()) {
     return it->second;
@@ -51,4 +51,4 @@ U IConfigJsonTypes<U>::getParams(const std::string &key) const {
 };
 
 template class IConfigJson<>;
-template class IConfigJsonTypes<manipulator16_t<>>;
+template class IConfigJsonMap<manipulator16_t<>>;

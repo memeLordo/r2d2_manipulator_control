@@ -33,12 +33,12 @@ protected:
   };
 };
 
-template <typename U = double> class IConfigJsonTypes : public IConfigJson<U> {
+template <typename U> class IConfigJsonMap : private IConfigJson<U> {
 private:
   std::unordered_map<std::string, U> m_paramsMap;
 
 protected:
-  IConfigJsonTypes(const std::string &name);
+  IConfigJsonMap(const std::string &name);
   U getParams(const std::string &key) const;
 };
 #endif // R2D2_CONFIG_JSON_HPP
