@@ -13,5 +13,4 @@ constexpr T polynome(const std::vector<T> &coeffs, const T x) {
   return result_;
 };
 }  // namespace horner
-
 #endif  // R2D2_POLYNOME_H

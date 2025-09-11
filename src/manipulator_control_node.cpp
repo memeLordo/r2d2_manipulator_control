@@ -8,7 +8,7 @@ int main(int argc, char **argv) {
     // ros::AsyncSpinner spinner(2);
     // spinner.start();
     ManipulatorControlHandler<> mc(&node);
-    ManipulatorServiceHandler ms(&node, &mc);
+    ManipulatorServiceHandler ms(&node, mc);
     ROS_INFO("Manipulator Control started");
     ros::spin();
     // ros::waitForShutdown();

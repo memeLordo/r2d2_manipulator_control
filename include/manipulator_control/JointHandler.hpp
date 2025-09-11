@@ -12,7 +12,7 @@
 #include "utils/Types.hpp"
 
 template <typename T>
-class JointConfig : public IConfigJsonMap<r2d2_type::config::joint_t<T>> {
+class JointConfig : public IConfigJsonMap<r2d2_type::config::joint_t,T> {
  protected:
   const std::string m_name;
   const std::string m_inputTopic{"/" + r2d2_json::lower(m_name) + "_input"};
@@ -22,7 +22,7 @@ class JointConfig : public IConfigJsonMap<r2d2_type::config::joint_t<T>> {
  protected:
   explicit JointConfig(const std::string &name,
                        const std::string &fileName = "joints")
-      : IConfigJsonMap<r2d2_type::config::joint_t<T>>{fileName},
+      : IConfigJsonMap<r2d2_type::config::joint_t,T>{fileName},
         m_name{name},
         m_config{this->getParams(r2d2_json::lower(name))} {};
 };

@@ -9,7 +9,7 @@
 
 template <typename T>
 class ManipulatorConfig
-    : public IConfigJsonMap<r2d2_type::config::manipulator_t<T>> {
+    : public IConfigJsonMap<r2d2_type::config::manipulator_t, T> {
  protected:
   r2d2_state::WorkModePair m_workMode{};
   r2d2_state::NozzleTypePair m_nozzleType{};
@@ -18,7 +18,7 @@ class ManipulatorConfig
 
  protected:
   explicit ManipulatorConfig(const std::string &fileName = "manipulator")
-      : IConfigJsonMap<r2d2_type::config::manipulator_t<T>>{fileName} {};
+      : IConfigJsonMap<r2d2_type::config::manipulator_t, T>{fileName} {};
 
  public:
   void updateNozzleType() { m_params = this->getParams(m_nozzleType.key); };
@@ -70,12 +70,12 @@ class ManipulatorControlHandler : public ManipulatorConfig<T> {
   using ManipulatorConfig<T>::m_nozzleType;
   using ManipulatorConfig<T>::m_lockStatus;
   using ManipulatorConfig<T>::m_params;
-  bool m_needsSetup{true};
   PayloadHandler<T> m_payload;
   PipeHandler<T> m_pipe;
   ElbowHandler<T> m_elbow;
   ShoulderHandler<T> m_shoulder;
   ros::Timer m_timer;
+  bool m_needsSetup{true};
 
  public:
   explicit ManipulatorControlHandler(ros::NodeHandle *node);
