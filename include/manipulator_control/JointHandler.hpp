@@ -171,6 +171,14 @@ class JointHandlerMap {
   std::unordered_map<std::string, JointHandler<T>> m_jointMap;
 
   JointHandlerMap(ros::NodeHandle *node, const std::string &names...);
+  template <typename First, typename... Rest>
+  void initializeJoints(ros::NodeHandle *node, First &&first, Rest &&...rest) {
+    const std::string name{std::forward<First>(first)};
+    m_jointMap.emplace(name, JointHandler<T>(node, name));
+
+    if (sizeof...(rest) > 0)
+      initializeJoints(node, std::forward<Rest>(rest)...);
+  }
 };
 
 #endif  // R2D2_JOINT_HANDLER_HPP
