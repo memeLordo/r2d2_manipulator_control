@@ -4,7 +4,7 @@
 #include "JointHandler.hpp"
 #include "PayloadHandler.hpp"
 #include "PipeHandler.hpp"
-#include "utils/IConfigJson.hpp"
+#include "utils/ConfigJson.hpp"
 #include "utils/Types.hpp"
 
 template <typename T>

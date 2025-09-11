@@ -1,4 +1,4 @@
-#include "utils/IConfigJson.hpp"
+#include "utils/ConfigJson.hpp"
 
 #include <ros/package.h>
 
