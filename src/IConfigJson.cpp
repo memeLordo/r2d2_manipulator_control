@@ -32,9 +32,8 @@ void from_json(const json &j, manipulator_t<T> &p) {
 template <template <typename> class Type, typename U>
 IConfigJsonMap<Type, U>::IConfigJsonMap(const std::string &fileName)
     : IConfigJson<U>(fileName) {
-  for (auto &el : this->m_json.items()) {
+  for (auto &el : this->m_json.items())
     m_paramsMap[el.key()] = el.value().template get<Type<U>>();
-  }
 };
 
 template class IConfigJsonMap<joint_t>;
