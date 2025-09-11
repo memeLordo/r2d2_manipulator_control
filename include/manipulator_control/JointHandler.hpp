@@ -165,4 +165,12 @@ class ElbowHandler : public JointHandler<T> {
  public:
   ElbowHandler(ros::NodeHandle* node) : JointHandler<T>(node, "elbow") {};
 };
+
+template <typename T = double>
+class JointHandlerMap {
+  std::unordered_map<std::string, JointHandler<T>> m_jointMap;
+
+  JointHandlerMap(ros::NodeHandle *node, const std::string &names...);
+};
+
 #endif  // R2D2_JOINT_HANDLER_HPP
