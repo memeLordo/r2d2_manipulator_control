@@ -9,7 +9,7 @@
 
 template <typename T>
 class ManipulatorConfig
-    : public IConfigJsonMap<r2d2_type::config::manipulator_t<T>> {
+    : public IConfigJsonMap<r2d2_type::config::manipulator_t, T> {
  protected:
   r2d2_state::WorkModePair m_workMode{};
   r2d2_state::NozzleTypePair m_nozzleType{};
@@ -18,7 +18,7 @@ class ManipulatorConfig
 
  protected:
   explicit ManipulatorConfig(const std::string &fileName = "manipulator")
-      : IConfigJsonMap<r2d2_type::config::manipulator_t<T>>{fileName} {};
+      : IConfigJsonMap<r2d2_type::config::manipulator_t, T>{fileName} {};
 
  public:
   void updateNozzleType() { m_params = this->getParams(m_nozzleType.key); };

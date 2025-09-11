@@ -93,11 +93,11 @@ struct jointbase_t {
 };
 
 namespace callback {
-template <typename T = double>
+template <typename T>
 using pipe_t = pipebase_t<T, uint16_t, uint8_t>;
-template <typename T = double>
+template <typename T>
 using manipulator16_t = manipulatorbase_t<T, int16_t>;
-template <typename T = double, typename T1 = r2d2_commands::ControlType>
+template <typename T, typename T1 = r2d2_commands::ControlType>
 using joint_t = jointbase_t<T, T1>;
 
 typedef payloadbase_t<int16_t> payload16_t;
@@ -105,7 +105,7 @@ typedef jointbase_t<int16_t, uint16_t> joint16_t;
 }  // namespace callback
 
 namespace config {
-template <typename T = double>
+template <typename T>
 struct joint_t {
   T length{};
   T speed{};
@@ -113,7 +113,7 @@ struct joint_t {
   T angle_tolerance{};
   std::vector<T> coeffs{};
 };
-template <typename T = double>
+template <typename T>
 using manipulator_t = callback::manipulator16_t<T>;
 }  // namespace config
 

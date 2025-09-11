@@ -37,19 +37,19 @@ class IConfigJson {
   };
 };
 
-template <typename U>
-class IConfigJsonMap : private IConfigJson<U> {
+template <template <typename> class Type, typename U = double>
+class IConfigJsonMap : private IConfigJson<Type<U>> {
  private:
-  std::unordered_map<std::string, U> m_paramsMap;
+  std::unordered_map<std::string, Type<U>> m_paramsMap;
 
  protected:
   IConfigJsonMap(const std::string &fileName);
-  U getParams(const std::string &key) const {
+  Type<U> getParams(const std::string &key) const {
     auto it{m_paramsMap.find(key)};
     if (it != m_paramsMap.end()) {
       return it->second;
     }
-    return U{};
+    return Type<U>{};
   };
 };
 #endif  // R2D2_CONFIG_JSON_HPP
