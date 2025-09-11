@@ -44,6 +44,8 @@ class IConfigJsonMap : private IConfigJson<T> {
 
  protected:
   IConfigJsonMap(const std::string &fileName);
+
+ protected:
   Type<T> getParams(const std::string &key) const {
     auto it{m_paramsMap.find(key)};
     if (it != m_paramsMap.end()) {
