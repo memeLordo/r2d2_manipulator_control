@@ -29,8 +29,9 @@ class IConfigJson {
  protected:
   template <typename U = T>
   U getParam(const std::string &key) const {
-    if (m_json.contains(key)) return m_json.at(key).get<U>();
-    throw std::runtime_error("Parameter \"" + key + "\" not found!");
+    if (!m_json.contains(key))
+      throw std::runtime_error("Parameter \"" + key + "\" not found!");
+    return m_json.at(key).get<U>();
   };
 };
 
@@ -45,10 +46,9 @@ class IConfigJsonMap : protected IConfigJson<T> {
  protected:
   Type<T> getParams(const std::string &key) const {
     auto it{m_paramsMap.find(key)};
-    if (it != m_paramsMap.end()) {
-      return it->second;
-    }
-    throw std::runtime_error("Object \"" + key + "\" not found!");
+    if (it == m_paramsMap.end())
+      throw std::runtime_error("Object \"" + key + "\" not found!");
+    return it->second;
   };
 };
 #endif  // R2D2_CONFIG_JSON_HPP
