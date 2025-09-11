@@ -15,11 +15,11 @@ std::string r2d2_json::getFilePath(const std::string &fileName) {
 namespace nlohmann {
 template <typename T>
 void from_json(const json &j, joint_t<T> &p) {
+  j.at("coeffs").get_to(p.coeffs);
   j.at("length").get_to(p.length);
   j.at("speed").get_to(p.speed);
   j.at("angle_offset").get_to(p.angle_offset);
   j.at("angle_tolerance").get_to(p.angle_tolerance);
-  j.at("coeffs").get_to(p.coeffs);
 }
 template <typename T>
 void from_json(const json &j, manipulator_t<T> &p) {
