@@ -27,18 +27,15 @@ class IConfigJson {
   };
 
  protected:
-  T getParam(const std::string &key) const {
-    if (m_json.contains(key)) return m_json.at(key).get<T>();
-    return T{};
-  };
-  std::vector<T> getVector(const std::string &key) const {
-    if (m_json.contains(key)) return m_json.at(key).get<std::vector<T>>();
-    return std::vector<T>{};
+  template <typename U = T>
+  U getParam(const std::string &key) const {
+    if (m_json.contains(key)) return m_json.at(key).get<U>();
+    return U{};
   };
 };
 
 template <template <typename> class Type, typename T = double>
-class IConfigJsonMap : private IConfigJson<T> {
+class IConfigJsonMap : protected IConfigJson<T> {
  private:
   std::unordered_map<std::string, Type<T>> m_paramsMap;
 
