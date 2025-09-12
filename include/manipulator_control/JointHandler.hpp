@@ -106,6 +106,8 @@ class JointHandler : public JointConfig<T> {
     setControlByAngle();
   };
   void updateAngleByRadius(const T radius, const bool needsUpdate = true) {
+    updateAngle();
+
     ROS_DEBUG_STREAM(CYAN(m_name << "::needsUpdate = " << needsUpdate));
     if (!needsUpdate) return;
 
