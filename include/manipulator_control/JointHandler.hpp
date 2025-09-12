@@ -96,16 +96,19 @@ class JointHandler : public JointConfig<T> {
                             << YELLOW("callback = " << m_callbackParams.theta)
                             << ") : " << WHITE(theta_));
     m_params.theta = theta_;
+    setHoldControl();
   };
   void updateAngle(const T theta) {
     ROS_DEBUG_STREAM(m_name << "::updateAngle(theta = " << WHITE(theta) << ")");
     m_params.theta = theta;
+    setControlByAngle();
   };
   void updateAngleByDiff(short diff, const T dTheta = 0.1f) {
     const T theta_{diff * dTheta};
     ROS_DEBUG_STREAM(m_name << "::changeAngleBy(diff = " << WHITE(diff)
                             << ", dTheta = " << WHITE(dTheta) << ")");
     m_params.theta += theta_;
+    setControlByAngle();
   };
   void updateAngleByRadius(const T radius) {
     if (!m_needsRefresh) return;
