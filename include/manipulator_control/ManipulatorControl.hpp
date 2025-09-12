@@ -20,8 +20,10 @@ class ManipulatorConfig
   explicit ManipulatorConfig(const std::string &fileName = "manipulator")
       : IConfigJsonMap<r2d2_type::config::manipulator_t, T>{fileName} {};
 
+ protected:
+  void updateConfig() { m_config = this->getParams(m_nozzleType.key); };
+
  public:
-  void updateNozzleType() { m_config = this->getParams(m_nozzleType.key); };
   void resetMode() {
     ROS_DEBUG("Reset mode");
     m_workMode.type = r2d2_state::WorkMode::NONE;
@@ -48,7 +50,7 @@ class ManipulatorConfig
       ROS_ERROR_STREAM("Got unknown nozzle type");
       return false;
     }
-    updateNozzleType();
+    updateConfig();
     return true;
   };
   bool setLock(const T value) {
