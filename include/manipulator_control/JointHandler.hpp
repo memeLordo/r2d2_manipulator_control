@@ -59,7 +59,16 @@ class JointHandler : public JointConfig<T> {
   };
 
  protected:
-  T getAngleTolerance() const { return m_config.angle_tolerance; };
+  T getAngleTolerance() const {
+    return m_needsTolerance ? m_config.angle_tolerance : 0;
+  };
+  bool checkAngleDiff(const T radius) {
+    const T angleDiff_{std::abs(getAngle() - getTargetAngle(radius))};
+    const bool needsAngleControl_{angleDiff_ < getAngleTolerance()};
+    ROS_DEBUG_STREAM(
+        CYAN(m_name << "::needsAngleControl_ = " << needsAngleControl_));
+    return needsAngleControl_;
+  };
   r2d2_msg_pkg::DriverCommand prepareMsg() const {
     const auto omega_{m_config.speed};
     const auto theta_{r2d2_process::unwrap<int16_t>(m_params.theta)};
@@ -146,16 +155,6 @@ class JointHandler : public JointConfig<T> {
   void publish() {
     ROS_DEBUG_STREAM(BLUE(m_name << "::publish()"));
     m_publisher.publish(prepareMsg());
-  };
-  T checkAngleDiff(const T radius) {
-    const T targetAngle_{getTargetAngle(radius)};
-    if (!m_needsTolerance) return targetAngle_;
-
-    const T angleDiff_{std::abs(getAngle() - targetAngle_)};
-    const bool needsAngleControl_{angleDiff_ > getAngleTolerance()};
-    ROS_DEBUG_STREAM(
-        CYAN(m_name << "::needsAngleControl_ = " << needsAngleControl_));
-    return needsAngleControl_ ? targetAngle_ : T{};
   };
   T getRadius() const {
     const T radius_{m_config.length * r2d2_math::sin(getAngle())};
