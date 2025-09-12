@@ -38,7 +38,6 @@ class JointHandler : public JointConfig<T> {
   r2d2_type::callback::joint16_t m_callbackParams{};
   ros::Subscriber m_subscriber;
   ros::Publisher m_publisher;
-  bool m_needsRefresh{true};
   bool m_needsAngleControl{true};
 
  public:
@@ -118,14 +117,6 @@ class JointHandler : public JointConfig<T> {
     if (m_needsAngleControl) {
       updateAngle(targetAngle_);
     }
-  };
-  void updateRefresh() {
-    ROS_DEBUG_STREAM(m_name << "::setRefresh()");
-    m_needsRefresh |= true;
-  };
-  void stopRefresh() {
-    ROS_DEBUG_STREAM(m_name << "::stopRefresh()");
-    m_needsRefresh &= false;
   };
   void setHoldControl() {
     if (m_params.control_word == r2d2_commands::ControlType::HOLD) return;
