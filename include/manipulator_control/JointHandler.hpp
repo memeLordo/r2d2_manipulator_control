@@ -58,9 +58,6 @@ class JointHandler : public JointConfig<T> {
   };
 
  protected:
-  T getAngleTolerance() const {
-    return m_needsTolerance ? m_config.angle_tolerance : 0;
-  };
   void checkAngleDiff(const T theta) {
     m_needsAngleControl =
         std::abs(getAngle() - theta) > m_config.angle_tolerance;
