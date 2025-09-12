@@ -62,12 +62,11 @@ class JointHandler : public JointConfig<T> {
   T getAngleTolerance() const {
     return m_needsTolerance ? m_config.angle_tolerance : 0;
   };
-  bool checkAngleDiff(const T radius) {
-    const T angleDiff_{std::abs(getAngle() - getTargetAngle(radius))};
-    const bool needsAngleControl_{angleDiff_ < getAngleTolerance()};
+  void checkAngleDiff(const T theta) {
+    m_needsAngleControl =
+        std::abs(getAngle() - theta) > m_config.angle_tolerance;
     ROS_DEBUG_STREAM(
-        CYAN(m_name << "::needsAngleControl_ = " << needsAngleControl_));
-    return needsAngleControl_;
+        CYAN(m_name << "::needsAngleControl_ = " << m_needsAngleControl));
   };
   r2d2_msg_pkg::DriverCommand prepareMsg() const {
     const auto omega_{m_config.speed};
