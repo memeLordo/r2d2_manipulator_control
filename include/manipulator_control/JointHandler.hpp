@@ -86,13 +86,11 @@ class JointHandler : public JointConfig<T> {
     ROS_INFO_STREAM(CYAN("Waiting for " << m_name << " topic..."));
     ros::topic::waitForMessage<r2d2_msg_pkg::DriverState>(m_outputTopic);
   };
-  void updateAngle() {
+  T getCallbackAngle() {
     const T theta_{r2d2_process::wrap<T>(m_callbackParams.theta)};
-    ROS_DEBUG_STREAM(m_name << "::updateAngle("
-                            << YELLOW("callback = " << m_callbackParams.theta)
-                            << ") : " << WHITE(theta_));
-    m_params.theta = theta_;
-    setControlWord(ControlType::HOLD);
+    ROS_DEBUG_STREAM(m_name << YELLOW("::getCallbackAngle() : ")
+                            << WHITE(theta_));
+    return theta_;
   };
   void updateAngle(const T theta) {
     ROS_DEBUG_STREAM(m_name << "::updateAngle(theta = " << WHITE(theta) << ")");
@@ -107,8 +105,6 @@ class JointHandler : public JointConfig<T> {
     setControlWord(ControlType::CONTROL_ANGLE);
   };
   void updateAngleByRadius(const T radius, const bool needsUpdate = true) {
-    updateAngle();
-
     ROS_DEBUG_STREAM(CYAN(m_name << "::needsUpdate = " << needsUpdate));
     if (!needsUpdate) return;
 
