@@ -39,7 +39,6 @@ class JointHandler : public JointConfig<T> {
   ros::Subscriber m_subscriber;
   ros::Publisher m_publisher;
   bool m_needsRefresh{true};
-  bool m_needsTolerance{false};
 
  public:
   JointHandler() = default;
@@ -119,10 +118,6 @@ class JointHandler : public JointConfig<T> {
     } else {
       setHoldControl();
     }
-  };
-  void enableTolerance() {
-    ROS_DEBUG_STREAM(m_name << "::enableTolerance()");
-    m_needsTolerance |= true;
   };
   void updateRefresh() {
     ROS_DEBUG_STREAM(m_name << "::setRefresh()");
