@@ -145,12 +145,15 @@ class JointHandler : public JointConfig<T> {
     ROS_DEBUG_STREAM(BLUE(m_name << "::publish()"));
     m_publisher.publish(prepareMsg());
   };
-  bool checkAngleDiff(const T radius) {
-    const T angleDiff_{std::abs(getAngle() - getTargetAngle(radius))};
-    const bool needsAngleControl_{angleDiff_ < getAngleTolerance()};
+  T checkAngleDiff(const T radius) {
+    const T targetAngle_{getTargetAngle(radius)};
+    if (!m_needsTolerance) return targetAngle_;
+
+    const T angleDiff_{std::abs(getAngle() - targetAngle_)};
+    const bool needsAngleControl_{angleDiff_ > getAngleTolerance()};
     ROS_DEBUG_STREAM(
         CYAN(m_name << "::needsAngleControl_ = " << needsAngleControl_));
-    return needsAngleControl_;
+    return needsAngleControl_ ? targetAngle_ : T{};
   };
   T getRadius() const {
     const T radius_{m_config.length * r2d2_math::sin(getAngle())};
