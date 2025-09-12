@@ -91,14 +91,15 @@ class ManipulatorControlHandler : public ManipulatorConfig<T> {
   void processForceControl(const T force);
 
  protected:
+  bool needsForceControl(const T force) const {
+    const bool needsForceControl_{std::abs(force) > getForceTolerance()};
+    ROS_DEBUG_STREAM(BLUE("needsForceControl_ = " << needsForceControl_));
+    return needsForceControl_;
+  };
   short getForceDiff(const T force) const {
     const T forceDiff_{force - getTargetForce()};
     ROS_DEBUG_STREAM(BLUE("forceDiff_ = " << forceDiff_));
-
-    const bool needsForceControl_{std::abs(forceDiff_) > getForceTolerance()};
-    ROS_DEBUG_STREAM(BLUE("needsForceControl_ = " << needsForceControl_));
-
-    if (needsForceControl_) return -r2d2_math::sign(forceDiff_);
+    if (needsForceControl(forceDiff_)) return -r2d2_math::sign(forceDiff_);
     return 0;
   };
   T getCurrentRadius() const {
