@@ -39,6 +39,7 @@ class JointHandler : public JointConfig<T> {
   ros::Subscriber m_subscriber;
   ros::Publisher m_publisher;
   bool m_needsRefresh{true};
+  bool m_needsAngleControl{true};
 
  public:
   JointHandler() = default;
@@ -154,6 +155,7 @@ class JointHandler : public JointConfig<T> {
     ROS_DEBUG_STREAM(BLUE(m_name << "::publish()"));
     m_publisher.publish(prepareMsg());
   };
+  bool needsAngleControl() const { return m_needsAngleControl; };
   T getRadius() const {
     const T radius_{m_config.length * r2d2_math::sin(getAngle())};
     // ROS_DEBUG_STREAM(m_name << "::getRadius() : " << WHITE(radius_));
