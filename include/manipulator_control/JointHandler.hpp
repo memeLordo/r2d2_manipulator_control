@@ -109,14 +109,14 @@ class JointHandler : public JointConfig<T> {
     m_params.theta += theta_;
     setControlByAngle();
   };
-  void updateAngleByRadius(const T radius) {
-    if (!m_needsRefresh) return;
-    const T targetAngle_{checkAngleDiff(radius)};
-    if (targetAngle_) {
+  void updateAngleByRadius(const T radius, const bool needsUpdate = true) {
+    ROS_DEBUG_STREAM(CYAN(m_name << "::needsUpdate = " << needsUpdate));
+    if (!needsUpdate) return;
+
+    const T targetAngle_{getTargetAngle(radius)};
+    checkAngleDiff(targetAngle_);
+    if (m_needsAngleControl) {
       updateAngle(targetAngle_);
-      setControlByAngle();
-    } else {
-      setHoldControl();
     }
   };
   void updateRefresh() {
