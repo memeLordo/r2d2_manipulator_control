@@ -30,6 +30,7 @@ class JointConfig : public IConfigJsonMap<r2d2_type::config::joint_t, T> {
 template <typename T = double>
 class JointHandler : public JointConfig<T> {
  private:
+  using ControlType = r2d2_commands::ControlType;
   using JointConfig<T>::m_name;
   using JointConfig<T>::m_inputTopic;
   using JointConfig<T>::m_outputTopic;
@@ -91,19 +92,19 @@ class JointHandler : public JointConfig<T> {
                             << YELLOW("callback = " << m_callbackParams.theta)
                             << ") : " << WHITE(theta_));
     m_params.theta = theta_;
-    setHoldControl();
+    setControlWord(ControlType::HOLD);
   };
   void updateAngle(const T theta) {
     ROS_DEBUG_STREAM(m_name << "::updateAngle(theta = " << WHITE(theta) << ")");
     m_params.theta = theta;
-    setControlByAngle();
+    setControlWord(ControlType::CONTROL_ANGLE);
   };
   void updateAngleByDiff(short diff, const T dTheta = 0.1f) {
     const T theta_{diff * dTheta};
     ROS_DEBUG_STREAM(m_name << "::changeAngleBy(diff = " << WHITE(diff)
                             << ", dTheta = " << WHITE(dTheta) << ")");
     m_params.theta += theta_;
-    setControlByAngle();
+    setControlWord(ControlType::CONTROL_ANGLE);
   };
   void updateAngleByRadius(const T radius, const bool needsUpdate = true) {
     updateAngle();
@@ -117,25 +118,9 @@ class JointHandler : public JointConfig<T> {
       updateAngle(targetAngle_);
     }
   };
-  void setHoldControl() {
-    if (m_params.control_word == r2d2_commands::ControlType::HOLD) return;
-    m_params.control_word = r2d2_commands::ControlType::HOLD;
-    ROS_DEBUG_STREAM(BLUE(m_name
-                          << "::set control_word to "
-                          << YELLOW(static_cast<int>(m_params.control_word))));
-  };
-  void setControlByAngle() {
-    if (m_params.control_word == r2d2_commands::ControlType::CONTROL_ANGLE)
-      return;
-    m_params.control_word = r2d2_commands::ControlType::CONTROL_ANGLE;
-    ROS_DEBUG_STREAM(BLUE(m_name
-                          << "::set control_word to "
-                          << YELLOW(static_cast<int>(m_params.control_word))));
-  };
-  void setControlBySpeed() {
-    if (m_params.control_word == r2d2_commands::ControlType::CONTROL_SPEED)
-      return;
-    m_params.control_word = r2d2_commands::ControlType::CONTROL_SPEED;
+  void setControlWord(ControlType control_word) {
+    if (m_params.control_word == control_word) return;
+    m_params.control_word = control_word;
     ROS_DEBUG_STREAM(BLUE(m_name
                           << "::set control_word to "
                           << YELLOW(static_cast<int>(m_params.control_word))));
