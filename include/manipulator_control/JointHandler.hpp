@@ -59,9 +59,7 @@ class JointHandler : public JointConfig<T> {
   };
 
  protected:
-  T getAngleTolerance() const {
-    return m_needsTolerance ? m_config.angle_tolerance : T{0.1f};
-  };
+  T getAngleTolerance() const { return m_config.angle_tolerance; };
   r2d2_msg_pkg::DriverCommand prepareMsg() const {
     const auto omega_{m_config.speed};
     const auto theta_{r2d2_process::unwrap<int16_t>(m_params.theta)};
