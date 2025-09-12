@@ -102,12 +102,7 @@ class ManipulatorControlHandler : public ManipulatorConfig<T> {
     if (needsForceControl(forceDiff_)) return -r2d2_math::sign(forceDiff_);
     return 0;
   };
-  T getCurrentRadius() const {
-    const T currentRadius_{m_shoulder.getRadius() + m_elbow.getRadius() +
-                           getRadius()};
-    ROS_DEBUG_STREAM(RED("Current radius : ") << WHITE(currentRadius_));
-    return currentRadius_;
-  };
+  // TODO: перенести в JointMap
   void publishResults() {
     ROS_DEBUG_STREAM(MAGENTA("\npublishResults()"));
     m_shoulder.publish();
@@ -115,6 +110,12 @@ class ManipulatorControlHandler : public ManipulatorConfig<T> {
   };
 
  public:
+  T getCurrentRadius() const {
+    const T currentRadius_{m_shoulder.getRadius() + m_elbow.getRadius() +
+                           getRadius()};
+    ROS_DEBUG_STREAM(RED("Current radius : ") << WHITE(currentRadius_));
+    return currentRadius_;
+  };
   T getTargetForce(const T coeff = 1) const {
     T force_{coeff * static_cast<T>(m_config.force_needed)};
     ROS_DEBUG_STREAM("ManipulatorControl::getForce() : " << WHITE(force_));
