@@ -115,8 +115,8 @@ class ManipulatorControlHandler : public ManipulatorConfig<T> {
   };
 
  public:
-  T getTargetForce() const {
-    const T force_{static_cast<T>(m_config.force_needed)};
+  T getTargetForce(const T coeff = 1) const {
+    T force_{coeff * static_cast<T>(m_config.force_needed)};
     ROS_DEBUG_STREAM("ManipulatorControl::getForce() : " << WHITE(force_));
     return force_;
   };
