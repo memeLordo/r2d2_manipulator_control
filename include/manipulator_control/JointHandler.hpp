@@ -38,8 +38,8 @@ class JointHandler : public JointConfig<T> {
   r2d2_type::callback::joint16_t m_callbackParams{};
   ros::Subscriber m_subscriber;
   ros::Publisher m_publisher;
-  bool m_needsTolerance{false};
   bool m_needsRefresh{true};
+  bool m_needsTolerance{false};
 
  public:
   JointHandler() = default;
@@ -60,8 +60,7 @@ class JointHandler : public JointConfig<T> {
 
  protected:
   T getAngleTolerance() const {
-    return m_needsTolerance ? m_config.angle_tolerance : 0;
-  };
+    return m_needsTolerance ? m_config.angle_tolerance : T{0.1f};
   };
   r2d2_msg_pkg::DriverCommand prepareMsg() const {
     const auto omega_{m_config.speed};
@@ -97,7 +96,7 @@ class JointHandler : public JointConfig<T> {
     m_params.theta = theta;
     setControlByAngle();
   };
-  void updateAngleByDiff(short diff, const T dTheta = 0.1) {
+  void updateAngleByDiff(short diff, const T dTheta = 0.1f) {
     const T theta_{diff * dTheta};
     ROS_DEBUG_STREAM(m_name << "::changeAngleBy(diff = " << WHITE(diff)
                             << ", dTheta = " << WHITE(dTheta) << ")");
