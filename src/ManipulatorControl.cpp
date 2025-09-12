@@ -52,18 +52,16 @@ void ManipulatorControlHandler<T>::callbackManipulator(
 }
 template <typename T>
 void ManipulatorControlHandler<T>::checkSetup(const T radius) {
-  if (m_needsSetup) {
-    ROS_DEBUG_STREAM(MAGENTA("\ncheckSetup()"));
-    const bool hasRadiusReached_{getCurrentRadius() >= radius};
-    ROS_DEBUG_STREAM(CYAN("hasRadiusReached_ = " << hasRadiusReached_));
-    if (hasRadiusReached_) {
-      m_elbow.enableTolerance();
-      m_shoulder.stopRefresh();
-      m_needsSetup &= false;
-    }
-    ROS_DEBUG_STREAM(RED("\nend") << MAGENTA("::checkSetup()"));
-  } else
+  if (!m_needsSetup) {
     ROS_DEBUG_STREAM(CYAN("Control radius reached!"));
+    return;
+  }
+  ROS_DEBUG_STREAM(MAGENTA("\ncheckSetup()"));
+  const bool hasRadiusReached_{getCurrentRadius() >= radius};
+  ROS_DEBUG_STREAM(CYAN("hasRadiusReached_ = " << hasRadiusReached_));
+  m_needsSetup = !hasRadiusReached_;
+
+  ROS_DEBUG_STREAM(RED("\nend") << MAGENTA("::checkSetup()"));
 }
 template <typename T>
 void ManipulatorControlHandler<T>::processStop(const T radius) {
