@@ -59,11 +59,12 @@ class JointHandler : public JointConfig<T> {
   };
 
  protected:
-  void checkAngleDiff(const T theta) {
+  bool needsAngleControl(const T theta) {
     m_needsAngleControl =
         std::abs(getAngle() - theta) > m_config.angle_tolerance;
     ROS_DEBUG_STREAM(
         CYAN(m_name << "::needsAngleControl_ = " << m_needsAngleControl));
+    return m_needsAngleControl;
   };
   r2d2_msg_pkg::DriverCommand prepareMsg() const {
     const auto omega_{m_config.speed};
@@ -108,9 +109,7 @@ class JointHandler : public JointConfig<T> {
     if (!needsUpdate) return;
 
     const T targetAngle_{getTargetAngle(radius)};
-    checkAngleDiff(targetAngle_);
-    if (m_needsAngleControl) {
-      updateAngle(targetAngle_);
+    if (needsAngleControl(targetAngle_)) {
     }
   };
   void setControlWord(ControlType control_word) {
