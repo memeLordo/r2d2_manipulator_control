@@ -123,28 +123,27 @@ class JointHandler : public JointConfig<T> {
     m_needsRefresh &= false;
   };
   void setHoldControl() {
-    if (m_params.control_word != r2d2_commands::ControlType::HOLD) {
-      m_params.control_word = r2d2_commands::ControlType::HOLD;
-      ROS_DEBUG_STREAM(
-          BLUE(m_name << "::set control_word to "
-                      << YELLOW(static_cast<int>(m_params.control_word))));
-    }
+    if (m_params.control_word == r2d2_commands::ControlType::HOLD) return;
+    m_params.control_word = r2d2_commands::ControlType::HOLD;
+    ROS_DEBUG_STREAM(BLUE(m_name
+                          << "::set control_word to "
+                          << YELLOW(static_cast<int>(m_params.control_word))));
   };
   void setControlByAngle() {
-    if (m_params.control_word != r2d2_commands::ControlType::CONTROL_ANGLE) {
-      m_params.control_word = r2d2_commands::ControlType::CONTROL_ANGLE;
-      ROS_DEBUG_STREAM(
-          BLUE(m_name << "::set control_word to "
-                      << YELLOW(static_cast<int>(m_params.control_word))));
-    }
+    if (m_params.control_word == r2d2_commands::ControlType::CONTROL_ANGLE)
+      return;
+    m_params.control_word = r2d2_commands::ControlType::CONTROL_ANGLE;
+    ROS_DEBUG_STREAM(BLUE(m_name
+                          << "::set control_word to "
+                          << YELLOW(static_cast<int>(m_params.control_word))));
   };
   void setControlBySpeed() {
-    if (m_params.control_word != r2d2_commands::ControlType::CONTROL_SPEED) {
-      m_params.control_word = r2d2_commands::ControlType::CONTROL_SPEED;
-      ROS_DEBUG_STREAM(
-          BLUE(m_name << "::set control_word to "
-                      << YELLOW(static_cast<int>(m_params.control_word))));
-    }
+    if (m_params.control_word == r2d2_commands::ControlType::CONTROL_SPEED)
+      return;
+    m_params.control_word = r2d2_commands::ControlType::CONTROL_SPEED;
+    ROS_DEBUG_STREAM(BLUE(m_name
+                          << "::set control_word to "
+                          << YELLOW(static_cast<int>(m_params.control_word))));
   };
   void publish() {
     ROS_DEBUG_STREAM(BLUE(m_name << "::publish()"));
