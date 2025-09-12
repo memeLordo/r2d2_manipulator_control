@@ -81,6 +81,10 @@ class ManipulatorControlHandler : public ManipulatorConfig<T> {
 
  public:
   explicit ManipulatorControlHandler(ros::NodeHandle *node);
+  ~ManipulatorControlHandler() {
+    ROS_DEBUG_STREAM(RED("~ManipulatorControlHandler()"));
+    m_timer.stop();
+  };
 
  private:
   void callbackManipulator(const ros::TimerEvent &);

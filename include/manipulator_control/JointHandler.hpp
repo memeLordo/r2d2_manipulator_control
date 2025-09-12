@@ -51,6 +51,11 @@ class JointHandler : public JointConfig<T> {
     m_publisher =
         node->advertise<r2d2_msg_pkg::DriverCommand>(m_inputTopic, 10);
   };
+  ~JointHandler() {
+    ROS_DEBUG_STREAM(RED("~JointHandler()"));
+    m_publisher.shutdown();
+    m_subscriber.shutdown();
+  };
 
  private:
   void callbackJoint(const r2d2_msg_pkg::DriverStateConstPtr &msg) {

@@ -25,6 +25,10 @@ class PayloadHandler {
     m_subscriber = node->subscribe(m_outputTopic, 10,
                                    &PayloadHandler::callbackPayload, this);
   };
+  ~PayloadHandler() {
+    ROS_DEBUG_STREAM(RED("~PayloadHandler()"));
+    m_subscriber.shutdown();
+  };
 
  private:
   void callbackPayload(const r2d2_msg_pkg::DriverStateConstPtr &msg) {
