@@ -51,16 +51,19 @@ void ManipulatorControlHandler<T>::callbackManipulator(
   }
 }
 template <typename T>
-void ManipulatorControlHandler<T>::checkSetup(const T radius) {
+void ManipulatorControlHandler<T>::checkSetup(const T force) {
   if (!m_needsSetup) {
-    ROS_DEBUG_STREAM(CYAN("Control radius reached!"));
+    ROS_DEBUG_STREAM_ONCE(CYAN("Control setup finished!"));
     return;
   }
   ROS_DEBUG_STREAM(MAGENTA("\ncheckSetup()"));
-  const bool hasRadiusReached_{getCurrentRadius() >= radius};
-  ROS_DEBUG_STREAM(CYAN("hasRadiusReached_ = " << hasRadiusReached_));
-  m_needsSetup = !hasRadiusReached_;
-
+  const bool needsAngleControl_{m_shoulder.needsAngleControl() ||
+                                m_elbow.needsAngleControl()};
+  const bool needsForceControl_{force < getTargetForce(1.2f)};
+  m_needsSetup = needsAngleControl_ && needsForceControl_;
+  ROS_DEBUG_STREAM(CYAN("needsAngleControl_ = " << needsAngleControl_));
+  ROS_DEBUG_STREAM(CYAN("needsForceControl_ = " << needsForceControl_));
+  ROS_DEBUG_STREAM(CYAN("m_needsSetup = " << m_needsSetup));
   ROS_DEBUG_STREAM(RED("\nend") << MAGENTA("::checkSetup()"));
 }
 template <typename T>
@@ -75,7 +78,7 @@ void ManipulatorControlHandler<T>::processControl(const T radius,
   switch (m_lockStatus.type) {
     case LockStatus::UNLOCKED:
       ROS_DEBUG_STREAM(YELLOW("LockStatus::UNLOCKED"));
-      checkSetup(radius);
+      checkSetup(force);
       processAngleControl(radius);
       processForceControl(force);
       break;
