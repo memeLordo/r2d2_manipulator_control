@@ -95,7 +95,7 @@ template <typename T>
 void ManipulatorControlHandler<T>::processForceControl(const T force) {
   if (m_needsSetup) return;
   ROS_DEBUG_STREAM(MAGENTA("\nprocessForceControl()"));
-  m_elbow.updateAngleByDiff(checkForceDiff(force));
+  m_elbow.updateAngleByDiff(getForceDiff(force));
   ROS_DEBUG_STREAM(RED("\nend") << MAGENTA("::processForceControl()"));
 }
 
