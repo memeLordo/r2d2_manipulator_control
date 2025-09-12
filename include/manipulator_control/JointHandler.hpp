@@ -93,10 +93,9 @@ class JointHandler : public JointConfig<T> {
                             << WHITE(theta_));
     return theta_;
   };
-  void updateAngle(const T theta) {
+  void setAngle(const T theta) {
     ROS_DEBUG_STREAM(m_name << "::updateAngle(theta = " << WHITE(theta) << ")");
     m_params.theta = theta;
-    setControlWord(ControlType::CONTROL_ANGLE);
   };
   void incrementAngleBy(short diff, const T dTheta = 0.1f) {
     const T theta_{diff * dTheta};
