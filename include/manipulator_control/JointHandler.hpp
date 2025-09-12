@@ -99,10 +99,14 @@ class JointHandler : public JointConfig<T> {
     m_params.theta += theta_;
   };
   void updateAngleByRadius(const T radius) {
-    if (checkAngleDiff(radius) && m_needsRefresh)
-      updateAngle(getTargetAngle(radius));
-    else
-      updateAngle();
+    if (!m_needsRefresh) return;
+    const T targetAngle_{checkAngleDiff(radius)};
+    if (targetAngle_) {
+      updateAngle(targetAngle_);
+      setControlByAngle();
+    } else {
+      setHoldControl();
+    }
   };
   void enableTolerance() {
     ROS_DEBUG_STREAM(m_name << "::enableTolerance()");
