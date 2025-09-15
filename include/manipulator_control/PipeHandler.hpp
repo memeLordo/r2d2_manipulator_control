@@ -25,6 +25,10 @@ class PipeHandler {
     m_subscriber =
         node->subscribe(m_outputTopic, 10, &PipeHandler::callbackPipe, this);
   };
+  ~PipeHandler() {
+    ROS_DEBUG_STREAM(RED("~PipeHandler()"));
+    m_subscriber.shutdown();
+  };
 
  private:
   void callbackPipe(const r2d2_msg_pkg::PipeParametersConstPtr &msg) {

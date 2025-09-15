@@ -4,7 +4,7 @@
 #include "JointHandler.hpp"
 #include "PayloadHandler.hpp"
 #include "PipeHandler.hpp"
-#include "utils/IConfigJson.hpp"
+#include "utils/ConfigJson.hpp"
 #include "utils/Types.hpp"
 
 template <typename T>
@@ -14,14 +14,16 @@ class ManipulatorConfig
   r2d2_state::WorkModePair m_workMode{};
   r2d2_state::NozzleTypePair m_nozzleType{};
   r2d2_state::LockStatusPair m_lockStatus{};
-  r2d2_type::callback::manipulator16_t<T> m_params;
+  r2d2_type::config::manipulator_t<T> m_config;
 
  protected:
   explicit ManipulatorConfig(const std::string &fileName = "manipulator")
       : IConfigJsonMap<r2d2_type::config::manipulator_t, T>{fileName} {};
 
+ protected:
+  void updateConfig() { m_config = this->getParams(m_nozzleType.key); };
+
  public:
-  void updateNozzleType() { m_params = this->getParams(m_nozzleType.key); };
   void resetMode() {
     ROS_DEBUG("Reset mode");
     m_workMode.type = r2d2_state::WorkMode::NONE;
@@ -48,7 +50,7 @@ class ManipulatorConfig
       ROS_ERROR_STREAM("Got unknown nozzle type");
       return false;
     }
-    updateNozzleType();
+    updateConfig();
     return true;
   };
   bool setLock(const T value) {
@@ -69,7 +71,7 @@ class ManipulatorControlHandler : public ManipulatorConfig<T> {
   using ManipulatorConfig<T>::m_workMode;
   using ManipulatorConfig<T>::m_nozzleType;
   using ManipulatorConfig<T>::m_lockStatus;
-  using ManipulatorConfig<T>::m_params;
+  using ManipulatorConfig<T>::m_config;
   PayloadHandler<T> m_payload;
   PipeHandler<T> m_pipe;
   ElbowHandler<T> m_elbow;
@@ -79,49 +81,49 @@ class ManipulatorControlHandler : public ManipulatorConfig<T> {
 
  public:
   explicit ManipulatorControlHandler(ros::NodeHandle *node);
+  ~ManipulatorControlHandler() {
+    ROS_DEBUG_STREAM(RED("~ManipulatorControlHandler()"));
+    m_timer.stop();
+  };
 
  private:
   void callbackManipulator(const ros::TimerEvent &);
-  void checkSetup(const T radius);
+  void checkSetup(const T force);
   void processStop(const T radius);
   void processControl(const T radius, const T force);
   void processAngleControl(const T radius);
   void processForceControl(const T force);
 
  protected:
-  short checkForceDiff(const T force) const {
+  bool needsForceControl(const T force) const {
+    const bool needsForceControl_{std::abs(force) > getForceTolerance()};
+    ROS_DEBUG_STREAM(BLUE("needsForceControl_ = " << needsForceControl_));
+    return needsForceControl_;
+  };
+  short getForceDiff(const T force) const {
     const T forceDiff_{force - getTargetForce()};
     ROS_DEBUG_STREAM(BLUE("forceDiff_ = " << forceDiff_));
-
-    const bool needsForceControl_{std::abs(forceDiff_) > getForceTolerance()};
-    ROS_DEBUG_STREAM(BLUE("needsForceControl_ = " << needsForceControl_));
-
-    if (needsForceControl_) return -r2d2_math::sign(forceDiff_);
+    if (needsForceControl(forceDiff_)) return -r2d2_math::sign(forceDiff_);
     return 0;
   };
-  T getCurrentRadius() const {
-    const T currentRadius_{m_shoulder.getRadius() + m_elbow.getRadius() +
-                           getRadius()};
-    ROS_DEBUG_STREAM(RED("Current radius : ") << WHITE(currentRadius_));
-    return currentRadius_;
-  };
+  // TODO: перенести в JointMap
   void publishResults() {
     ROS_DEBUG_STREAM(MAGENTA("\npublishResults()"));
-    m_elbow.publish();
     m_shoulder.publish();
+    m_elbow.publish();
   };
 
  public:
-  T getTargetForce() const {
-    const T force_{static_cast<T>(m_params.force_needed)};
+  T getTargetForce(const T coeff = 1) const {
+    T force_{coeff * static_cast<T>(m_config.force_needed)};
     ROS_DEBUG_STREAM("ManipulatorControl::getForce() : " << WHITE(force_));
     return force_;
   };
   T getForceTolerance() const {
-    return static_cast<T>(m_params.force_tolerance);
+    return static_cast<T>(m_config.force_tolerance);
   };
   T getRadius() const {
-    const T radius_{m_params.r0};
+    const T radius_{m_config.r0};
     ROS_DEBUG_STREAM("ManipulatorControl::getRadius() : " << WHITE(radius_));
     return radius_;
   };

@@ -21,6 +21,10 @@ class ManipulatorServiceHandler {
     m_manipulatorService = node->advertiseService(
         m_serviceTopic, &ManipulatorServiceHandler::callbackService, this);
   };
+  ~ManipulatorServiceHandler() {
+    ROS_DEBUG_STREAM(RED("~ManipulatorServiceHandler()"));
+    m_manipulatorService.shutdown();
+  };
 
  private:
   bool callbackService(r2d2_msg_pkg::ManipulatorCommand::Request &req,
