@@ -10,15 +10,6 @@ find_package(catkin REQUIRED COMPONENTS
   r2d2_msg_pkg 
 )
 
-################################################
-## Declare ROS messages, services and actions ##
-################################################
-
-generate_messages(
-  DEPENDENCIES
-  std_msgs
-)
-
 ###########
 ## Build ##
 ###########
@@ -26,7 +17,6 @@ generate_messages(
 include_directories(
   include
   include/${PROJECT_NAME}
-  # include/${PROJECT_NAME}/utils
   ${catkin_INCLUDE_DIRS}
 )
 
