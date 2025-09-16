@@ -8,8 +8,8 @@ ManipulatorControlHandler<T>::ManipulatorControlHandler(ros::NodeHandle *node)
     : ManipulatorConfig<T>{},
       m_pipe{node},
       m_payload{node},
-      m_elbow{node},
-      m_shoulder{node} {
+      m_shoulder{node},
+      m_elbow{node} {
   const double RATE = node->param<T>("control_rate", 20);
   ROS_DEBUG_STREAM("Set RATE: " << RATE);
   m_timer = node->createTimer(
