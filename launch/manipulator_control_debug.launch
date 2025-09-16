@@ -10,7 +10,7 @@
   
   <node pkg="rosbag" type="record" name="debug_log"
   	output="screen"
-    args="-O $(find manipulator_control)/.bags/console.bag -a"/>
+    args="-O $(find manipulator_control)/.bags/console.bag /rosout"/>
 
 <!-- <node pkg="rosbag" type="record" name="debug_log" -->
 <!--       args="-o $(find manipulator_control)/.bags/console.bag -e &quot;(/manipulator1/[_a-z]+)&quot;"/> -->
