@@ -21,15 +21,7 @@ void ManipulatorControlHandler<T>::callbackManipulator(
     const ros::TimerEvent &) {
   std::lock_guard<std::mutex> lock(m_mutex);
   ROS_DEBUG_STREAM("\ncallbackManipulator()");
-  /**
-   * INFO:
-   * 0. Получить данные для манипулятора (и трубы)
-   * 1. Проверка автоматического разжатия
-   * 2. Приём типа насадки (Щётка/ЕМА)
-   * 3. Проверка статуса блокировки
-   * 4. Обновить оставшиеся переменные
-   * 5. Опубликовать все переменные
-   */
+
   switch (m_workMode.type) {
     case WorkMode::AUTO:
       ROS_DEBUG_STREAM(YELLOW("WorkMode::AUTO"));
