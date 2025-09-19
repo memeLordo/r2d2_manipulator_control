@@ -12,6 +12,7 @@ std::string r2d2_json::getFilePath(const std::string &fileName) {
   return {ros::package::getPath(packageName_) + "/" + dirName_ + "/" +
           fileName + ".json"};
 }
+
 namespace nlohmann {
 template <typename T>
 void from_json(const json &j, joint_t<T> &p) {
@@ -34,7 +35,7 @@ IConfigJsonMap<Type, U>::IConfigJsonMap(const std::string &fileName)
     : IConfigJson<U>(fileName) {
   for (auto &el : this->m_json.items())
     m_paramsMap[el.key()] = el.value().template get<Type<U>>();
-};
+}
 
 template class IConfigJsonMap<joint_t>;
 template class IConfigJsonMap<manipulator_t>;
