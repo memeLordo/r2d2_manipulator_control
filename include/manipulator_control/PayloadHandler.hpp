@@ -22,7 +22,7 @@ class PayloadHandler {
   explicit PayloadHandler(ros::NodeHandle *node)
       : m_outputTopic{"/payload_output"} {
     waitForTopic();
-    m_subscriber = node->subscribe(m_outputTopic, 10,
+    m_subscriber = node->subscribe(m_outputTopic, 1,
                                    &PayloadHandler::callbackPayload, this);
   };
   ~PayloadHandler() {

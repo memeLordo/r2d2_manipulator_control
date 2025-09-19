@@ -72,11 +72,12 @@ class ManipulatorControlHandler : public ManipulatorConfig<T> {
   using ManipulatorConfig<T>::m_nozzleType;
   using ManipulatorConfig<T>::m_lockStatus;
   using ManipulatorConfig<T>::m_config;
-  PayloadHandler<T> m_payload;
   PipeHandler<T> m_pipe;
-  ElbowHandler<T> m_elbow;
+  PayloadHandler<T> m_payload;
   ShoulderHandler<T> m_shoulder;
+  ElbowHandler<T> m_elbow;
   ros::Timer m_timer;
+  std::mutex m_mutex;
   bool m_needsSetup{true};
 
  public:
@@ -88,8 +89,8 @@ class ManipulatorControlHandler : public ManipulatorConfig<T> {
 
  private:
   void callbackManipulator(const ros::TimerEvent &);
+  void processStop();
   void checkSetup(const T force);
-  void processStop(const T radius);
   void processControl(const T radius, const T force);
   void processAngleControl(const T radius);
   void processForceControl(const T force);
@@ -114,6 +115,12 @@ class ManipulatorControlHandler : public ManipulatorConfig<T> {
   };
 
  public:
+  T getCurrentRadius() const {
+    const T currentRadius_{m_shoulder.getRadius() + m_elbow.getRadius() +
+                           getRadius()};
+    ROS_DEBUG_STREAM(RED("Current radius : ") << WHITE(currentRadius_));
+    return currentRadius_;
+  };
   T getTargetForce(const T coeff = 1) const {
     T force_{coeff * static_cast<T>(m_config.force_needed)};
     ROS_DEBUG_STREAM("ManipulatorControl::getForce() : " << WHITE(force_));

@@ -47,9 +47,8 @@ class JointHandler : public JointConfig<T> {
       : JointConfig<T>(name) {
     waitForTopic();
     m_subscriber =
-        node->subscribe(m_outputTopic, 10, &JointHandler::callbackJoint, this);
-    m_publisher =
-        node->advertise<r2d2_msg_pkg::DriverCommand>(m_inputTopic, 10);
+        node->subscribe(m_outputTopic, 1, &JointHandler::callbackJoint, this);
+    m_publisher = node->advertise<r2d2_msg_pkg::DriverCommand>(m_inputTopic, 1);
   };
   ~JointHandler() {
     ROS_DEBUG_STREAM(RED("~JointHandler()"));
@@ -101,6 +100,10 @@ class JointHandler : public JointConfig<T> {
   void setAngle(const T theta) {
     ROS_DEBUG_STREAM(m_name << "::updateAngle(theta = " << WHITE(theta) << ")");
     m_params.theta = theta;
+  };
+  void setAngleByRadius(const T radius) {
+    setAngle(getTargetAngle(radius));
+    setControlWord(ControlType::CONTROL_ANGLE);
   };
   void incrementAngleBy(short diff, const T dTheta = 0.1f) {
     const T theta_{diff * dTheta};

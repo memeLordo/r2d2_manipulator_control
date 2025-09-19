@@ -1,21 +1,18 @@
 <?xml version="1.0"?>
 <launch>
 	<!-- Аргументы для конфигурации -->
-	<arg name="debug" default="false"/>
 	<arg name="rate"  default="50.0"/>
 
+	<!-- Параметры среды -->
   <param name="control_rate" value="$(arg rate)"/>
-	<!-- Основной узел манипулятора -->
+
+	<!-- Первый узел манипулятора -->
 	<node pkg="manipulator_control" 
         type="manipulator_control_node" 
         name="manipulator_control_node_1" 
         output="screen">
 
-		<!-- Параметры узла -->
-		<!-- <param name="debug_output" value="$(arg debug)"/> -->
-
 		<!-- Переназначение топиков -->
-		<remap from="/pipe_output"         to="/parameters/pipe"/>
 		<remap from="/elbow_input"         to="/manipulator1/elbow_input"/>
 		<remap from="/elbow_output"        to="/manipulator1/elbow_output"/>
 		<remap from="/shoulder_input"      to="/manipulator1/shoulder_input"/>
@@ -30,12 +27,7 @@
         name="manipulator_control_node_2" 
         output="screen">
 
-		<!-- Параметры узла -->
-		<!-- <param name="control_rate" value="$(arg rate)"/> -->
-		<!-- <param name="debug_output" value="$(arg debug)"/> -->
-
 		<!-- Переназначение топиков -->
-		<remap from="/pipe_output"         to="/parameters/pipe"/>
 		<remap from="/elbow_input"         to="/manipulator2/elbow_input"/>
 		<remap from="/elbow_output"        to="/manipulator2/elbow_output"/>
 		<remap from="/shoulder_input"      to="/manipulator2/shoulder_input"/>
@@ -50,12 +42,7 @@
         name="manipulator_control_node_3" 
         output="screen">
 
-		<!-- Параметры узла -->
-		<!-- <param name="control_rate" value="$(arg rate)"/> -->
-		<!-- <param name="debug_output" value="$(arg debug)"/> -->
-
 		<!-- Переназначение топиков -->
-		<remap from="/pipe_output"         to="/parameters/pipe"/>
 		<remap from="/elbow_input"         to="/manipulator3/elbow_input"/>
 		<remap from="/elbow_output"        to="/manipulator3/elbow_output"/>
 		<remap from="/shoulder_input"      to="/manipulator3/shoulder_input"/>
@@ -70,12 +57,7 @@
         name="manipulator_control_node_4" 
         output="screen">
 
-		<!-- Параметры узла -->
-		<!-- <param name="control_rate" value="$(arg rate)"/> -->
-		<!-- <param name="debug_output" value="$(arg debug)"/> -->
-
 		<!-- Переназначение топиков -->
-		<remap from="/pipe_output"         to="/parameters/pipe"/>
 		<remap from="/elbow_input"         to="/manipulator4/elbow_input"/>
 		<remap from="/elbow_output"        to="/manipulator4/elbow_output"/>
 		<remap from="/shoulder_input"      to="/manipulator4/shoulder_input"/>
@@ -90,12 +72,7 @@
         name="manipulator_control_node_5" 
         output="screen">
         
-		<!-- Параметры узла -->
-		<!-- <param name="control_rate" value="$(arg rate)"/> -->
-		<!-- <param name="debug_output" value="$(arg debug)"/> -->
-		
 		<!-- Переназначение топиков -->
-		<remap from="/pipe_output"         to="/parameters/pipe"/>
 		<remap from="/elbow_input"         to="/manipulator5/elbow_input"/>
 		<remap from="/elbow_output"        to="/manipulator5/elbow_output"/>
 		<remap from="/shoulder_input"      to="/manipulator5/shoulder_input"/>
@@ -109,13 +86,8 @@
         type="manipulator_control_node" 
         name="manipulator_control_node_6" 
         output="screen">
-        
-		<!-- Параметры узла -->
-		<!-- <param name="control_rate" value="$(arg rate)"/> -->
-		<!-- <param name="debug_output" value="$(arg debug)"/> -->
 		
 		<!-- Переназначение топиков -->
-		<remap from="/pipe_output"         to="/parameters/pipe"/>
 		<remap from="/elbow_input"         to="/manipulator6/elbow_input"/>
 		<remap from="/elbow_output"        to="/manipulator6/elbow_output"/>
 		<remap from="/shoulder_input"      to="/manipulator6/shoulder_input"/>
@@ -129,13 +101,8 @@
         type="manipulator_control_node" 
         name="manipulator_control_node_7" 
         output="screen">
-        
-		<!-- Параметры узла -->
-		<!-- <param name="control_rate" value="$(arg rate)"/> -->
-		<!-- <param name="debug_output" value="$(arg debug)"/> -->
 		
 		<!-- Переназначение топиков -->
-		<remap from="/pipe_output"         to="/parameters/pipe"/>
 		<remap from="/elbow_input"         to="/manipulator7/elbow_input"/>
 		<remap from="/elbow_output"        to="/manipulator7/elbow_output"/>
 		<remap from="/shoulder_input"      to="/manipulator7/shoulder_input"/>
@@ -149,13 +116,8 @@
         type="manipulator_control_node" 
         name="manipulator_control_node_8" 
         output="screen">
-        
-		<!-- Параметры узла -->
-		<!-- <param name="control_rate" value="$(arg rate)"/> -->
-		<!-- <param name="debug_output" value="$(arg debug)"/> -->
 		
 		<!-- Переназначение топиков -->
-		<remap from="/pipe_output"         to="/parameters/pipe"/>
 		<remap from="/elbow_input"         to="/manipulator8/elbow_input"/>
 		<remap from="/elbow_output"        to="/manipulator8/elbow_output"/>
 		<remap from="/shoulder_input"      to="/manipulator8/shoulder_input"/>
