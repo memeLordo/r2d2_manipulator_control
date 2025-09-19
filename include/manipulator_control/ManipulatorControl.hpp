@@ -77,6 +77,7 @@ class ManipulatorControlHandler : public ManipulatorConfig<T> {
   ElbowHandler<T> m_elbow;
   ShoulderHandler<T> m_shoulder;
   ros::Timer m_timer;
+  std::mutex m_mutex;
   bool m_needsSetup{true};
 
  public:
