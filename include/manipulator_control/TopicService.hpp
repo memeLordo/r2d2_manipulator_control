@@ -1,8 +1,9 @@
 #ifndef R2D2_TOPIC_SERVICE_HANDLER_HPP
 #define R2D2_TOPIC_SERVICE_HANDLER_HPP
 
+#include <ros/node_handle.h>
+
 #include "r2d2_msg_pkg/GetParams.h"
-#include "ros/node_handle.h"
 #include "utils/Debug.hpp"
 
 class TopicServiceHandler {
