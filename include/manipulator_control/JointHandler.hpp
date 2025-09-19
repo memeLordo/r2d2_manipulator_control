@@ -47,9 +47,8 @@ class JointHandler : public JointConfig<T> {
       : JointConfig<T>(name) {
     waitForTopic();
     m_subscriber =
-        node->subscribe(m_outputTopic, 10, &JointHandler::callbackJoint, this);
-    m_publisher =
-        node->advertise<r2d2_msg_pkg::DriverCommand>(m_inputTopic, 10);
+        node->subscribe(m_outputTopic, 1, &JointHandler::callbackJoint, this);
+    m_publisher = node->advertise<r2d2_msg_pkg::DriverCommand>(m_inputTopic, 1);
   };
   ~JointHandler() {
     ROS_DEBUG_STREAM(RED("~JointHandler()"));

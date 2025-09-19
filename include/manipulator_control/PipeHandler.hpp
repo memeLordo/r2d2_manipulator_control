@@ -23,7 +23,7 @@ class PipeHandler {
       : m_outputTopic{"/parameters/pipe"} {
     waitForTopic();
     m_subscriber =
-        node->subscribe(m_outputTopic, 10, &PipeHandler::callbackPipe, this);
+        node->subscribe(m_outputTopic, 1, &PipeHandler::callbackPipe, this);
   };
   ~PipeHandler() {
     ROS_DEBUG_STREAM(RED("~PipeHandler()"));
