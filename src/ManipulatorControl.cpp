@@ -37,7 +37,7 @@ void ManipulatorControlHandler<T>::callbackManipulator(
 
     case WorkMode::STOP:
       ROS_DEBUG_STREAM(YELLOW("WorkMode::STOP"));
-      processStop(getRadius());
+      processStop();
       return;
 
     case WorkMode::MANUAL:
@@ -67,9 +67,9 @@ void ManipulatorControlHandler<T>::checkSetup(const T force) {
   ROS_DEBUG_STREAM(RED("\nend") << MAGENTA("::checkSetup()"));
 }
 template <typename T>
-void ManipulatorControlHandler<T>::processStop(const T radius) {
+void ManipulatorControlHandler<T>::processStop() {
   ROS_DEBUG_STREAM(YELLOW("WorkMode::STOP"));
-  processAngleControl(radius);
+  processAngleControl(getRadius());
   publishResults();
 }
 template <typename T>

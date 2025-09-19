@@ -89,7 +89,7 @@ class ManipulatorControlHandler : public ManipulatorConfig<T> {
  private:
   void callbackManipulator(const ros::TimerEvent &);
   void checkSetup(const T force);
-  void processStop(const T radius);
+  void processStop();
   void processControl(const T radius, const T force);
   void processAngleControl(const T radius);
   void processForceControl(const T force);
