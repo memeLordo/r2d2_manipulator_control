@@ -1,35 +1,34 @@
 <?xml version="1.0"?>
 <launch>
-	<!-- Аргументы для конфигурации -->
-	<arg name="debug" default="true"/>
-	<arg name="rate"  default="5.0"/>
-	<!-- <arg name="pkg_path" default="$(find your_package)" /> -->
+	<!-- Аргументы конфигурации -->
+	<arg name="rate"  default="1.0"/>
+  <arg name="id" 	  default="1"/>
+
+	<!-- Параметры среды -->
+	<param name="control_rate" value="$(arg rate)"/>
+
+	<!-- Установка параметров логирования -->
 	<env name="ROSCONSOLE_CONFIG_FILE"
        value="$(find manipulator_control)/rosconsole.conf"/>
-	<param name="control_rate" value="$(arg rate)"/>
   
+  <!-- Запись топиков в rosbag -->
   <node pkg="rosbag" type="record" name="console_log"
-  	output="screen"
     args="-O $(find manipulator_control)/.bags/console.bag /rosout"/>
-
   <node pkg="rosbag" type="record" name="debug_log"
     args='-O $(find manipulator_control)/.bags/manipulator.bag -e "/manipulator.*"'/>
 
-	<!-- Основной узел манипулятора -->
-	<node pkg="manipulator_control" 
+  <!-- Основной узел манипулятора -->
+  <node pkg="manipulator_control" 
         type="manipulator_control_node" 
         name="manipulator_control_node_3" 
     output="screen">
-    <param name="rosconsole_logger_level" value="DEBUG"/>
-		<!-- Параметры узла -->
-		<!-- <param name="rosconsole_logger_level" value="DEBUG"/> -->
-		<!-- Переназначение топиков -->
-		<remap from="/elbow_input"         to="/manipulator3/elbow_input"/>
-		<remap from="/elbow_output"        to="/manipulator3/elbow_output"/>
-		<remap from="/shoulder_input"      to="/manipulator3/shoulder_input"/>
-		<remap from="/shoulder_output"     to="/manipulator3/shoulder_output"/>
-		<remap from="/payload_output"      to="/manipulator3/payload_output"/>
-		<remap from="/manipulator_command" to="/manipulator3/manipulator_command"/>
-	</node>
 
+		<!-- Переназначение топиков -->
+		<remap from="/elbow_input"         to="/manipulator$(arg id)/elbow_input"/>
+		<remap from="/elbow_output"        to="/manipulator$(arg id)/elbow_output"/>
+		<remap from="/shoulder_input"      to="/manipulator$(arg id)/shoulder_input"/>
+		<remap from="/shoulder_output"     to="/manipulator$(arg id)/shoulder_output"/>
+		<remap from="/payload_output"      to="/manipulator$(arg id)/payload_output"/>
+		<remap from="/manipulator_command" to="/manipulator$(arg id)/manipulator_command"/>
+	</node>
 </launch>
