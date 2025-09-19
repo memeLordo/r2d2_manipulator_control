@@ -28,20 +28,26 @@ void ManipulatorControlHandler<T>::callbackManipulator(
       processControl(m_pipe.getRadius(), m_payload.getForce());
       return;
 
-    case WorkMode::STOP:
-      ROS_DEBUG_STREAM(YELLOW("WorkMode::STOP"));
-      processStop();
-      return;
-
     case WorkMode::MANUAL:
       ROS_DEBUG_STREAM(YELLOW("WorkMode::MANUAL"));
       this->resetMode();
+      return;
+
+    case WorkMode::STOP:
+      ROS_DEBUG_STREAM(YELLOW("WorkMode::STOP"));
+      processStop();
       return;
 
     default:
       ROS_DEBUG_STREAM(YELLOW("Pending mode"));
       return;
   }
+}
+// TODO: make setAngleByRadius(getRadius()) for all
+template <typename T>
+void ManipulatorControlHandler<T>::processStop() {
+  processAngleControl(getRadius());
+  publishResults();
 }
 template <typename T>
 void ManipulatorControlHandler<T>::checkSetup(const T force) {
@@ -58,12 +64,6 @@ void ManipulatorControlHandler<T>::checkSetup(const T force) {
   ROS_DEBUG_STREAM(CYAN("needsForceControl_ = " << needsForceControl_));
   ROS_DEBUG_STREAM(CYAN("m_needsSetup = " << m_needsSetup));
   ROS_DEBUG_STREAM(RED("\nend") << MAGENTA("::checkSetup()"));
-}
-template <typename T>
-void ManipulatorControlHandler<T>::processStop() {
-  ROS_DEBUG_STREAM(YELLOW("WorkMode::STOP"));
-  processAngleControl(getRadius());
-  publishResults();
 }
 template <typename T>
 void ManipulatorControlHandler<T>::processControl(const T radius,

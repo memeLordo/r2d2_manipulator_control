@@ -72,10 +72,10 @@ class ManipulatorControlHandler : public ManipulatorConfig<T> {
   using ManipulatorConfig<T>::m_nozzleType;
   using ManipulatorConfig<T>::m_lockStatus;
   using ManipulatorConfig<T>::m_config;
-  PayloadHandler<T> m_payload;
   PipeHandler<T> m_pipe;
-  ElbowHandler<T> m_elbow;
+  PayloadHandler<T> m_payload;
   ShoulderHandler<T> m_shoulder;
+  ElbowHandler<T> m_elbow;
   ros::Timer m_timer;
   std::mutex m_mutex;
   bool m_needsSetup{true};
@@ -89,8 +89,8 @@ class ManipulatorControlHandler : public ManipulatorConfig<T> {
 
  private:
   void callbackManipulator(const ros::TimerEvent &);
-  void checkSetup(const T force);
   void processStop();
+  void checkSetup(const T force);
   void processControl(const T radius, const T force);
   void processAngleControl(const T radius);
   void processForceControl(const T force);
