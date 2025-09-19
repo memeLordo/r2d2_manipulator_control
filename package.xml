@@ -22,5 +22,4 @@
   <exec_depend>roscpp</exec_depend>
   <exec_depend>r2d2_msg_pkg</exec_depend>
 
-  <export></export>
 </package>
