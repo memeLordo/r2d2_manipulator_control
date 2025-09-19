@@ -91,12 +91,6 @@ class JointHandler : public JointConfig<T> {
     ROS_INFO_STREAM(CYAN("Waiting for " << m_name << " topic..."));
     ros::topic::waitForMessage<r2d2_msg_pkg::DriverState>(m_outputTopic);
   };
-  T getCallbackAngle() {
-    const T theta_{r2d2_process::wrap<T>(m_callbackParams.theta)};
-    ROS_DEBUG_STREAM(m_name << YELLOW("::getCallbackAngle() : ")
-                            << WHITE(theta_));
-    return theta_;
-  };
   void setAngle(const T theta) {
     ROS_DEBUG_STREAM(m_name << "::updateAngle(theta = " << WHITE(theta) << ")");
     m_params.theta = theta;
@@ -144,6 +138,12 @@ class JointHandler : public JointConfig<T> {
   T getAngle() const {
     ROS_DEBUG_STREAM(m_name << "::getAngle() : " << WHITE(m_params.theta));
     return m_params.theta;
+  };
+  T getCallbackAngle() {
+    const T theta_{r2d2_process::wrap<T>(m_callbackParams.theta)};
+    ROS_DEBUG_STREAM(m_name << YELLOW("::getCallbackAngle() : ")
+                            << WHITE(theta_));
+    return theta_;
   };
   T getTargetAngle(T radius) const {
     const T theta_{horner::polynome(m_config.coeffs, radius) -
