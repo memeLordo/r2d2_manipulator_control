@@ -8,10 +8,12 @@
        value="$(find manipulator_control)/rosconsole.conf"/>
 	<param name="control_rate" value="$(arg rate)"/>
   
-  <node pkg="rosbag" type="record" name="debug_log"
+  <node pkg="rosbag" type="record" name="console_log"
   	output="screen"
     args="-O $(find manipulator_control)/.bags/console.bag /rosout"/>
 
+  <node pkg="rosbag" type="record" name="debug_log"
+    args='-O $(find manipulator_control)/.bags/manipulator.bag -e "/manipulator.*"'/>
 
 	<!-- Основной узел манипулятора -->
 	<node pkg="manipulator_control" 
