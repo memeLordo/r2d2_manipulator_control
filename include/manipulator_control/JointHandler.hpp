@@ -95,15 +95,15 @@ class JointHandler : public JointConfig<T> {
     ROS_DEBUG_STREAM(m_name << "::updateAngle(theta = " << WHITE(theta) << ")");
     m_params.theta = theta;
   };
-  void setAngleByRadius(const T radius) {
-    setAngle(getTargetAngle(radius));
-    setControlWord(ControlType::CONTROL_ANGLE);
-  };
   void incrementAngleBy(short diff, const T dTheta = 0.1f) {
     const T theta_{diff * dTheta};
     ROS_DEBUG_STREAM(m_name << "::changeAngleBy(diff = " << WHITE(diff)
                             << ", dTheta = " << WHITE(dTheta) << ")");
     m_params.theta += theta_;
+  };
+  void setAngleByRadius(const T radius) {
+    setAngle(getTargetAngle(radius));
+    setControlWord(ControlType::CONTROL_ANGLE);
   };
   void updateAngleByRadius(const T radius, const bool needsUpdate = true) {
     setAngle(getCallbackAngle());
