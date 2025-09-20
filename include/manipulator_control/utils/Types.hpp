@@ -24,6 +24,11 @@ struct EnumPair {
   E type{};
   std::string key{};
 
+  template <typename T>
+  void updateType(const T value) {
+    type = static_cast<E>(value);
+    updateKey();
+  };
   void updateKey();
 };
 using NozzleTypePair = EnumPair<NozzleType>;
