@@ -36,7 +36,7 @@ class ManipulatorConfig
     ROS_DEBUG_STREAM("Set mode(value = " << WHITE(value) << ")");
     m_workMode.updateType(value);
     if (m_workMode.key.empty()) {
-      ROS_ERROR_STREAM("Got unknown work mode");
+      ROS_ERROR_STREAM("Got unknown work mode!");
       return false;
     }
     return true;
@@ -45,7 +45,7 @@ class ManipulatorConfig
     ROS_DEBUG_STREAM("Set nozzle(value = " << WHITE(value) << ")");
     m_nozzleType.updateType(value);
     if (m_nozzleType.key.empty()) {
-      ROS_ERROR_STREAM("Got unknown nozzle type");
+      ROS_ERROR_STREAM("Got unknown nozzle type!");
       return false;
     }
     updateConfig();
@@ -55,7 +55,7 @@ class ManipulatorConfig
     ROS_DEBUG_STREAM("Set lock(value = " << WHITE(value) << ")");
     m_lockStatus.updateType(value);
     if (m_lockStatus.key.empty()) {
-      ROS_ERROR_STREAM("Got unknown lock status");
+      ROS_ERROR_STREAM("Got unknown lock status!");
       return false;
     }
     return true;
