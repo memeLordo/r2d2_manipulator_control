@@ -9,22 +9,25 @@
 #include "utils/Debug.hpp"
 #include "utils/Math.hpp"
 #include "utils/Polynome.hpp"
+#include "utils/Strings.hpp"
 #include "utils/Types.hpp"
 
 template <typename T>
 class JointConfig : public IConfigJsonMap<r2d2_type::config::joint_t, T> {
  protected:
   const std::string m_name;
-  const std::string m_inputTopic{"/" + r2d2_json::lower(m_name) + "_input"};
-  const std::string m_outputTopic{"/" + r2d2_json::lower(m_name) + "_output"};
+  const std::string m_inputTopic;
+  const std::string m_outputTopic;
   const r2d2_type::config::joint_t<T> m_config;
 
  protected:
   explicit JointConfig(const std::string &name,
                        const std::string &fileName = "joints")
       : IConfigJsonMap<r2d2_type::config::joint_t, T>{fileName},
-        m_name{name},
-        m_config{this->getParams(r2d2_json::lower(name))} {};
+        m_name{r2d2_string::upper(name, 0, 1)},
+        m_inputTopic{"/" + name + "_input"},
+        m_outputTopic{"/" + name + "_output"},
+        m_config{this->getParams(name)} {};
 };
 
 template <typename T = double>

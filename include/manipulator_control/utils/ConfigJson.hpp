@@ -6,11 +6,6 @@
 
 namespace r2d2_json {
 inline std::string getFilePath(const std::string &fileName);
-
-inline std::string lower(std::string str) {
-  std::transform(str.begin(), str.end(), str.begin(), ::tolower);
-  return str;
-};
 }  // namespace r2d2_json
 
 template <typename T = double>
