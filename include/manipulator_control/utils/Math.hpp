@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstdint>
 
 namespace r2d2_math {
 template <typename T>
@@ -26,7 +27,7 @@ constexpr T sqr(const T a) {
   return a * a;
 };
 template <typename T>
-constexpr T sign(const T a) {
+constexpr int8_t sign(const T a) {
   return a ? a > 0 ? 1 : -1 : 0;
 };
 }  // namespace r2d2_math

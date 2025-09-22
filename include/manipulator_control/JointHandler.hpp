@@ -95,7 +95,7 @@ class JointHandler : public JointConfig<T> {
     ROS_DEBUG_STREAM(m_name << "::updateAngle(theta = " << WHITE(theta) << ")");
     m_params.theta = theta;
   };
-  void incrementAngleBy(short diff, const T dTheta = 0.1f) {
+  void incrementAngleBy(const int8_t diff, const T dTheta = 0.1f) {
     const T theta_{diff * dTheta};
     ROS_DEBUG_STREAM(m_name << "::changeAngleBy(diff = " << WHITE(diff)
                             << ", dTheta = " << WHITE(dTheta) << ")");
