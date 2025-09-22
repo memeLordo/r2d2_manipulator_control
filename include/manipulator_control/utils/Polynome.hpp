@@ -5,7 +5,7 @@
 
 namespace horner {
 template <typename T>
-constexpr T polynome(const std::vector<T> &coeffs, const T x) {
+constexpr T polynome(const std::vector<T>& coeffs, const T x) {
   if (coeffs.empty()) return T{};
 
   T result_{coeffs[0]};

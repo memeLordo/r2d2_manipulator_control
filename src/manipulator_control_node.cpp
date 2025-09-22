@@ -2,7 +2,7 @@
 #include "ManipulatorService.hpp"
 #include "TopicService.hpp"
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
   ros::init(argc, argv, "manipulator_control");
   ros::NodeHandle node;
   try {
@@ -12,7 +12,7 @@ int main(int argc, char **argv) {
     ros::MultiThreadedSpinner spinner(8);
     ROS_INFO("Manipulator Control started");
     spinner.spin();
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     ROS_ERROR_STREAM("Got exception: " << e.what());
   }
 }

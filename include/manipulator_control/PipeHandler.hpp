@@ -10,7 +10,7 @@
 template <typename T = double>
 class PipeHandler {
  private:
-  static constexpr const char *s_name = "Pipe";
+  static constexpr const char* s_name = "Pipe";
 
  private:
   const std::string m_outputTopic;
@@ -19,7 +19,7 @@ class PipeHandler {
 
  public:
   PipeHandler() = default;
-  explicit PipeHandler(ros::NodeHandle *node)
+  explicit PipeHandler(ros::NodeHandle* node)
       : m_outputTopic{"/parameters/pipe"} {
     waitForTopic();
     m_subscriber =
@@ -31,7 +31,7 @@ class PipeHandler {
   };
 
  private:
-  void callbackPipe(const r2d2_msg_pkg::PipeParametersConstPtr &msg) {
+  void callbackPipe(const r2d2_msg_pkg::PipeParametersConstPtr& msg) {
     m_callbackParams =
         r2d2_type::callback::pipe_t<T>{msg->pipe_diam, msg->pipe_thickness};
   };

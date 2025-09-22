@@ -17,7 +17,7 @@ class ManipulatorConfig
   r2d2_type::config::manipulator_t<T> m_config;
 
  protected:
-  explicit ManipulatorConfig(const std::string &fileName = "manipulator")
+  explicit ManipulatorConfig(const std::string& fileName = "manipulator")
       : IConfigJsonMap<r2d2_type::config::manipulator_t, T>{fileName} {};
 
  protected:
@@ -78,14 +78,14 @@ class ManipulatorControlHandler : public ManipulatorConfig<T> {
   bool m_needsSetup{true};
 
  public:
-  explicit ManipulatorControlHandler(ros::NodeHandle *node);
+  explicit ManipulatorControlHandler(ros::NodeHandle* node);
   ~ManipulatorControlHandler() {
     ROS_DEBUG_STREAM(RED("~ManipulatorControlHandler()"));
     m_timer.stop();
   };
 
  private:
-  void callbackManipulator(const ros::TimerEvent &);
+  void callbackManipulator(const ros::TimerEvent&);
   void processStop();
   void checkSetup(const T force);
   void processControl(const T radius, const T force);

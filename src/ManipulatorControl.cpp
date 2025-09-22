@@ -4,7 +4,7 @@ using namespace r2d2_state;
 using namespace r2d2_type;
 
 template <typename T>
-ManipulatorControlHandler<T>::ManipulatorControlHandler(ros::NodeHandle *node)
+ManipulatorControlHandler<T>::ManipulatorControlHandler(ros::NodeHandle* node)
     : ManipulatorConfig<T>{},
       m_pipe{node},
       m_payload{node},
@@ -17,8 +17,7 @@ ManipulatorControlHandler<T>::ManipulatorControlHandler(ros::NodeHandle *node)
       &ManipulatorControlHandler<T>::callbackManipulator, this);
 }
 template <typename T>
-void ManipulatorControlHandler<T>::callbackManipulator(
-    const ros::TimerEvent &) {
+void ManipulatorControlHandler<T>::callbackManipulator(const ros::TimerEvent&) {
   std::lock_guard<std::mutex> lock(m_mutex);
   ROS_DEBUG_STREAM("\ncallbackManipulator()");
 

@@ -21,8 +21,8 @@ class JointConfig : public IConfigJsonMap<r2d2_type::config::joint_t, T> {
   const r2d2_type::config::joint_t<T> m_config;
 
  protected:
-  explicit JointConfig(const std::string &name,
-                       const std::string &fileName = "joints")
+  explicit JointConfig(const std::string& name,
+                       const std::string& fileName = "joints")
       : IConfigJsonMap<r2d2_type::config::joint_t, T>{fileName},
         m_name{r2d2_string::upper(name, 0, 1)},
         m_inputTopic{"/" + name + "_input"},
@@ -46,7 +46,7 @@ class JointHandler : public JointConfig<T> {
 
  public:
   JointHandler() = default;
-  explicit JointHandler(ros::NodeHandle *node, const std::string &name)
+  explicit JointHandler(ros::NodeHandle* node, const std::string& name)
       : JointConfig<T>(name) {
     waitForTopic();
     m_subscriber =
@@ -60,7 +60,7 @@ class JointHandler : public JointConfig<T> {
   };
 
  private:
-  void callbackJoint(const r2d2_msg_pkg::DriverStateConstPtr &msg) {
+  void callbackJoint(const r2d2_msg_pkg::DriverStateConstPtr& msg) {
     m_callbackParams = r2d2_type::callback::joint16_t{msg->omega, msg->theta,
                                                       msg->control_word};
   };
@@ -134,9 +134,7 @@ class JointHandler : public JointConfig<T> {
   };
   bool needsAngleControl() const { return m_needsAngleControl; };
   T getRadius() const {
-    const T radius_{m_config.length * r2d2_math::sin(getAngle())};
-    // ROS_DEBUG_STREAM(m_name << "::getRadius() : " << WHITE(radius_));
-    return radius_;
+    return m_config.length * r2d2_math::sin(m_params.theta);
   };
   T getAngle() const {
     ROS_DEBUG_STREAM(m_name << "::getAngle() : " << WHITE(m_params.theta));
@@ -160,11 +158,11 @@ class JointHandler : public JointConfig<T> {
 template <typename T = double>
 class ShoulderHandler : public JointHandler<T> {
  public:
-  ShoulderHandler(ros::NodeHandle *node) : JointHandler<T>(node, "Shoulder") {};
+  ShoulderHandler(ros::NodeHandle* node) : JointHandler<T>(node, "Shoulder") {};
 };
 template <typename T = double>
 class ElbowHandler : public JointHandler<T> {
  public:
-  ElbowHandler(ros::NodeHandle *node) : JointHandler<T>(node, "Elbow") {};
+  ElbowHandler(ros::NodeHandle* node) : JointHandler<T>(node, "Elbow") {};
 };
 #endif  // R2D2_JOINT_HANDLER_HPP

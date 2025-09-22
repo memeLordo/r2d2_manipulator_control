@@ -1,5 +1,5 @@
-#ifndef R2D2_TOPIC_SERVICE_HANDLER_HPP
-#define R2D2_TOPIC_SERVICE_HANDLER_HPP
+#ifndef R2D2_TOPIC_SERVICE_HPP
+#define R2D2_TOPIC_SERVICE_HPP
 
 #include <ros/node_handle.h>
 
@@ -12,7 +12,7 @@ class TopicServiceHandler {
 
  public:
   TopicServiceHandler() = default;
-  explicit TopicServiceHandler(ros::NodeHandle *node) {
+  explicit TopicServiceHandler(ros::NodeHandle* node) {
     using r2d2_msg_pkg::GetParams;
 
     m_client = node->serviceClient<GetParams>("/get_params");
@@ -27,4 +27,4 @@ class TopicServiceHandler {
     ROS_INFO_STREAM(CYAN("Params updated succsessfully!"));
   };
 };
-#endif  // R2D2_TOPIC_SERVICE_HANDLER_HPP
+#endif  // R2D2_TOPIC_SERVICE_HPP

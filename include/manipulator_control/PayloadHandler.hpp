@@ -10,7 +10,7 @@
 template <typename T = double>
 class PayloadHandler {
  private:
-  static constexpr const char *s_name = "Payload";
+  static constexpr const char* s_name = "Payload";
 
  private:
   const std::string m_outputTopic;
@@ -19,7 +19,7 @@ class PayloadHandler {
 
  public:
   PayloadHandler() = default;
-  explicit PayloadHandler(ros::NodeHandle *node)
+  explicit PayloadHandler(ros::NodeHandle* node)
       : m_outputTopic{"/payload_output"} {
     waitForTopic();
     m_subscriber = node->subscribe(m_outputTopic, 1,
@@ -31,7 +31,7 @@ class PayloadHandler {
   };
 
  private:
-  void callbackPayload(const r2d2_msg_pkg::DriverStateConstPtr &msg) {
+  void callbackPayload(const r2d2_msg_pkg::DriverStateConstPtr& msg) {
     m_callbackParams = r2d2_type::callback::payload16_t{msg->force};
   };
 
