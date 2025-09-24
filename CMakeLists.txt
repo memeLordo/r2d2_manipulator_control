@@ -7,6 +7,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   roslib
   r2d2_msg_pkg
+  r2d2_utils_pkg
 )
 
 ###################################
@@ -14,7 +15,7 @@ find_package(catkin REQUIRED COMPONENTS
 ###################################
 
 catkin_package(
-  CATKIN_DEPENDS roscpp roslib r2d2_msg_pkg
+  CATKIN_DEPENDS roscpp roslib r2d2_msg_pkg r2d2_utils_pkg
 )
 
 ###########

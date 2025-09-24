@@ -4,8 +4,8 @@
 #include "JointHandler.hpp"
 #include "PayloadHandler.hpp"
 #include "PipeHandler.hpp"
-#include "utils/ConfigJson.hpp"
-#include "utils/Types.hpp"
+#include "r2d2_utils_pkg/ConfigJson.hpp"
+#include "r2d2_utils_pkg/Types.hpp"
 
 template <typename T>
 class ManipulatorConfig

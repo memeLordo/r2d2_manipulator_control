@@ -5,12 +5,12 @@
 
 #include "r2d2_msg_pkg/DriverCommand.h"
 #include "r2d2_msg_pkg/DriverState.h"
-#include "utils/ConfigJson.hpp"
-#include "utils/Debug.hpp"
-#include "utils/Math.hpp"
-#include "utils/Polynome.hpp"
-#include "utils/Strings.hpp"
-#include "utils/Types.hpp"
+#include "r2d2_utils_pkg/ConfigJson.hpp"
+#include "r2d2_utils_pkg/Debug.hpp"
+#include "r2d2_utils_pkg/Math.hpp"
+#include "r2d2_utils_pkg/Polynome.hpp"
+#include "r2d2_utils_pkg/Strings.hpp"
+#include "r2d2_utils_pkg/Types.hpp"
 
 template <typename T>
 class JointConfig : public IConfigJsonMap<r2d2_type::config::joint_t, T> {

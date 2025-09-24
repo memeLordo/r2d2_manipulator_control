@@ -17,8 +17,10 @@
   <build_depend>roscpp</build_depend>
   <build_depend>roslib</build_depend>
   <build_depend>r2d2_msg_pkg</build_depend>
+  <build_depend>r2d2_utils_pkg</build_depend>
   <exec_depend>roscpp</exec_depend>
   <exec_depend>roslib</exec_depend>
   <exec_depend>r2d2_msg_pkg</exec_depend>
+  <exec_depend>r2d2_utils_pkg</exec_depend>
 
 </package>

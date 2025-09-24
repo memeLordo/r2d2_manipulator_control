@@ -4,8 +4,8 @@
 #include <ros/topic.h>
 
 #include "r2d2_msg_pkg/DriverState.h"
-#include "utils/Debug.hpp"
-#include "utils/Types.hpp"
+#include "r2d2_utils_pkg/Debug.hpp"
+#include "r2d2_utils_pkg/Types.hpp"
 
 template <typename T = double>
 class PayloadHandler {
