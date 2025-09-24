@@ -3,15 +3,18 @@ project(manipulator_control)
 
 add_compile_options(-std=c++14)
 
-catkin_package(
-CATKIN_DEPENDS r2d2_msg_pkg
-)
-
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   roslib
-  std_msgs
-  r2d2_msg_pkg 
+  r2d2_msg_pkg
+)
+
+###################################
+## catkin specific configuration ##
+###################################
+
+catkin_package(
+  CATKIN_DEPENDS roscpp roslib r2d2_msg_pkg
 )
 
 ###########
@@ -30,7 +33,7 @@ add_library(${PROJECT_NAME}
 )
 
 add_executable(${PROJECT_NAME}_node 
-  src/manipulator_control_node.cpp
+  src/${PROJECT_NAME}_node.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}_node
