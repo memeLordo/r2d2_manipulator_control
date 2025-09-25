@@ -30,6 +30,7 @@ include_directories(
 
 add_library(${PROJECT_NAME}
   src/ConfigJson.cpp
+  src/ConfigMath.cpp
   src/ManipulatorControl.cpp
 )
 
