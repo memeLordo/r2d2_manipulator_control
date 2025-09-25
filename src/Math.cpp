@@ -3,7 +3,7 @@
 #include "r2d2_utils_pkg/Json.hpp"
 
 namespace r2d2_process {
-IJsonConfig<> convertConfig{"convert_rate"};
-const double Angle::s_convertRatio{convertConfig.getParam("angle")};
-const double Force::s_convertRatio{convertConfig.getParam("force")};
+IJsonConfig<> json{"convert_rate"};
+const double Angle::s_convertRatio{json.getParam("angle")};
+const double Force::s_convertRatio{json.getParam("force")};
 }  // namespace r2d2_process
