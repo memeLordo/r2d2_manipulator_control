@@ -13,6 +13,6 @@ int main(int argc, char** argv) {
     ROS_INFO("Manipulator Control started");
     spinner.spin();
   } catch (std::exception& e) {
-    ROS_ERROR_STREAM("Got exception: " << e.what());
+    ROS_ERROR_STREAM(RED("Got exception: " << e.what()));
   }
 }
