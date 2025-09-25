@@ -94,7 +94,7 @@ class ManipulatorControlHandler : public ManipulatorConfig<T> {
 
  protected:
   bool needsForceControl(const T force) const {
-    const bool needsForceControl_{std::abs(force) > getForceTolerance()};
+    const bool needsForceControl_{r2d2_math::abs(force) > getForceTolerance()};
     ROS_DEBUG_STREAM(BLUE("needsForceControl_ = " << needsForceControl_));
     return needsForceControl_;
   };

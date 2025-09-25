@@ -68,7 +68,7 @@ class JointHandler : public JointConfig<T> {
  protected:
   bool needsAngleControl(const T theta) {
     m_needsAngleControl =
-        std::abs(getAngle() - theta) > m_config.angle_tolerance;
+        r2d2_math::abs(getAngle() - theta) > m_config.angle_tolerance;
     ROS_DEBUG_STREAM(
         CYAN(m_name << "::needsAngleControl_ = " << m_needsAngleControl));
     return m_needsAngleControl;
