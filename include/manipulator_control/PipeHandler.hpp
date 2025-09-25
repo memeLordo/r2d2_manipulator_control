@@ -5,22 +5,31 @@
 
 #include "r2d2_msg_pkg/PipeParameters.h"
 #include "r2d2_utils_pkg/Debug.hpp"
+#include "r2d2_utils_pkg/Strings.hpp"
 #include "r2d2_utils_pkg/Types.hpp"
 
-template <typename T = double>
-class PipeHandler {
- private:
-  static constexpr const char* s_name = "Pipe";
-
- private:
+class PipeConfig {
+ protected:
+  const std::string m_name;
   const std::string m_outputTopic;
+
+ protected:
+  explicit PipeConfig(const std::string& name = "pipe")
+      : m_name{r2d2_string::upper(name, 0, 1)},
+        m_outputTopic{"/parameters/" + name} {};
+};
+
+template <typename T = double>
+class PipeHandler : PipeConfig {
+ private:
+  using PipeConfig::m_name;
+  using PipeConfig::m_outputTopic;
   r2d2_type::callback::pipe_t<T> m_callbackParams{};
   ros::Subscriber m_subscriber;
 
  public:
   PipeHandler() = default;
-  explicit PipeHandler(ros::NodeHandle* node)
-      : m_outputTopic{"/parameters/pipe"} {
+  explicit PipeHandler(ros::NodeHandle* node) : PipeConfig{} {
     waitForTopic();
     m_subscriber =
         node->subscribe(m_outputTopic, 1, &PipeHandler::callbackPipe, this);
@@ -38,12 +47,12 @@ class PipeHandler {
 
  public:
   void waitForTopic() {
-    ROS_INFO_STREAM(CYAN("Waiting for " << s_name << " topic..."));
+    ROS_INFO_STREAM(CYAN("Waiting for " << m_name << " topic..."));
     ros::topic::waitForMessage<r2d2_msg_pkg::PipeParameters>(m_outputTopic);
   };
   T getRadius() const {
     const T radius_{m_callbackParams.radius()};
-    ROS_DEBUG_STREAM(s_name << "::getRadius() : " << WHITE(radius_));
+    ROS_DEBUG_STREAM(m_name << "::getRadius() : " << WHITE(radius_));
     return radius_;
   };
 };
