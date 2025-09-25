@@ -1,5 +1,6 @@
-#include "r2d2_utils_pkg/ConfigJson.hpp"
 #include "r2d2_utils_pkg/Math.hpp"
+
+#include "r2d2_utils_pkg/ConfigJson.hpp"
 
 namespace r2d2_process {
 IConfigJson<> convertConfig{"convert_rate"};
