@@ -4,12 +4,12 @@
 #include "JointHandler.hpp"
 #include "PayloadHandler.hpp"
 #include "PipeHandler.hpp"
-#include "r2d2_utils_pkg/ConfigJson.hpp"
+#include "r2d2_utils_pkg/Json.hpp"
 #include "r2d2_utils_pkg/Types.hpp"
 
 template <typename T>
 class ManipulatorConfig
-    : private IConfigJsonMap<r2d2_type::config::manipulator_t, T> {
+    : private IJsonConfigMap<r2d2_type::config::manipulator_t, T> {
  protected:
   r2d2_state::WorkModePair m_workMode{};
   r2d2_state::NozzleTypePair m_nozzleType{};
@@ -18,7 +18,7 @@ class ManipulatorConfig
 
  protected:
   explicit ManipulatorConfig(const std::string& fileName = "manipulator")
-      : IConfigJsonMap<r2d2_type::config::manipulator_t, T>{fileName} {};
+      : IJsonConfigMap<r2d2_type::config::manipulator_t, T>{fileName} {};
 
  protected:
   void updateConfig() { m_config = this->getParams(m_nozzleType.key); };

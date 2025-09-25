@@ -1,4 +1,4 @@
-#include "r2d2_utils_pkg/ConfigJson.hpp"
+#include "r2d2_utils_pkg/Json.hpp"
 
 #include <ros/package.h>
 
@@ -31,11 +31,11 @@ void from_json(const json& j, manipulator_t<T>& p) {
 }  // namespace nlohmann
 
 template <template <typename> class Type, typename T>
-IConfigJsonMap<Type, T>::IConfigJsonMap(const std::string& fileName)
-    : IConfigJson<T>(fileName) {
+IJsonConfigMap<Type, T>::IJsonConfigMap(const std::string& fileName)
+    : IJsonConfig<T>(fileName) {
   for (auto& el : this->m_json.items())
     m_paramsMap[el.key()] = el.value().template get<Type<T>>();
 }
 
-template class IConfigJsonMap<joint_t>;
-template class IConfigJsonMap<manipulator_t>;
+template class IJsonConfigMap<joint_t>;
+template class IJsonConfigMap<manipulator_t>;

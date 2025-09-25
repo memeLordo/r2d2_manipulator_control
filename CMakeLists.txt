@@ -29,9 +29,9 @@ include_directories(
 )
 
 add_library(${PROJECT_NAME}
-  src/ConfigJson.cpp
-  src/Math.cpp
+  src/Json.cpp
   src/ManipulatorControl.cpp
+  src/Math.cpp
 )
 
 add_executable(${PROJECT_NAME}_node 

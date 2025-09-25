@@ -5,15 +5,15 @@
 
 #include "r2d2_msg_pkg/DriverCommand.h"
 #include "r2d2_msg_pkg/DriverState.h"
-#include "r2d2_utils_pkg/ConfigJson.hpp"
 #include "r2d2_utils_pkg/Debug.hpp"
+#include "r2d2_utils_pkg/Json.hpp"
 #include "r2d2_utils_pkg/Math.hpp"
 #include "r2d2_utils_pkg/Polynome.hpp"
 #include "r2d2_utils_pkg/Strings.hpp"
 #include "r2d2_utils_pkg/Types.hpp"
 
 template <typename T>
-class JointConfig : private IConfigJsonMap<r2d2_type::config::joint_t, T> {
+class JointConfig : private IJsonConfigMap<r2d2_type::config::joint_t, T> {
  protected:
   const std::string m_name;
   const std::string m_inputTopic;
@@ -23,7 +23,7 @@ class JointConfig : private IConfigJsonMap<r2d2_type::config::joint_t, T> {
  protected:
   explicit JointConfig(const std::string& name,
                        const std::string& fileName = "joints")
-      : IConfigJsonMap<r2d2_type::config::joint_t, T>{fileName},
+      : IJsonConfigMap<r2d2_type::config::joint_t, T>{fileName},
         m_name{r2d2_string::upper(name, 0, 1)},
         m_inputTopic{"/" + name + "_input"},
         m_outputTopic{"/" + name + "_output"},
