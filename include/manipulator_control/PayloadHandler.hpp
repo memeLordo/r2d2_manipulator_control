@@ -5,6 +5,7 @@
 
 #include "r2d2_msg_pkg/DriverState.h"
 #include "r2d2_utils_pkg/Debug.hpp"
+#include "r2d2_utils_pkg/Math.hpp"
 #include "r2d2_utils_pkg/Strings.hpp"
 #include "r2d2_utils_pkg/Types.hpp"
 
@@ -50,7 +51,7 @@ class PayloadHandler : PayloadConfig {
     ros::topic::waitForMessage<r2d2_msg_pkg::DriverState>(m_outputTopic);
   };
   T getForce() const {
-    const T force_{static_cast<T>(m_callbackParams.force)};
+    const T force_{r2d2_process::Force::unwrap<T>(m_callbackParams.force)};
     ROS_DEBUG_STREAM(m_name << "::getForce() : " << WHITE(force_));
     return force_;
   };
