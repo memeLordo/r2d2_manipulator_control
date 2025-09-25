@@ -75,7 +75,7 @@ class JointHandler : public JointConfig<T> {
   };
   r2d2_msg_pkg::DriverCommand prepareMsg() const {
     const auto omega_{m_config.speed};
-    const auto theta_{r2d2_process::Angle::unwrap<int16_t>(m_params.theta)};
+    const auto theta_{r2d2_process::Angle::wrap<int16_t>(m_params.theta)};
     const auto control_word_{static_cast<uint16_t>(m_params.control_word)};
     ROS_DEBUG_STREAM(m_name << "::prepareMsg() |" << YELLOW(" omeha : ")
                             << WHITE(omega_) << " " << YELLOW(" theta : ")
@@ -141,7 +141,7 @@ class JointHandler : public JointConfig<T> {
     return m_params.theta;
   };
   T getCallbackAngle() {
-    const T theta_{r2d2_process::Angle::wrap<T>(m_callbackParams.theta)};
+    const T theta_{r2d2_process::Angle::unwrap<T>(m_callbackParams.theta)};
     ROS_DEBUG_STREAM(m_name << YELLOW("::getCallbackAngle() : ")
                             << WHITE(theta_));
     return theta_;
