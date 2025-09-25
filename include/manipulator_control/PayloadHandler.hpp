@@ -4,23 +4,33 @@
 #include <ros/topic.h>
 
 #include "r2d2_msg_pkg/DriverState.h"
-#include "utils/Debug.hpp"
-#include "utils/Types.hpp"
+#include "r2d2_utils_pkg/Debug.hpp"
+#include "r2d2_utils_pkg/Math.hpp"
+#include "r2d2_utils_pkg/Strings.hpp"
+#include "r2d2_utils_pkg/Types.hpp"
+
+class PayloadConfig {
+ protected:
+  const std::string m_name;
+  const std::string m_outputTopic;
+
+ protected:
+  explicit PayloadConfig(const std::string& name = "payload")
+      : m_name{r2d2_string::upper(name, 0, 1)},
+        m_outputTopic{"/" + name + "_output"} {};
+};
 
 template <typename T = double>
-class PayloadHandler {
+class PayloadHandler : PayloadConfig {
  private:
-  static constexpr const char *s_name = "Payload";
-
- private:
-  const std::string m_outputTopic;
+  using PayloadConfig::m_name;
+  using PayloadConfig::m_outputTopic;
   r2d2_type::callback::payload16_t m_callbackParams{};
   ros::Subscriber m_subscriber;
 
  public:
   PayloadHandler() = default;
-  explicit PayloadHandler(ros::NodeHandle *node)
-      : m_outputTopic{"/payload_output"} {
+  explicit PayloadHandler(ros::NodeHandle* node) : PayloadConfig{} {
     waitForTopic();
     m_subscriber = node->subscribe(m_outputTopic, 1,
                                    &PayloadHandler::callbackPayload, this);
@@ -31,18 +41,18 @@ class PayloadHandler {
   };
 
  private:
-  void callbackPayload(const r2d2_msg_pkg::DriverStateConstPtr &msg) {
+  void callbackPayload(const r2d2_msg_pkg::DriverStateConstPtr& msg) {
     m_callbackParams = r2d2_type::callback::payload16_t{msg->force};
   };
 
  public:
   void waitForTopic() {
-    ROS_INFO_STREAM(CYAN("Waiting for " << s_name << " topic..."));
+    ROS_INFO_STREAM(CYAN("Waiting for " << m_name << " topic..."));
     ros::topic::waitForMessage<r2d2_msg_pkg::DriverState>(m_outputTopic);
   };
   T getForce() const {
-    const T force_{static_cast<T>(m_callbackParams.force)};
-    ROS_DEBUG_STREAM(s_name << "::getForce() : " << WHITE(force_));
+    const T force_{r2d2_process::Force::unwrap<T>(m_callbackParams.force)};
+    ROS_DEBUG_STREAM(m_name << "::getForce() : " << WHITE(force_));
     return force_;
   };
 };

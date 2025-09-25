@@ -4,12 +4,12 @@
 #include "JointHandler.hpp"
 #include "PayloadHandler.hpp"
 #include "PipeHandler.hpp"
-#include "utils/ConfigJson.hpp"
-#include "utils/Types.hpp"
+#include "r2d2_utils_pkg/Json.hpp"
+#include "r2d2_utils_pkg/Types.hpp"
 
 template <typename T>
 class ManipulatorConfig
-    : public IConfigJsonMap<r2d2_type::config::manipulator_t, T> {
+    : private IJsonConfigMap<r2d2_type::config::manipulator_t, T> {
  protected:
   r2d2_state::WorkModePair m_workMode{};
   r2d2_state::NozzleTypePair m_nozzleType{};
@@ -17,8 +17,8 @@ class ManipulatorConfig
   r2d2_type::config::manipulator_t<T> m_config;
 
  protected:
-  explicit ManipulatorConfig(const std::string &fileName = "manipulator")
-      : IConfigJsonMap<r2d2_type::config::manipulator_t, T>{fileName} {};
+  explicit ManipulatorConfig(const std::string& fileName = "manipulator")
+      : IJsonConfigMap<r2d2_type::config::manipulator_t, T>{fileName} {};
 
  protected:
   void updateConfig() { m_config = this->getParams(m_nozzleType.key); };
@@ -34,20 +34,18 @@ class ManipulatorConfig
   };
   bool setMode(const T value) {
     ROS_DEBUG_STREAM("Set mode(value = " << WHITE(value) << ")");
-    m_workMode.type = static_cast<r2d2_state::WorkMode>(value);
-    m_workMode.updateKey();
+    m_workMode.updateType(value);
     if (m_workMode.key.empty()) {
-      ROS_ERROR_STREAM("Got unknown work mode");
+      ROS_ERROR_STREAM("Got unknown work mode!");
       return false;
     }
     return true;
   };
   bool setNozzle(const T value) {
     ROS_DEBUG_STREAM("Set nozzle(value = " << WHITE(value) << ")");
-    m_nozzleType.type = static_cast<r2d2_state::NozzleType>(value);
-    m_nozzleType.updateKey();
+    m_nozzleType.updateType(value);
     if (m_nozzleType.key.empty()) {
-      ROS_ERROR_STREAM("Got unknown nozzle type");
+      ROS_ERROR_STREAM("Got unknown nozzle type!");
       return false;
     }
     updateConfig();
@@ -55,10 +53,9 @@ class ManipulatorConfig
   };
   bool setLock(const T value) {
     ROS_DEBUG_STREAM("Set lock(value = " << WHITE(value) << ")");
-    m_lockStatus.type = static_cast<r2d2_state::LockStatus>(value);
-    m_lockStatus.updateKey();
+    m_lockStatus.updateType(value);
     if (m_lockStatus.key.empty()) {
-      ROS_ERROR_STREAM("Got unknown lock status");
+      ROS_ERROR_STREAM("Got unknown lock status!");
       return false;
     }
     return true;
@@ -81,14 +78,14 @@ class ManipulatorControlHandler : public ManipulatorConfig<T> {
   bool m_needsSetup{true};
 
  public:
-  explicit ManipulatorControlHandler(ros::NodeHandle *node);
+  explicit ManipulatorControlHandler(ros::NodeHandle* node);
   ~ManipulatorControlHandler() {
     ROS_DEBUG_STREAM(RED("~ManipulatorControlHandler()"));
     m_timer.stop();
   };
 
  private:
-  void callbackManipulator(const ros::TimerEvent &);
+  void callbackManipulator(const ros::TimerEvent&);
   void processStop();
   void checkSetup(const T force);
   void processControl(const T radius, const T force);
@@ -97,11 +94,11 @@ class ManipulatorControlHandler : public ManipulatorConfig<T> {
 
  protected:
   bool needsForceControl(const T force) const {
-    const bool needsForceControl_{std::abs(force) > getForceTolerance()};
+    const bool needsForceControl_{r2d2_math::abs(force) > getForceTolerance()};
     ROS_DEBUG_STREAM(BLUE("needsForceControl_ = " << needsForceControl_));
     return needsForceControl_;
   };
-  short getForceDiff(const T force) const {
+  int8_t getForceDiff(const T force) const {
     const T forceDiff_{force - getTargetForce()};
     ROS_DEBUG_STREAM(BLUE("forceDiff_ = " << forceDiff_));
     if (needsForceControl(forceDiff_)) return -r2d2_math::sign(forceDiff_);

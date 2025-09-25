@@ -5,26 +5,29 @@
 
 #include "r2d2_msg_pkg/DriverCommand.h"
 #include "r2d2_msg_pkg/DriverState.h"
-#include "utils/ConfigJson.hpp"
-#include "utils/Debug.hpp"
-#include "utils/Math.hpp"
-#include "utils/Polynome.hpp"
-#include "utils/Types.hpp"
+#include "r2d2_utils_pkg/Debug.hpp"
+#include "r2d2_utils_pkg/Json.hpp"
+#include "r2d2_utils_pkg/Math.hpp"
+#include "r2d2_utils_pkg/Polynome.hpp"
+#include "r2d2_utils_pkg/Strings.hpp"
+#include "r2d2_utils_pkg/Types.hpp"
 
 template <typename T>
-class JointConfig : public IConfigJsonMap<r2d2_type::config::joint_t, T> {
+class JointConfig : private IJsonConfigMap<r2d2_type::config::joint_t, T> {
  protected:
   const std::string m_name;
-  const std::string m_inputTopic{"/" + r2d2_json::lower(m_name) + "_input"};
-  const std::string m_outputTopic{"/" + r2d2_json::lower(m_name) + "_output"};
+  const std::string m_inputTopic;
+  const std::string m_outputTopic;
   const r2d2_type::config::joint_t<T> m_config;
 
  protected:
-  explicit JointConfig(const std::string &name,
-                       const std::string &fileName = "joints")
-      : IConfigJsonMap<r2d2_type::config::joint_t, T>{fileName},
-        m_name{name},
-        m_config{this->getParams(r2d2_json::lower(name))} {};
+  explicit JointConfig(const std::string& name,
+                       const std::string& fileName = "joints")
+      : IJsonConfigMap<r2d2_type::config::joint_t, T>{fileName},
+        m_name{r2d2_string::upper(name, 0, 1)},
+        m_inputTopic{"/" + name + "_input"},
+        m_outputTopic{"/" + name + "_output"},
+        m_config{this->getParams(name)} {};
 };
 
 template <typename T = double>
@@ -43,7 +46,7 @@ class JointHandler : public JointConfig<T> {
 
  public:
   JointHandler() = default;
-  explicit JointHandler(ros::NodeHandle *node, const std::string &name)
+  explicit JointHandler(ros::NodeHandle* node, const std::string& name)
       : JointConfig<T>(name) {
     waitForTopic();
     m_subscriber =
@@ -57,7 +60,7 @@ class JointHandler : public JointConfig<T> {
   };
 
  private:
-  void callbackJoint(const r2d2_msg_pkg::DriverStateConstPtr &msg) {
+  void callbackJoint(const r2d2_msg_pkg::DriverStateConstPtr& msg) {
     m_callbackParams = r2d2_type::callback::joint16_t{msg->omega, msg->theta,
                                                       msg->control_word};
   };
@@ -65,14 +68,14 @@ class JointHandler : public JointConfig<T> {
  protected:
   bool needsAngleControl(const T theta) {
     m_needsAngleControl =
-        std::abs(getAngle() - theta) > m_config.angle_tolerance;
+        r2d2_math::abs(getAngle() - theta) > m_config.angle_tolerance;
     ROS_DEBUG_STREAM(
         CYAN(m_name << "::needsAngleControl_ = " << m_needsAngleControl));
     return m_needsAngleControl;
   };
   r2d2_msg_pkg::DriverCommand prepareMsg() const {
     const auto omega_{m_config.speed};
-    const auto theta_{r2d2_process::unwrap<int16_t>(m_params.theta)};
+    const auto theta_{r2d2_process::Angle::wrap<int16_t>(m_params.theta)};
     const auto control_word_{static_cast<uint16_t>(m_params.control_word)};
     ROS_DEBUG_STREAM(m_name << "::prepareMsg() |" << YELLOW(" omeha : ")
                             << WHITE(omega_) << " " << YELLOW(" theta : ")
@@ -91,25 +94,19 @@ class JointHandler : public JointConfig<T> {
     ROS_INFO_STREAM(CYAN("Waiting for " << m_name << " topic..."));
     ros::topic::waitForMessage<r2d2_msg_pkg::DriverState>(m_outputTopic);
   };
-  T getCallbackAngle() {
-    const T theta_{r2d2_process::wrap<T>(m_callbackParams.theta)};
-    ROS_DEBUG_STREAM(m_name << YELLOW("::getCallbackAngle() : ")
-                            << WHITE(theta_));
-    return theta_;
-  };
   void setAngle(const T theta) {
     ROS_DEBUG_STREAM(m_name << "::updateAngle(theta = " << WHITE(theta) << ")");
     m_params.theta = theta;
   };
-  void setAngleByRadius(const T radius) {
-    setAngle(getTargetAngle(radius));
-    setControlWord(ControlType::CONTROL_ANGLE);
-  };
-  void incrementAngleBy(short diff, const T dTheta = 0.1f) {
+  void incrementAngleBy(const int8_t diff, const T dTheta = 0.1f) {
     const T theta_{diff * dTheta};
     ROS_DEBUG_STREAM(m_name << "::changeAngleBy(diff = " << WHITE(diff)
                             << ", dTheta = " << WHITE(dTheta) << ")");
     m_params.theta += theta_;
+  };
+  void setAngleByRadius(const T radius) {
+    setAngle(getTargetAngle(radius));
+    setControlWord(ControlType::CONTROL_ANGLE);
   };
   void updateAngleByRadius(const T radius, const bool needsUpdate = true) {
     setAngle(getCallbackAngle());
@@ -137,13 +134,17 @@ class JointHandler : public JointConfig<T> {
   };
   bool needsAngleControl() const { return m_needsAngleControl; };
   T getRadius() const {
-    const T radius_{m_config.length * r2d2_math::sin(getAngle())};
-    // ROS_DEBUG_STREAM(m_name << "::getRadius() : " << WHITE(radius_));
-    return radius_;
+    return m_config.length * r2d2_math::sin(m_params.theta);
   };
   T getAngle() const {
     ROS_DEBUG_STREAM(m_name << "::getAngle() : " << WHITE(m_params.theta));
     return m_params.theta;
+  };
+  T getCallbackAngle() {
+    const T theta_{r2d2_process::Angle::unwrap<T>(m_callbackParams.theta)};
+    ROS_DEBUG_STREAM(m_name << YELLOW("::getCallbackAngle() : ")
+                            << WHITE(theta_));
+    return theta_;
   };
   T getTargetAngle(T radius) const {
     const T theta_{horner::polynome(m_config.coeffs, radius) -
@@ -157,11 +158,11 @@ class JointHandler : public JointConfig<T> {
 template <typename T = double>
 class ShoulderHandler : public JointHandler<T> {
  public:
-  ShoulderHandler(ros::NodeHandle *node) : JointHandler<T>(node, "Shoulder") {};
+  ShoulderHandler(ros::NodeHandle* node) : JointHandler<T>(node, "Shoulder") {};
 };
 template <typename T = double>
 class ElbowHandler : public JointHandler<T> {
  public:
-  ElbowHandler(ros::NodeHandle *node) : JointHandler<T>(node, "Elbow") {};
+  ElbowHandler(ros::NodeHandle* node) : JointHandler<T>(node, "Elbow") {};
 };
 #endif  // R2D2_JOINT_HANDLER_HPP
