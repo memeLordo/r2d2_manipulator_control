@@ -13,7 +13,7 @@
 #include "r2d2_utils_pkg/Types.hpp"
 
 template <typename T>
-class JointConfig : public IConfigJsonMap<r2d2_type::config::joint_t, T> {
+class JointConfig : private IConfigJsonMap<r2d2_type::config::joint_t, T> {
  protected:
   const std::string m_name;
   const std::string m_inputTopic;

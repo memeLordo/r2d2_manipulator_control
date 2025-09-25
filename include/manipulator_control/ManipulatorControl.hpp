@@ -9,7 +9,7 @@
 
 template <typename T>
 class ManipulatorConfig
-    : public IConfigJsonMap<r2d2_type::config::manipulator_t, T> {
+    : private IConfigJsonMap<r2d2_type::config::manipulator_t, T> {
  protected:
   r2d2_state::WorkModePair m_workMode{};
   r2d2_state::NozzleTypePair m_nozzleType{};
