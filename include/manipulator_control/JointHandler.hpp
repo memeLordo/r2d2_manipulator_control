@@ -140,7 +140,7 @@ class JointHandler : public JointConfig<T> {
     ROS_DEBUG_STREAM(m_name << "::getAngle() : " << WHITE(m_params.theta));
     return m_params.theta;
   };
-  T getCallbackAngle() {
+  T getCallbackAngle() const {
     const T theta_{r2d2_process::Angle::unwrap<T>(m_callbackParams.theta)};
     ROS_DEBUG_STREAM(m_name << YELLOW("::getCallbackAngle() : ")
                             << WHITE(theta_));
