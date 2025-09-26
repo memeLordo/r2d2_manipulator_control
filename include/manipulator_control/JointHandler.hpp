@@ -168,6 +168,7 @@ class ElbowHandler : public JointHandler<T> {
 
 template <typename T = double>
 class JointHandlerMap {
+ private:
   std::unordered_map<std::string, JointHandler<T>> m_jointMap;
 
  public:
@@ -183,6 +184,8 @@ class JointHandlerMap {
       throw std::out_of_range("Joint name: " + name + " not found!");
     return it->second;
   }
+
+ private:
   template <typename First, typename... Rest>
   void initializeJoints(ros::NodeHandle* node, First&& first, Rest&&... rest) {
     static_assert(std::is_convertible<First, std::string>::value,
