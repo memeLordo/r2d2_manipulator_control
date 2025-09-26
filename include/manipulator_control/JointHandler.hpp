@@ -199,6 +199,15 @@ class JointHandlerCollection {
     if (sizeof...(rest) > 0)
       initializeJoints(node, std::forward<Rest>(rest)...);
   };
+
+ public:
+  size_t size() const { return m_jointVector.size(); };
+  typename std::vector<JointHandler<T>>::iterator begin() {
+    return m_jointVector.begin();
+  };
+  typename std::vector<JointHandler<T>>::iterator end() {
+    return m_jointVector.end();
+  };
 };
 
 #endif  // R2D2_JOINT_HANDLER_HPP
