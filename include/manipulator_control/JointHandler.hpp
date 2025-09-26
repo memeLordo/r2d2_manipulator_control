@@ -158,11 +158,11 @@ class JointHandler : public JointConfig<T> {
 template <typename T = double>
 class ShoulderHandler : public JointHandler<T> {
  public:
-  ShoulderHandler(ros::NodeHandle* node) : JointHandler<T>(node, "Shoulder") {};
+  ShoulderHandler(ros::NodeHandle* node) : JointHandler<T>(node, "shoulder") {};
 };
 template <typename T = double>
 class ElbowHandler : public JointHandler<T> {
  public:
-  ElbowHandler(ros::NodeHandle* node) : JointHandler<T>(node, "Elbow") {};
+  ElbowHandler(ros::NodeHandle* node) : JointHandler<T>(node, "elbow") {};
 };
 #endif  // R2D2_JOINT_HANDLER_HPP
