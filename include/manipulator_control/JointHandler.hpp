@@ -5,6 +5,7 @@
 
 #include "r2d2_msg_pkg/DriverCommand.h"
 #include "r2d2_msg_pkg/DriverState.h"
+#include "r2d2_utils_pkg/Collections.hpp"
 #include "r2d2_utils_pkg/Debug.hpp"
 #include "r2d2_utils_pkg/Json.hpp"
 #include "r2d2_utils_pkg/Math.hpp"
@@ -167,47 +168,15 @@ class ElbowHandler : public JointHandler<T> {
 };
 
 template <typename T = double>
-class JointHandlerCollection {
+class JointHandlerCollection : public NamedHandlerCollection<JointHandler, T> {
  private:
-  std::vector<JointHandler<T>> m_jointVector;
-  std::unordered_map<std::string, size_t> m_indexMap;
+  std::vector<JointHandler<T>>& m_jointVector;
 
  public:
   template <typename... Args>
-  JointHandlerCollection(ros::NodeHandle* node, Args&&... names) {
-    const size_t size_{sizeof...(names)};
-    static_assert(size_ > 0, "At least one joint name must be provided!");
-    m_jointVector.reserve(size_);
-    m_indexMap.reserve(size_);
-    initializeJoints(node, std::forward<Args>(names)...);
-  };
-  JointHandler<T>& operator()(const std::string& name) const {
-    auto it{m_indexMap.find(name)};
-    if (it == m_indexMap.end())
-      throw std::out_of_range("Joint name " + name + " not found!");
-    return m_jointVector[it->second];
-  };
-
- private:
-  template <typename First, typename... Rest>
-  void initializeJoints(ros::NodeHandle* node, First&& first, Rest&&... rest) {
-    static_assert(std::is_convertible<First, std::string>::value,
-                  "Joint names must be string type!");
-    const std::string name_{std::forward<First>(first)};
-    m_jointVector.emplace_back(JointHandler<T>(node, name_));
-    m_indexMap.emplace(name_, m_jointVector.size() - 1);
-    if (sizeof...(rest) > 0)
-      initializeJoints(node, std::forward<Rest>(rest)...);
-  };
-
- public:
-  size_t size() const { return m_jointVector.size(); };
-  typename std::vector<JointHandler<T>>::iterator begin() {
-    return m_jointVector.begin();
-  };
-  typename std::vector<JointHandler<T>>::iterator end() {
-    return m_jointVector.end();
-  };
+  JointHandlerCollection(ros::NodeHandle* node, Args&&... names)
+      : NamedHandlerCollection<JointHandler, T>(node,
+                                                std::forward<Args>(names)...),
+        m_jointVector{this->m_objectVector} {};
 };
-
 #endif  // R2D2_JOINT_HANDLER_HPP
