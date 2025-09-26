@@ -184,7 +184,9 @@ class JointHandlerMap {
     return it->second;
   }
   template <typename First, typename... Rest>
-  void initializeJoints(ros::NodeHandle *node, First &&first, Rest &&...rest) {
+  void initializeJoints(ros::NodeHandle* node, First&& first, Rest&&... rest) {
+    static_assert(std::is_convertible<First, std::string>::value,
+                  "Joint names must be string type!");
     const std::string name{std::forward<First>(first)};
     m_jointMap.emplace(name, JointHandler<T>(node, name));
 
