@@ -169,21 +169,24 @@ class ElbowHandler : public JointHandler<T> {
 template <typename T = double>
 class JointHandlerCollection {
  private:
-  std::unordered_map<std::string, JointHandler<T>> m_jointMap;
+  std::vector<JointHandler<T>> m_jointVector;
+  std::unordered_map<std::string, size_t> m_indexMap;
 
  public:
   template <typename... Args>
   JointHandlerCollection(ros::NodeHandle* node, Args&&... names) {
-    static_assert(sizeof...(names) > 0,
-                  "At least one joint name must be provided!");
+    const size_t size_{sizeof...(names)};
+    static_assert(size_ > 0, "At least one joint name must be provided!");
+    m_jointVector.reserve(size_);
+    m_indexMap.reserve(size_);
     initializeJoints(node, std::forward<Args>(names)...);
   };
   JointHandler<T>& operator()(const std::string& name) const {
-    auto it{m_jointMap.find(name)};
-    if (it == m_jointMap.end())
-      throw std::out_of_range("Joint name: " + name + " not found!");
-    return it->second;
-  }
+    auto it{m_indexMap.find(name)};
+    if (it == m_indexMap.end())
+      throw std::out_of_range("Joint name " + name + " not found!");
+    return m_jointVector[it->second];
+  };
 
  private:
   template <typename First, typename... Rest>
@@ -191,11 +194,11 @@ class JointHandlerCollection {
     static_assert(std::is_convertible<First, std::string>::value,
                   "Joint names must be string type!");
     const std::string name{std::forward<First>(first)};
-    m_jointMap.emplace(name, JointHandler<T>(node, name));
-
+    m_jointVector.emplace_back(JointHandler<T>(node, name));
+    m_indexMap.emplace(name, m_jointVector.size() - 1);
     if (sizeof...(rest) > 0)
       initializeJoints(node, std::forward<Rest>(rest)...);
-  }
+  };
 };
 
 #endif  // R2D2_JOINT_HANDLER_HPP
