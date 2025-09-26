@@ -177,6 +177,12 @@ class JointHandlerMap {
                   "At least one joint name must be provided!");
     initializeJoints(node, std::forward<Args>(names)...);
   };
+  JointHandler<T>& operator()(const std::string& name) const {
+    auto it{m_jointMap.find(name)};
+    if (it == m_jointMap.end())
+      throw std::out_of_range("Joint name: " + name + " not found!");
+    return it->second;
+  }
   template <typename First, typename... Rest>
   void initializeJoints(ros::NodeHandle *node, First &&first, Rest &&...rest) {
     const std::string name{std::forward<First>(first)};
