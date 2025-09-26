@@ -193,9 +193,9 @@ class JointHandlerCollection {
   void initializeJoints(ros::NodeHandle* node, First&& first, Rest&&... rest) {
     static_assert(std::is_convertible<First, std::string>::value,
                   "Joint names must be string type!");
-    const std::string name{std::forward<First>(first)};
-    m_jointVector.emplace_back(JointHandler<T>(node, name));
-    m_indexMap.emplace(name, m_jointVector.size() - 1);
+    const std::string name_{std::forward<First>(first)};
+    m_jointVector.emplace_back(JointHandler<T>(node, name_));
+    m_indexMap.emplace(name_, m_jointVector.size() - 1);
     if (sizeof...(rest) > 0)
       initializeJoints(node, std::forward<Rest>(rest)...);
   };
