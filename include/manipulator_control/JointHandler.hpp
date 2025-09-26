@@ -167,13 +167,13 @@ class ElbowHandler : public JointHandler<T> {
 };
 
 template <typename T = double>
-class JointHandlerMap {
+class JointHandlerCollection {
  private:
   std::unordered_map<std::string, JointHandler<T>> m_jointMap;
 
  public:
   template <typename... Args>
-  JointHandlerMap(ros::NodeHandle* node, Args&&... names) {
+  JointHandlerCollection(ros::NodeHandle* node, Args&&... names) {
     static_assert(sizeof...(names) > 0,
                   "At least one joint name must be provided!");
     initializeJoints(node, std::forward<Args>(names)...);
