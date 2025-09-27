@@ -75,7 +75,7 @@ class JointHandler : public JointConfig<T> {
         CYAN(m_name << "::needsAngleControl_ = " << m_needsAngleControl));
     return m_needsAngleControl;
   };
-  r2d2_msg_pkg::DriverCommand prepareMsg() const {
+  [[nodiscard]] r2d2_msg_pkg::DriverCommand prepareMsg() const {
     const auto omega_{m_config.speed};
     const auto theta_{r2d2_process::Angle::wrap<int16_t>(m_params.theta)};
     const auto control_word_{static_cast<uint16_t>(m_params.control_word)};
@@ -134,21 +134,22 @@ class JointHandler : public JointConfig<T> {
     ROS_DEBUG_STREAM(BLUE(m_name << "::publish()"));
     m_publisher.publish(prepareMsg());
   };
-  bool needsAngleControl() const { return m_needsAngleControl; };
-  T getRadius() const {
+
+  [[nodiscard]] bool needsAngleControl() const { return m_needsAngleControl; };
+  [[nodiscard]] T getRadius() const {
     return m_config.length * r2d2_math::sin(m_params.theta);
   };
-  T getAngle() const {
+  [[nodiscard]] T getAngle() const {
     ROS_DEBUG_STREAM(m_name << "::getAngle() : " << WHITE(m_params.theta));
     return m_params.theta;
   };
-  T getCallbackAngle() const {
+  [[nodiscard]] T getCallbackAngle() const {
     const T theta_{r2d2_process::Angle::unwrap<T>(m_callbackParams.theta)};
     ROS_DEBUG_STREAM(m_name << YELLOW("::getCallbackAngle() : ")
                             << WHITE(theta_));
     return theta_;
   };
-  T getTargetAngle(T radius) const {
+  [[nodiscard]] T getTargetAngle(T radius) const {
     const T theta_{horner::polynome(m_config.coeffs, radius) -
                    m_config.angle_offset};
     ROS_DEBUG_STREAM(m_name << "::calcAngle(radius = " << WHITE(radius)

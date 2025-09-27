@@ -50,7 +50,7 @@ class PipeHandler : PipeConfig {
     ROS_INFO_STREAM(CYAN("Waiting for " << m_name << " topic..."));
     ros::topic::waitForMessage<r2d2_msg_pkg::PipeParameters>(m_outputTopic);
   };
-  T getRadius() const {
+  [[nodiscard]] T getRadius() const {
     const T radius_{m_callbackParams.radius()};
     ROS_DEBUG_STREAM(m_name << "::getRadius() : " << WHITE(radius_));
     return radius_;

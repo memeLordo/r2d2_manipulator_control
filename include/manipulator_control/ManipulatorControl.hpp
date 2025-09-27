@@ -100,7 +100,7 @@ class ManipulatorControlHandler : public ManipulatorConfig<T> {
     ROS_DEBUG_STREAM(BLUE("needsForceControl_ = " << needsForceControl_));
     return needsForceControl_;
   };
-  int8_t getForceDiff(const T force) const {
+  [[nodiscard]] int8_t getForceDiff(const T force) const {
     const T forceDiff_{force - getTargetForce()};
     ROS_DEBUG_STREAM(BLUE("forceDiff_ = " << forceDiff_));
     if (needsForceControl(forceDiff_)) return -r2d2_math::sign(forceDiff_);
@@ -120,15 +120,15 @@ class ManipulatorControlHandler : public ManipulatorConfig<T> {
     ROS_DEBUG_STREAM(RED("Current radius : ") << WHITE(currentRadius_));
     return currentRadius_;
   };
-  T getTargetForce(const T coeff = 1) const {
-    T force_{coeff * static_cast<T>(m_config.force_needed)};
+  [[nodiscard]] T getTargetForce(const T coeff = 1) const {
+    const T force_{coeff * static_cast<T>(m_config.force_needed)};
     ROS_DEBUG_STREAM("ManipulatorControl::getForce() : " << WHITE(force_));
     return force_;
   };
-  T getForceTolerance() const {
+  [[nodiscard]] T getForceTolerance() const {
     return static_cast<T>(m_config.force_tolerance);
   };
-  T getRadius() const {
+  [[nodiscard]] T getRadius() const {
     const T radius_{m_config.r0};
     ROS_DEBUG_STREAM("ManipulatorControl::getRadius() : " << WHITE(radius_));
     return radius_;
