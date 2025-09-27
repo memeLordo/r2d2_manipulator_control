@@ -5,6 +5,7 @@
 
 #include "r2d2_msg_pkg/DriverCommand.h"
 #include "r2d2_msg_pkg/DriverState.h"
+#include "r2d2_utils_pkg/Collections.hpp"
 #include "r2d2_utils_pkg/Debug.hpp"
 #include "r2d2_utils_pkg/Json.hpp"
 #include "r2d2_utils_pkg/Math.hpp"
@@ -140,7 +141,7 @@ class JointHandler : public JointConfig<T> {
     ROS_DEBUG_STREAM(m_name << "::getAngle() : " << WHITE(m_params.theta));
     return m_params.theta;
   };
-  T getCallbackAngle() {
+  T getCallbackAngle() const {
     const T theta_{r2d2_process::Angle::unwrap<T>(m_callbackParams.theta)};
     ROS_DEBUG_STREAM(m_name << YELLOW("::getCallbackAngle() : ")
                             << WHITE(theta_));
@@ -156,13 +157,35 @@ class JointHandler : public JointConfig<T> {
 };
 
 template <typename T = double>
-class ShoulderHandler : public JointHandler<T> {
+class JointHandlerCollection : public NamedHandlerCollection<JointHandler, T> {
  public:
-  ShoulderHandler(ros::NodeHandle* node) : JointHandler<T>(node, "Shoulder") {};
-};
-template <typename T = double>
-class ElbowHandler : public JointHandler<T> {
+  template <typename... Args>
+  JointHandlerCollection(ros::NodeHandle* node, Args&&... names)
+      : NamedHandlerCollection<JointHandler, T>(node,
+                                                std::forward<Args>(names)...){};
+
  public:
-  ElbowHandler(ros::NodeHandle* node) : JointHandler<T>(node, "Elbow") {};
+  void publish() { this->call_each(&JointHandler<T>::publish); };
+  void updateAngleByRadius(const T radius, const bool needsUpdate = true) {
+    this->call_each(&JointHandler<T>::updateAngleByRadius, radius, needsUpdate);
+  };
+  bool needsAngleControlAny() const {
+    std::vector<bool> needAngleControls_{};
+    auto begin_{needAngleControls_.begin()};
+    auto end_{needAngleControls_.end()};
+    return std::any_of(begin_, end_, [](const bool& el) { return el; });
+  };
+  bool needsAngleControlAll() const {
+    std::vector<bool> needAngleControls_{};
+    auto begin_{needAngleControls_.begin()};
+    auto end_{needAngleControls_.end()};
+    return std::all_of(begin_, end_, [](const bool& el) { return el; });
+  };
+  T getRadius() const {
+    std::vector<T> radiuses_{};
+    auto begin_{radiuses_.begin()};
+    auto end_{radiuses_.end()};
+    return std::accumulate(begin_, end_, T{0});
+  };
 };
 #endif  // R2D2_JOINT_HANDLER_HPP
