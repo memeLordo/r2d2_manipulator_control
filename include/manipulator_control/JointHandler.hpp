@@ -179,26 +179,20 @@ class JointHandlerCollection : public NamedHandlerCollection<JointHandler, T> {
 
  public:
   void publish() { this->call_each(&JointHandler<T>::publish); };
-  void updateAngleByRadius(const T radius, const bool needsUpdate = true) {
-    this->call_each(&JointHandler<T>::updateAngleByRadius, radius, needsUpdate);
+  void updateAngleByRadius(const T radius) {
+    this->call_each(&JointHandler<T>::updateAngleByRadius, radius);
   };
-  bool needsAngleControlAny() const {
-    std::vector<bool> needAngleControls_{};
-    auto begin_{needAngleControls_.begin()};
-    auto end_{needAngleControls_.end()};
-    return std::any_of(begin_, end_, [](const bool& el) { return el; });
+  [[nodiscard]] bool needAngleControlAny() const {
+    return std::any_of(this->cbegin(), this->cend(),
+                       [](const auto& obj) { return obj.needsAngleControl(); });
   };
-  bool needsAngleControlAll() const {
-    std::vector<bool> needAngleControls_{};
-    auto begin_{needAngleControls_.begin()};
-    auto end_{needAngleControls_.end()};
-    return std::all_of(begin_, end_, [](const bool& el) { return el; });
+  [[nodiscard]] bool needAngleControlAll() const {
+    return std::all_of(this->cbegin(), this->cend(),
+                       [](const auto& obj) { return obj.needsAngleControl(); });
   };
-  T getRadius() const {
-    std::vector<T> radiuses_{};
-    auto begin_{radiuses_.begin()};
-    auto end_{radiuses_.end()};
-    return std::accumulate(begin_, end_, T{0});
+  [[nodiscard]] T getRadius() const {
+    auto radiuses_{this->get_each(&JointHandler<T>::getRadius)};
+    return std::accumulate(radiuses_.begin(), radiuses_.end(), T{0});
   };
 };
 #endif  // R2D2_JOINT_HANDLER_HPP
