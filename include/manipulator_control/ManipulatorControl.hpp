@@ -75,7 +75,7 @@ class ManipulatorControlHandler : public ManipulatorConfig<T> {
   ElbowHandler<T> m_elbow;
   ros::Timer m_timer;
   std::mutex m_mutex;
-  bool m_needsSetup{true};
+  volatile bool m_needsSetup{true};
 
  public:
   explicit ManipulatorControlHandler(ros::NodeHandle* node);

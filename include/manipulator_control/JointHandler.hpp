@@ -43,8 +43,8 @@ class JointHandler : public JointConfig<T> {
   r2d2_type::callback::joint16_t m_callbackParams{};
   ros::Subscriber m_subscriber;
   ros::Publisher m_publisher;
-  bool m_needsAngleControl{true};
-  bool m_needsUpdate{true};
+  volatile bool m_needsAngleControl{true};
+  volatile bool m_needsUpdate{true};
 
  public:
   JointHandler() = default;
