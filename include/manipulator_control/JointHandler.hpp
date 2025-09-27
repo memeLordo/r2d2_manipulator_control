@@ -56,7 +56,7 @@ class JointHandler : public JointConfig<T> {
     m_publisher = node->advertise<r2d2_msg_pkg::DriverCommand>(m_inputTopic, 1);
   };
   ~JointHandler() {
-    ROS_DEBUG_STREAM(RED("~JointHandler()"));
+    ROS_DEBUG_STREAM(RED("~" + m_name + "Handler()"));
     m_publisher.shutdown();
     m_subscriber.shutdown();
   };
