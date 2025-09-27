@@ -121,12 +121,12 @@ class ManipulatorControlHandler : public ManipulatorConfig<T> {
     return currentRadius_;
   };
   [[nodiscard]] T getTargetForce(const T coeff = 1) const {
-    const T force_{coeff * static_cast<T>(m_config.force_needed)};
+    const T force_{coeff * m_config.force_needed};
     ROS_DEBUG_STREAM("ManipulatorControl::getForce() : " << WHITE(force_));
     return force_;
   };
   [[nodiscard]] T getForceTolerance() const {
-    return static_cast<T>(m_config.force_tolerance);
+    return m_config.force_tolerance;
   };
   [[nodiscard]] T getRadius() const {
     const T radius_{m_config.r0};
