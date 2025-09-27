@@ -1,6 +1,8 @@
 #ifndef R2D2_MANIPULATOR_CONTROL_HPP
 #define R2D2_MANIPULATOR_CONTROL_HPP
 
+#include <mutex>
+
 #include "JointHandler.hpp"
 #include "PayloadHandler.hpp"
 #include "PipeHandler.hpp"
