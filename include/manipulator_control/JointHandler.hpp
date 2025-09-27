@@ -157,6 +157,17 @@ class JointHandler : public JointConfig<T> {
 };
 
 template <typename T = double>
+class ShoulderHandler : public JointHandler<T> {
+ public:
+  ShoulderHandler(ros::NodeHandle* node) : JointHandler<T>(node, "shoulder") {};
+};
+template <typename T = double>
+class ElbowHandler : public JointHandler<T> {
+ public:
+  ElbowHandler(ros::NodeHandle* node) : JointHandler<T>(node, "elbow") {};
+};
+
+template <typename T = double>
 class JointHandlerCollection : public NamedHandlerCollection<JointHandler, T> {
  public:
   template <typename... Args>
