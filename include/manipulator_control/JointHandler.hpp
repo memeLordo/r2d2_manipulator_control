@@ -169,14 +169,10 @@ class ElbowHandler : public JointHandler<T> {
 
 template <typename T = double>
 class JointHandlerCollection : public NamedHandlerCollection<JointHandler, T> {
- private:
-  std::vector<JointHandler<T>>& m_jointVector;
-
  public:
   template <typename... Args>
   JointHandlerCollection(ros::NodeHandle* node, Args&&... names)
       : NamedHandlerCollection<JointHandler, T>(node,
-                                                std::forward<Args>(names)...),
-        m_jointVector{this->m_objectVector} {};
+                                                std::forward<Args>(names)...){};
 };
 #endif  // R2D2_JOINT_HANDLER_HPP
