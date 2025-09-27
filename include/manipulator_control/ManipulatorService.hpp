@@ -6,9 +6,6 @@
 
 class ManipulatorServiceHandler {
  private:
-  static constexpr const char* s_name = "ManipulatorService";
-
- private:
   const std::string m_serviceTopic;
   ManipulatorControlHandler<>& m_manipulatorControl;
   ros::ServiceServer m_manipulatorService;
