@@ -115,8 +115,8 @@ class JointHandler : public JointConfig<T> {
     ROS_DEBUG_STREAM(CYAN(m_name << "::needsUpdate = " << m_needsUpdate));
     if (!m_needsUpdate) return;
 
-    const T targetAngle_{getTargetAngle(radius)};
-    if (needsAngleControl(targetAngle_)) {
+    if (const T targetAngle_{getTargetAngle(radius)};
+        needsAngleControl(targetAngle_)) {
       setAngle(targetAngle_);
       setControlWord(ControlType::CONTROL_ANGLE);
       return;
