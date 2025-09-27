@@ -71,8 +71,9 @@ class ManipulatorControlHandler : public ManipulatorConfig<T> {
   using ManipulatorConfig<T>::m_config;
   PipeHandler<T> m_pipe;
   PayloadHandler<T> m_payload;
-  ShoulderHandler<T> m_shoulder;
-  ElbowHandler<T> m_elbow;
+  JointHandlerCollection<T> m_joints;
+  JointHandler<T>& m_shoulder{m_joints("shoulder")};
+  JointHandler<T>& m_elbow{m_joints("elbow")};
   ros::Timer m_timer;
   std::mutex m_mutex;
   bool m_needsSetup{true};
