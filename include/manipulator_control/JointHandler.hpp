@@ -44,6 +44,7 @@ class JointHandler : public JointConfig<T> {
   ros::Subscriber m_subscriber;
   ros::Publisher m_publisher;
   bool m_needsAngleControl{true};
+  bool m_needsUpdate{true};
 
  public:
   JointHandler() = default;
@@ -109,10 +110,10 @@ class JointHandler : public JointConfig<T> {
     setAngle(getTargetAngle(radius));
     setControlWord(ControlType::CONTROL_ANGLE);
   };
-  void updateAngleByRadius(const T radius, const bool needsUpdate = true) {
+  void updateAngleByRadius(const T radius) {
     setAngle(getCallbackAngle());
-    ROS_DEBUG_STREAM(CYAN(m_name << "::needsUpdate = " << needsUpdate));
-    if (!needsUpdate) return;
+    ROS_DEBUG_STREAM(CYAN(m_name << "::needsUpdate = " << m_needsUpdate));
+    if (!m_needsUpdate) return;
 
     const T targetAngle_{getTargetAngle(radius)};
     if (needsAngleControl(targetAngle_)) {
