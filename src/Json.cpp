@@ -2,15 +2,17 @@
 
 #include <ros/package.h>
 
+#include <string_view>
+
 #include "r2d2_utils_pkg/Types.hpp"
 
 using namespace r2d2_type::config;
 
-std::string r2d2_json::getFilePath(const std::string& fileName) {
+std::string r2d2_json::getFilePath(std::string_view fileName) {
   const std::string dirName_{"config"};
   const std::string packageName_{"manipulator_control"};
   return {ros::package::getPath(packageName_) + "/" + dirName_ + "/" +
-          fileName + ".json"};
+          std::string{fileName} + ".json"};
 }
 
 namespace nlohmann {
@@ -31,10 +33,11 @@ void from_json(const json& j, manipulator_t<T>& p) {
 }  // namespace nlohmann
 
 template <template <typename> class Type, typename T>
-IJsonConfigMap<Type, T>::IJsonConfigMap(const std::string& fileName)
+IJsonConfigMap<Type, T>::IJsonConfigMap(std::string_view fileName)
     : IJsonConfig<T>(fileName) {
-  for (auto& el : this->m_json.items())
-    m_paramsMap[el.key()] = el.value().template get<Type<T>>();
+  for (const auto& [key, value] : this->m_json.items()) {
+    m_paramsMap[key] = value.template get<Type<T>>();
+  }
 }
 
 template class IJsonConfigMap<joint_t>;

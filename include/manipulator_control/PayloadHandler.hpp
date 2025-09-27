@@ -3,6 +3,8 @@
 
 #include <ros/topic.h>
 
+#include <string_view>
+
 #include "r2d2_msg_pkg/DriverState.h"
 #include "r2d2_utils_pkg/Debug.hpp"
 #include "r2d2_utils_pkg/Math.hpp"
@@ -15,9 +17,9 @@ class PayloadConfig {
   const std::string m_outputTopic;
 
  protected:
-  explicit PayloadConfig(const std::string& name = "payload")
+  explicit PayloadConfig(std::string_view name = "payload")
       : m_name{r2d2_string::upper(name, 0, 1)},
-        m_outputTopic{"/" + name + "_output"} {};
+        m_outputTopic{"/" + std::string{name} + "_output"} {};
 };
 
 template <typename T = double>
@@ -50,10 +52,10 @@ class PayloadHandler : PayloadConfig {
     ROS_INFO_STREAM(CYAN("Waiting for " << m_name << " topic..."));
     ros::topic::waitForMessage<r2d2_msg_pkg::DriverState>(m_outputTopic);
   };
-  T getForce() const {
-    const T force_{r2d2_process::Force::unwrap<T>(m_callbackParams.force)};
+  [[nodiscard]] T getForce() const {
+    const T force_ = r2d2_process::Force::unwrap<T>(m_callbackParams.force);
     ROS_DEBUG_STREAM(m_name << "::getForce() : " << WHITE(force_));
     return force_;
   };
 };
-#endif  // PIPE_HANDLER_HPP
+#endif  // R2D2_PAYLOAD_HANDLER_HPP
