@@ -54,8 +54,7 @@ void ManipulatorControlHandler<T>::checkSetup(const T force) {
     return;
   }
   ROS_DEBUG_STREAM(MAGENTA("\ncheckSetup()"));
-  const bool needsAngleControl_{m_shoulder.needsAngleControl() ||
-                                m_elbow.needsAngleControl()};
+  const bool needsAngleControl_{m_joints.needsAngleControlAll()};
   const bool needsForceControl_{force < getTargetForce(1.2f)};
   m_needsSetup = needsAngleControl_ && needsForceControl_;
   ROS_DEBUG_STREAM(CYAN("needsAngleControl_ = " << needsAngleControl_));
@@ -81,8 +80,7 @@ void ManipulatorControlHandler<T>::processControl(const T radius,
 template <typename T>
 void ManipulatorControlHandler<T>::processAngleControl(const T radius) {
   ROS_DEBUG_STREAM(MAGENTA("\nprocessRadiusControl()"));
-  m_shoulder.updateAngleByRadius(radius);
-  m_elbow.updateAngleByRadius(radius);
+  m_joints.updateAngleByRadius(radius);
   ROS_DEBUG_STREAM(RED("\nend") << MAGENTA("::processRadiusControl()"));
 }
 template <typename T>
