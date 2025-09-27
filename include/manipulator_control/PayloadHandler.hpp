@@ -3,6 +3,8 @@
 
 #include <ros/topic.h>
 
+#include <string_view>
+
 #include "r2d2_msg_pkg/DriverState.h"
 #include "r2d2_utils_pkg/Debug.hpp"
 #include "r2d2_utils_pkg/Math.hpp"
@@ -15,9 +17,9 @@ class PayloadConfig {
   const std::string m_outputTopic;
 
  protected:
-  explicit PayloadConfig(const std::string& name = "payload")
+  explicit PayloadConfig(std::string_view name = "payload")
       : m_name{r2d2_string::upper(name, 0, 1)},
-        m_outputTopic{"/" + name + "_output"} {};
+        m_outputTopic{"/" + std::string{name} + "_output"} {};
 };
 
 template <typename T = double>

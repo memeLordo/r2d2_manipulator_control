@@ -22,12 +22,12 @@ class JointConfig : private IJsonConfigMap<r2d2_type::config::joint_t, T> {
   const r2d2_type::config::joint_t<T> m_config;
 
  protected:
-  explicit JointConfig(const std::string& name,
-                       const std::string& fileName = "joints")
+  explicit JointConfig(std::string_view name,
+                       std::string_view fileName = "joints")
       : IJsonConfigMap<r2d2_type::config::joint_t, T>{fileName},
         m_name{r2d2_string::upper(name, 0, 1)},
-        m_inputTopic{"/" + name + "_input"},
-        m_outputTopic{"/" + name + "_output"},
+        m_inputTopic{"/" + std::string{name} + "_input"},
+        m_outputTopic{"/" + std::string{name} + "_output"},
         m_config{this->getParams(name)} {};
 };
 
