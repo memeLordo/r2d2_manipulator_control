@@ -174,5 +174,29 @@ class JointHandlerCollection : public NamedHandlerCollection<JointHandler, T> {
   JointHandlerCollection(ros::NodeHandle* node, Args&&... names)
       : NamedHandlerCollection<JointHandler, T>(node,
                                                 std::forward<Args>(names)...){};
+
+ public:
+  void publish() { this->call_each(&JointHandler<T>::publish); };
+  void updateAngleByRadius(const T radius, const bool needsUpdate = true) {
+    this->call_each(&JointHandler<T>::updateAngleByRadius, radius, needsUpdate);
+  };
+  bool needsAngleControlAny() const {
+    std::vector<bool> needAngleControls_{};
+    auto begin_{needAngleControls_.begin()};
+    auto end_{needAngleControls_.end()};
+    return std::any_of(begin_, end_, [](const bool& el) { return el; });
+  };
+  bool needsAngleControlAll() const {
+    std::vector<bool> needAngleControls_{};
+    auto begin_{needAngleControls_.begin()};
+    auto end_{needAngleControls_.end()};
+    return std::all_of(begin_, end_, [](const bool& el) { return el; });
+  };
+  T getRadius() const {
+    std::vector<T> radiuses_{};
+    auto begin_{radiuses_.begin()};
+    auto end_{radiuses_.end()};
+    return std::accumulate(begin_, end_, T{0});
+  };
 };
 #endif  // R2D2_JOINT_HANDLER_HPP
