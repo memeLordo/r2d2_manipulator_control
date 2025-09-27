@@ -58,4 +58,4 @@ class PayloadHandler : PayloadConfig {
     return force_;
   };
 };
-#endif  // PIPE_HANDLER_HPP
+#endif  // R2D2_PAYLOAD_HANDLER_HPP
