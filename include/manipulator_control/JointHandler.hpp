@@ -174,8 +174,7 @@ class JointHandlerCollection : public NamedHandlerCollection<JointHandler, T> {
  public:
   template <typename... Args>
   JointHandlerCollection(ros::NodeHandle* node, Args&&... names)
-      : NamedHandlerCollection<JointHandler, T>(node,
-                                                std::forward<Args>(names)...){};
+      : NamedHandlerCollection<JointHandler, T>(node, names...){};
 
  public:
   void publish() { this->call_each(&JointHandler<T>::publish); };
@@ -184,11 +183,11 @@ class JointHandlerCollection : public NamedHandlerCollection<JointHandler, T> {
   };
   [[nodiscard]] bool needAngleControlAny() const {
     return std::any_of(this->cbegin(), this->cend(),
-                       [](const auto& obj) { return obj.needsAngleControl(); });
+                       [](auto& obj) { return obj.needsAngleControl(); });
   };
   [[nodiscard]] bool needAngleControlAll() const {
     return std::all_of(this->cbegin(), this->cend(),
-                       [](const auto& obj) { return obj.needsAngleControl(); });
+                       [](auto& obj) { return obj.needsAngleControl(); });
   };
   [[nodiscard]] T getRadius() const {
     auto radiuses_{this->get_each(&JointHandler<T>::getRadius)};
