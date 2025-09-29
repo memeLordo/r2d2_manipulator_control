@@ -11,16 +11,16 @@
 
 template <typename T>
 class ManipulatorConfig
-    : private IJsonConfigMap<r2d2_type::config::manipulator_t, T> {
+    : private IJsonConfigMap<r2d2_type::config::nozzle_t, T> {
  protected:
   r2d2_state::WorkModePair m_workMode{};
   r2d2_state::NozzleTypePair m_nozzleType{};
   r2d2_state::LockStatusPair m_lockStatus{};
-  r2d2_type::config::manipulator_t<T> m_config;
+  r2d2_type::config::nozzle_t<T> m_config;
 
  protected:
-  explicit ManipulatorConfig(const std::string& fileName = "manipulator")
-      : IJsonConfigMap<r2d2_type::config::manipulator_t, T>{fileName} {};
+  explicit ManipulatorConfig(const std::string& fileName = "nozzles")
+      : IJsonConfigMap<r2d2_type::config::nozzle_t, T>{fileName} {};
 
  protected:
   void updateConfig() { m_config = this->getParams(m_nozzleType.key); };

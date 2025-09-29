@@ -25,7 +25,7 @@ void from_json(const json& j, joint_t<T>& p) {
   j.at("angle_tolerance").get_to(p.angle_tolerance);
 }
 template <typename T>
-void from_json(const json& j, manipulator_t<T>& p) {
+void from_json(const json& j, nozzle_t<T>& p) {
   j.at("target_force").get_to(p.force_needed);
   j.at("force_tolerance").get_to(p.force_tolerance);
   j.at("init_radius").get_to(p.r0);
@@ -41,4 +41,4 @@ IJsonConfigMap<Type, T>::IJsonConfigMap(std::string_view fileName)
 }
 
 template class IJsonConfigMap<joint_t>;
-template class IJsonConfigMap<manipulator_t>;
+template class IJsonConfigMap<nozzle_t>;
