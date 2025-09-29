@@ -10,10 +10,11 @@ ManipulatorControlHandler<T>::ManipulatorControlHandler(ros::NodeHandle* node)
       m_payload{node},
       m_shoulder{node},
       m_elbow{node} {
-  const double RATE = node->param<T>("control_rate", 20);
-  ROS_DEBUG_STREAM("Set RATE: " << RATE);
+  const double RATE_{node->param<double>("rate", 20)};
+  assert(RATE_ > 0);
+  ROS_DEBUG_STREAM("Set RATE: " << RATE_);
   m_timer = node->createTimer(
-      ros::Duration(1 / RATE),
+      ros::Duration(1 / RATE_),
       &ManipulatorControlHandler<T>::callbackManipulator, this);
 }
 template <typename T>
