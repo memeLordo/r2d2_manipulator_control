@@ -58,7 +58,7 @@ void ManipulatorControlHandler<T>::checkSetup(const T force) {
   ROS_DEBUG_STREAM(MAGENTA("\ncheckSetup()"));
   const bool needsAngleControl_{m_shoulder.needsAngleControl() ||
                                 m_elbow.needsAngleControl()};
-  const bool needsForceControl_{force < getTargetForce(1.2f)};
+  const bool needsForceControl_{force < getTargetForce()};
   m_needsSetup = needsAngleControl_ && needsForceControl_;
   ROS_DEBUG_STREAM(CYAN("needsAngleControl_ = " << needsAngleControl_));
   ROS_DEBUG_STREAM(CYAN("needsForceControl_ = " << needsForceControl_));

@@ -120,9 +120,11 @@ class ManipulatorControlHandler : public ManipulatorConfig<T> {
     ROS_DEBUG_STREAM(RED("Current radius : ") << WHITE(currentRadius_));
     return currentRadius_;
   };
-  [[nodiscard]] T getTargetForce(const T coeff = 1) const {
-    const T force_{coeff * m_config.force_needed};
-    ROS_DEBUG_STREAM("ManipulatorControl::getForce() : " << WHITE(force_));
+  [[nodiscard]] T getTargetForce() const {
+    const T force_{m_needsSetup
+                       ? m_config.force_needed + m_config.force_tolerance
+                       : m_config.force_needed};
+    ROS_DEBUG_STREAM("Target force : " << WHITE(force_));
     return force_;
   };
   [[nodiscard]] T getForceTolerance() const {
