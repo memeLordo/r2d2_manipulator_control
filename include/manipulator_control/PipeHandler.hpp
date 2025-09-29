@@ -14,9 +14,9 @@ class PipeConfig {
   const std::string m_outputTopic;
 
  protected:
-  explicit PipeConfig(const std::string& name = "pipe")
+  explicit PipeConfig(std::string_view name = "pipe")
       : m_name{r2d2_string::upper(name, 0, 1)},
-        m_outputTopic{"/parameters/" + name} {};
+        m_outputTopic{"/parameters/" + std::string{name}} {};
 };
 
 template <typename T = double>
@@ -50,7 +50,7 @@ class PipeHandler : PipeConfig {
     ROS_INFO_STREAM(CYAN("Waiting for " << m_name << " topic..."));
     ros::topic::waitForMessage<r2d2_msg_pkg::PipeParameters>(m_outputTopic);
   };
-  T getRadius() const {
+  [[nodiscard]] T getRadius() const {
     const T radius_{m_callbackParams.radius()};
     ROS_DEBUG_STREAM(m_name << "::getRadius() : " << WHITE(radius_));
     return radius_;

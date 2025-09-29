@@ -20,7 +20,7 @@
   <!-- Основной узел манипулятора -->
   <node pkg="manipulator_control" 
         type="manipulator_control_node" 
-        name="manipulator_control_node_3" 
+        name="manipulator_control_node_$(arg id)"
     output="screen">
 
 		<!-- Переназначение топиков -->

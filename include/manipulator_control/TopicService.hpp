@@ -14,7 +14,6 @@ class TopicServiceHandler {
   TopicServiceHandler() = default;
   explicit TopicServiceHandler(ros::NodeHandle* node) {
     using r2d2_msg_pkg::GetParams;
-
     m_client = node->serviceClient<GetParams>("/get_params");
 
     GetParams srv_;

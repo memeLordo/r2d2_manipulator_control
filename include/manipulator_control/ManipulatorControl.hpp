@@ -1,6 +1,8 @@
 #ifndef R2D2_MANIPULATOR_CONTROL_HPP
 #define R2D2_MANIPULATOR_CONTROL_HPP
 
+#include <mutex>
+
 #include "JointHandler.hpp"
 #include "PayloadHandler.hpp"
 #include "PipeHandler.hpp"
@@ -9,16 +11,16 @@
 
 template <typename T>
 class ManipulatorConfig
-    : private IJsonConfigMap<r2d2_type::config::manipulator_t, T> {
+    : private IJsonConfigMap<r2d2_type::config::nozzle_t, T> {
  protected:
   r2d2_state::WorkModePair m_workMode{};
   r2d2_state::NozzleTypePair m_nozzleType{};
   r2d2_state::LockStatusPair m_lockStatus{};
-  r2d2_type::config::manipulator_t<T> m_config;
+  r2d2_type::config::nozzle_t<T> m_config;
 
  protected:
-  explicit ManipulatorConfig(const std::string& fileName = "manipulator")
-      : IJsonConfigMap<r2d2_type::config::manipulator_t, T>{fileName} {};
+  explicit ManipulatorConfig(const std::string& fileName = "nozzles")
+      : IJsonConfigMap<r2d2_type::config::nozzle_t, T>{fileName} {};
 
  protected:
   void updateConfig() { m_config = this->getParams(m_nozzleType.key); };
@@ -71,12 +73,11 @@ class ManipulatorControlHandler : public ManipulatorConfig<T> {
   using ManipulatorConfig<T>::m_config;
   PipeHandler<T> m_pipe;
   PayloadHandler<T> m_payload;
-  JointHandlerCollection<T> m_joints;
-  JointHandler<T>& m_shoulder{m_joints("shoulder")};
-  JointHandler<T>& m_elbow{m_joints("elbow")};
+  ShoulderHandler<T> m_shoulder;
+  ElbowHandler<T> m_elbow;
   ros::Timer m_timer;
   std::mutex m_mutex;
-  bool m_needsSetup{true};
+  volatile bool m_needsSetup{true};
 
  public:
   explicit ManipulatorControlHandler(ros::NodeHandle* node);
@@ -94,39 +95,44 @@ class ManipulatorControlHandler : public ManipulatorConfig<T> {
   void processForceControl(const T force);
 
  protected:
+  // TODO: перенести в JointMap
   void publishResults() {
     ROS_DEBUG_STREAM(MAGENTA("\npublishResults()"));
-    m_joints.publish();
+    m_shoulder.publish();
+    m_elbow.publish();
   };
   bool needsForceControl(const T force) const {
     const bool needsForceControl_{r2d2_math::abs(force) > getForceTolerance()};
-    ROS_DEBUG_STREAM(BLUE("needsForceControl_ = " << needsForceControl_));
+    ROS_DEBUG_STREAM(BLUE("needsForceControl = " << needsForceControl_));
     return needsForceControl_;
   };
-  int8_t getForceDiff(const T force) const {
+  [[nodiscard]] int8_t getForceDiff(const T force) const {
     const T forceDiff_{force - getTargetForce()};
-    ROS_DEBUG_STREAM(BLUE("forceDiff_ = " << forceDiff_));
+    ROS_DEBUG_STREAM(BLUE("forceDiff = " << forceDiff_));
     if (needsForceControl(forceDiff_)) return -r2d2_math::sign(forceDiff_);
     return 0;
   };
 
  public:
-  T getCurrentRadius() const {
-    const T currentRadius_{m_joints.getRadius() + getRadius()};
+  [[nodiscard]] T getCurrentRadius() const {
+    const T currentRadius_{m_shoulder.getRadius() + m_elbow.getRadius() +
+                           getRadius()};
     ROS_DEBUG_STREAM(RED("Current radius : ") << WHITE(currentRadius_));
     return currentRadius_;
   };
-  T getTargetForce(const T coeff = 1) const {
-    T force_{coeff * static_cast<T>(m_config.force_needed)};
-    ROS_DEBUG_STREAM("ManipulatorControl::getForce() : " << WHITE(force_));
+  [[nodiscard]] T getTargetForce() const {
+    const T force_{m_needsSetup
+                       ? m_config.force_needed + m_config.force_tolerance
+                       : m_config.force_needed};
+    ROS_DEBUG_STREAM("Target force : " << WHITE(force_));
     return force_;
   };
-  T getForceTolerance() const {
-    return static_cast<T>(m_config.force_tolerance);
+  [[nodiscard]] T getForceTolerance() const {
+    return m_config.force_tolerance;
   };
-  T getRadius() const {
+  [[nodiscard]] T getRadius() const {
     const T radius_{m_config.r0};
-    ROS_DEBUG_STREAM("ManipulatorControl::getRadius() : " << WHITE(radius_));
+    ROS_DEBUG_STREAM("R0 : " << WHITE(radius_));
     return radius_;
   };
 };
