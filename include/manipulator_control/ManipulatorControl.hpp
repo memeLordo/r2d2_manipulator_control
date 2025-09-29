@@ -73,8 +73,9 @@ class ManipulatorControlHandler : public ManipulatorConfig<T> {
   using ManipulatorConfig<T>::m_config;
   PipeHandler<T> m_pipe;
   PayloadHandler<T> m_payload;
-  ShoulderHandler<T> m_shoulder;
-  ElbowHandler<T> m_elbow;
+  JointHandlerCollection<T> m_joints;
+  JointHandler<T>& m_shoulder{m_joints("shoulder")};
+  JointHandler<T>& m_elbow{m_joints("elbow")};
   ros::Timer m_timer;
   std::mutex m_mutex;
   volatile bool m_needsSetup{true};
@@ -95,11 +96,9 @@ class ManipulatorControlHandler : public ManipulatorConfig<T> {
   void processForceControl(const T force);
 
  protected:
-  // TODO: перенести в JointMap
   void publishResults() {
     ROS_DEBUG_STREAM(MAGENTA("\npublishResults()"));
-    m_shoulder.publish();
-    m_elbow.publish();
+    m_joints.publish();
   };
   bool needsForceControl(const T force) const {
     const bool needsForceControl_{r2d2_math::abs(force) > getForceTolerance()};
@@ -115,8 +114,7 @@ class ManipulatorControlHandler : public ManipulatorConfig<T> {
 
  public:
   [[nodiscard]] T getCurrentRadius() const {
-    const T currentRadius_{m_shoulder.getRadius() + m_elbow.getRadius() +
-                           getRadius()};
+    const T currentRadius_{m_joints.getRadius() + getRadius()};
     ROS_DEBUG_STREAM(RED("Current radius : ") << WHITE(currentRadius_));
     return currentRadius_;
   };
