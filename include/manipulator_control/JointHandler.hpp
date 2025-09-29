@@ -68,13 +68,6 @@ class JointHandler : public JointConfig<T> {
   };
 
  protected:
-  bool needsAngleControl(const T theta) {
-    m_needsAngleControl =
-        r2d2_math::abs(getAngle() - theta) > m_config.angle_tolerance;
-    ROS_DEBUG_STREAM(
-        CYAN(m_name << "::needsAngleControl_ = " << m_needsAngleControl));
-    return m_needsAngleControl;
-  };
   [[nodiscard]] r2d2_msg_pkg::DriverCommand prepareMsg() const {
     const auto omega_{m_config.speed};
     const auto theta_{r2d2_process::Angle::wrap<int16_t>(m_params.theta)};
@@ -90,8 +83,19 @@ class JointHandler : public JointConfig<T> {
     msg.control_word = control_word_;
     return msg;
   };
+  bool needsAngleControl(const T theta) {
+    m_needsAngleControl =
+        r2d2_math::abs(getAngle() - theta) > m_config.angle_tolerance;
+    ROS_DEBUG_STREAM(
+        CYAN(m_name << "::needsAngleControl_ = " << m_needsAngleControl));
+    return m_needsAngleControl;
+  };
 
  public:
+  void publish() {
+    ROS_DEBUG_STREAM(BLUE(m_name << "::publish()"));
+    m_publisher.publish(prepareMsg());
+  };
   void waitForTopic() {
     ROS_INFO_STREAM(CYAN("Waiting for " << m_name << " topic..."));
     ros::topic::waitForMessage<r2d2_msg_pkg::DriverState>(m_outputTopic);
@@ -99,12 +103,6 @@ class JointHandler : public JointConfig<T> {
   void setAngle(const T theta) {
     ROS_DEBUG_STREAM(m_name << "::updateAngle(theta = " << WHITE(theta) << ")");
     m_params.theta = theta;
-  };
-  void incrementAngleBy(const int8_t diff, const T dTheta = 0.1f) {
-    const T theta_{diff * dTheta};
-    ROS_DEBUG_STREAM(m_name << "::changeAngleBy(diff = " << WHITE(diff)
-                            << ", dTheta = " << WHITE(dTheta) << ")");
-    m_params.theta += theta_;
   };
   void setAngleByRadius(const T radius) {
     setAngle(getTargetAngle(radius));
@@ -123,16 +121,18 @@ class JointHandler : public JointConfig<T> {
     }
     setControlWord(ControlType::HOLD);
   };
+  void incrementAngleBy(const int8_t diff, const T dTheta = 0.1f) {
+    const T theta_{diff * dTheta};
+    ROS_DEBUG_STREAM(m_name << "::changeAngleBy(diff = " << WHITE(diff)
+                            << ", dTheta = " << WHITE(dTheta) << ")");
+    m_params.theta += theta_;
+  };
   void setControlWord(ControlType control_word) {
     if (m_params.control_word == control_word) return;
     m_params.control_word = control_word;
     ROS_DEBUG_STREAM(BLUE(m_name
                           << "::set control_word to "
                           << YELLOW(static_cast<int>(m_params.control_word))));
-  };
-  void publish() {
-    ROS_DEBUG_STREAM(BLUE(m_name << "::publish()"));
-    m_publisher.publish(prepareMsg());
   };
 
   [[nodiscard]] bool needsAngleControl() const { return m_needsAngleControl; };
