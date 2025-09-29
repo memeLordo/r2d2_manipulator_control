@@ -103,12 +103,12 @@ class ManipulatorControlHandler : public ManipulatorConfig<T> {
   };
   bool needsForceControl(const T force) const {
     const bool needsForceControl_{r2d2_math::abs(force) > getForceTolerance()};
-    ROS_DEBUG_STREAM(BLUE("needsForceControl_ = " << needsForceControl_));
+    ROS_DEBUG_STREAM(BLUE("needsForceControl = " << needsForceControl_));
     return needsForceControl_;
   };
   [[nodiscard]] int8_t getForceDiff(const T force) const {
     const T forceDiff_{force - getTargetForce()};
-    ROS_DEBUG_STREAM(BLUE("forceDiff_ = " << forceDiff_));
+    ROS_DEBUG_STREAM(BLUE("forceDiff = " << forceDiff_));
     if (needsForceControl(forceDiff_)) return -r2d2_math::sign(forceDiff_);
     return 0;
   };
@@ -132,7 +132,7 @@ class ManipulatorControlHandler : public ManipulatorConfig<T> {
   };
   [[nodiscard]] T getRadius() const {
     const T radius_{m_config.r0};
-    ROS_DEBUG_STREAM("ManipulatorControl::getRadius() : " << WHITE(radius_));
+    ROS_DEBUG_STREAM("R0 : " << WHITE(radius_));
     return radius_;
   };
 };
