@@ -95,6 +95,12 @@ class ManipulatorControlHandler : public ManipulatorConfig<T> {
   void processForceControl(const T force);
 
  protected:
+  // TODO: перенести в JointMap
+  void publishResults() {
+    ROS_DEBUG_STREAM(MAGENTA("\npublishResults()"));
+    m_shoulder.publish();
+    m_elbow.publish();
+  };
   bool needsForceControl(const T force) const {
     const bool needsForceControl_{r2d2_math::abs(force) > getForceTolerance()};
     ROS_DEBUG_STREAM(BLUE("needsForceControl_ = " << needsForceControl_));
@@ -105,12 +111,6 @@ class ManipulatorControlHandler : public ManipulatorConfig<T> {
     ROS_DEBUG_STREAM(BLUE("forceDiff_ = " << forceDiff_));
     if (needsForceControl(forceDiff_)) return -r2d2_math::sign(forceDiff_);
     return 0;
-  };
-  // TODO: перенести в JointMap
-  void publishResults() {
-    ROS_DEBUG_STREAM(MAGENTA("\npublishResults()"));
-    m_shoulder.publish();
-    m_elbow.publish();
   };
 
  public:
