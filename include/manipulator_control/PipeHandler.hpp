@@ -14,9 +14,9 @@ class PipeConfig {
   const std::string m_outputTopic;
 
  protected:
-  explicit PipeConfig(const std::string& name = "pipe")
+  explicit PipeConfig(std::string_view name = "pipe")
       : m_name{r2d2_string::upper(name, 0, 1)},
-        m_outputTopic{"/parameters/" + name} {};
+        m_outputTopic{"/parameters/" + std::string{name}} {};
 };
 
 template <typename T = double>
