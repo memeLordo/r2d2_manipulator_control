@@ -3,8 +3,6 @@
 
 #include <ros/topic.h>
 
-#include <string_view>
-
 #include "r2d2_msg_pkg/DriverState.h"
 #include "r2d2_utils_pkg/Debug.hpp"
 #include "r2d2_utils_pkg/Math.hpp"
