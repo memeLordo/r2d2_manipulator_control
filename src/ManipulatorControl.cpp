@@ -10,7 +10,7 @@ ManipulatorControlHandler<T>::ManipulatorControlHandler(ros::NodeHandle* node)
       m_payload{node},
       m_shoulder{node},
       m_elbow{node} {
-  const double RATE_{node->param<double>("rate", 20)};
+  const auto RATE_{node->param<float>("control_rate", 20)};
   assert(RATE_ > 0);
   ROS_DEBUG_STREAM("Set RATE: " << RATE_);
   m_timer = node->createTimer(
