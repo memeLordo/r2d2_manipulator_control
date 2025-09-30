@@ -102,7 +102,7 @@ class ManipulatorControlHandler : public ManipulatorConfig<T> {
   };
   bool needsForceControl(const T force) const {
     const bool needsForceControl_{r2d2_math::abs(force) > getForceTolerance()};
-    ROS_DEBUG_STREAM(BLUE("needsForceControl = " << needsForceControl_));
+    ROS_DEBUG_STREAM(CYAN("needsForceControl = " << needsForceControl_));
     return needsForceControl_;
   };
   [[nodiscard]] int8_t getForceDiff(const T force) const {
@@ -130,7 +130,7 @@ class ManipulatorControlHandler : public ManipulatorConfig<T> {
   };
   [[nodiscard]] T getRadius() const {
     const T radius_{m_config.r0};
-    ROS_DEBUG_STREAM("R0 : " << WHITE(radius_));
+    ROS_DEBUG_STREAM("Init radius : " << WHITE(radius_));
     return radius_;
   };
 };

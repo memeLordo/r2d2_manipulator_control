@@ -50,6 +50,7 @@ class JointHandler : public JointConfig<T> {
   JointHandler() = default;
   explicit JointHandler(ros::NodeHandle* node, const std::string& name)
       : JointConfig<T>(name) {
+    ROS_DEBUG_STREAM(MAGENTA(m_name + "Handler()"));
     waitForTopic();
     m_subscriber =
         node->subscribe(m_outputTopic, 1, &JointHandler::callbackJoint, this);
@@ -123,7 +124,8 @@ class JointHandler : public JointConfig<T> {
   };
   void incrementAngleBy(const int8_t diff, const T dTheta = 0.1f) {
     const T theta_{diff * dTheta};
-    ROS_DEBUG_STREAM(m_name << "::changeAngleBy(diff = " << WHITE(diff)
+    ROS_DEBUG_STREAM(m_name << "::incrementAngleBy(diff = "
+                            << WHITE(static_cast<int>(diff))
                             << ", dTheta = " << WHITE(dTheta) << ")");
     m_params.theta += theta_;
   };

@@ -9,6 +9,7 @@ ManipulatorControlHandler<T>::ManipulatorControlHandler(ros::NodeHandle* node)
       m_pipe{node},
       m_payload{node},
       m_joints{node, "shoulder", "elbow"} {
+  ROS_DEBUG_STREAM(MAGENTA("ManipulatorControlHandler()"));
   const auto RATE_{node->param<float>("control_rate", 20)};
   assert(RATE_ > 0);
   ROS_DEBUG_STREAM("Set RATE: " << RATE_);

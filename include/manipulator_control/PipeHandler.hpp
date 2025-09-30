@@ -30,6 +30,7 @@ class PipeHandler : PipeConfig {
  public:
   PipeHandler() = default;
   explicit PipeHandler(ros::NodeHandle* node) : PipeConfig{} {
+    ROS_DEBUG_STREAM(MAGENTA("PipeHandler()"));
     waitForTopic();
     m_subscriber =
         node->subscribe(m_outputTopic, 1, &PipeHandler::callbackPipe, this);

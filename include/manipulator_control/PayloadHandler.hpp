@@ -31,6 +31,7 @@ class PayloadHandler : PayloadConfig {
  public:
   PayloadHandler() = default;
   explicit PayloadHandler(ros::NodeHandle* node) : PayloadConfig{} {
+    ROS_DEBUG_STREAM(MAGENTA("PayloadHandler()"));
     waitForTopic();
     m_subscriber = node->subscribe(m_outputTopic, 1,
                                    &PayloadHandler::callbackPayload, this);
