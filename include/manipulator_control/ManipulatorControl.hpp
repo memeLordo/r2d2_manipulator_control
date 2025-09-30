@@ -105,7 +105,7 @@ class ManipulatorControlHandler : public ManipulatorConfig<T> {
     ROS_DEBUG_STREAM(CYAN("needsForceControl = " << needsForceControl_));
     return needsForceControl_;
   };
-  [[nodiscard]] int8_t getForceDiff(const T force) const {
+  [[nodiscard]] int8_t getForceDiffSign(const T force) const {
     const T forceDiff_{force - getTargetForce()};
     ROS_DEBUG_STREAM(BLUE("forceDiff = " << forceDiff_));
     if (needsForceControl(forceDiff_)) return -r2d2_math::sign(forceDiff_);
