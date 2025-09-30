@@ -31,6 +31,7 @@ class PayloadHandler : PayloadConfig {
  public:
   PayloadHandler() = default;
   explicit PayloadHandler(ros::NodeHandle* node) : PayloadConfig{} {
+    ROS_DEBUG_STREAM(MAGENTA("PayloadHandler()"));
     waitForTopic();
     m_subscriber = node->subscribe(m_outputTopic, 1,
                                    &PayloadHandler::callbackPayload, this);
@@ -51,7 +52,7 @@ class PayloadHandler : PayloadConfig {
     ros::topic::waitForMessage<r2d2_msg_pkg::DriverState>(m_outputTopic);
   };
   [[nodiscard]] T getForce() const {
-    const T force_ = r2d2_process::Force::unwrap<T>(m_callbackParams.force);
+    const T force_{r2d2_process::Force::unwrap<T>(m_callbackParams.force)};
     ROS_DEBUG_STREAM(m_name << "::getForce() : " << WHITE(force_));
     return force_;
   };

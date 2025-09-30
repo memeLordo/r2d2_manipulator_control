@@ -13,6 +13,7 @@ class TopicServiceHandler {
  public:
   TopicServiceHandler() = default;
   explicit TopicServiceHandler(ros::NodeHandle* node) {
+    ROS_DEBUG_STREAM(MAGENTA("TopicServiceHandler()"));
     using r2d2_msg_pkg::GetParams;
     m_client = node->serviceClient<GetParams>("/get_params");
 

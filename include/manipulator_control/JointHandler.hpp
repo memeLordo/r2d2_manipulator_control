@@ -50,6 +50,7 @@ class JointHandler : public JointConfig<T> {
   JointHandler() = default;
   explicit JointHandler(ros::NodeHandle* node, const std::string& name)
       : JointConfig<T>(name) {
+    ROS_DEBUG_STREAM(MAGENTA(m_name + "Handler()"));
     waitForTopic();
     m_subscriber =
         node->subscribe(m_outputTopic, 1, &JointHandler::callbackJoint, this);
@@ -121,9 +122,10 @@ class JointHandler : public JointConfig<T> {
     }
     setControlWord(ControlType::HOLD);
   };
-  void incrementAngleBy(const int8_t diff, const T dTheta = 0.1f) {
+  void incrementAngleBy(const int8_t diff, const T dTheta = T{0.1}) {
     const T theta_{diff * dTheta};
-    ROS_DEBUG_STREAM(m_name << "::changeAngleBy(diff = " << WHITE(diff)
+    ROS_DEBUG_STREAM(m_name << "::incrementAngleBy(diff = "
+                            << WHITE(static_cast<int>(diff))
                             << ", dTheta = " << WHITE(dTheta) << ")");
     m_params.theta += theta_;
   };
@@ -159,22 +161,12 @@ class JointHandler : public JointConfig<T> {
 };
 
 template <typename T = double>
-class ShoulderHandler : public JointHandler<T> {
- public:
-  ShoulderHandler(ros::NodeHandle* node) : JointHandler<T>(node, "shoulder") {};
-};
-template <typename T = double>
-class ElbowHandler : public JointHandler<T> {
- public:
-  ElbowHandler(ros::NodeHandle* node) : JointHandler<T>(node, "elbow") {};
-};
-
-template <typename T = double>
 class JointHandlerCollection : public NamedHandlerCollection<JointHandler, T> {
  public:
   template <typename... Args>
   JointHandlerCollection(ros::NodeHandle* node, Args&&... names)
-      : NamedHandlerCollection<JointHandler, T>(node, names...){};
+      : NamedHandlerCollection<JointHandler, T>(node,
+                                                std::forward<Args>(names)...){};
 
  public:
   void publish() { this->call_each(&JointHandler<T>::publish); };
@@ -191,7 +183,7 @@ class JointHandlerCollection : public NamedHandlerCollection<JointHandler, T> {
   };
   [[nodiscard]] T getRadius() const {
     auto radiuses_{this->get_each(&JointHandler<T>::getRadius)};
-    return std::accumulate(radiuses_.begin(), radiuses_.end(), T{0});
+    return std::accumulate(radiuses_.cbegin(), radiuses_.cend(), T{0});
   };
 };
 #endif  // R2D2_JOINT_HANDLER_HPP

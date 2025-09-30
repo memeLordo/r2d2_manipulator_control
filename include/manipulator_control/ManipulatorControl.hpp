@@ -73,8 +73,9 @@ class ManipulatorControlHandler : public ManipulatorConfig<T> {
   using ManipulatorConfig<T>::m_config;
   PipeHandler<T> m_pipe;
   PayloadHandler<T> m_payload;
-  ShoulderHandler<T> m_shoulder;
-  ElbowHandler<T> m_elbow;
+  JointHandlerCollection<T> m_joints;
+  JointHandler<T>& m_shoulder{m_joints("shoulder")};
+  JointHandler<T>& m_elbow{m_joints("elbow")};
   ros::Timer m_timer;
   std::mutex m_mutex;
   volatile bool m_needsSetup{true};
@@ -95,18 +96,16 @@ class ManipulatorControlHandler : public ManipulatorConfig<T> {
   void processForceControl(const T force);
 
  protected:
-  // TODO: перенести в JointMap
   void publishResults() {
     ROS_DEBUG_STREAM(MAGENTA("\npublishResults()"));
-    m_shoulder.publish();
-    m_elbow.publish();
+    m_joints.publish();
   };
   bool needsForceControl(const T force) const {
     const bool needsForceControl_{r2d2_math::abs(force) > getForceTolerance()};
-    ROS_DEBUG_STREAM(BLUE("needsForceControl = " << needsForceControl_));
+    ROS_DEBUG_STREAM(CYAN("needsForceControl = " << needsForceControl_));
     return needsForceControl_;
   };
-  [[nodiscard]] int8_t getForceDiff(const T force) const {
+  [[nodiscard]] int8_t getForceDiffSign(const T force) const {
     const T forceDiff_{force - getTargetForce()};
     ROS_DEBUG_STREAM(BLUE("forceDiff = " << forceDiff_));
     if (needsForceControl(forceDiff_)) return -r2d2_math::sign(forceDiff_);
@@ -115,8 +114,7 @@ class ManipulatorControlHandler : public ManipulatorConfig<T> {
 
  public:
   [[nodiscard]] T getCurrentRadius() const {
-    const T currentRadius_{m_shoulder.getRadius() + m_elbow.getRadius() +
-                           getRadius()};
+    const T currentRadius_{m_joints.getRadius() + getRadius()};
     ROS_DEBUG_STREAM(RED("Current radius : ") << WHITE(currentRadius_));
     return currentRadius_;
   };
@@ -132,7 +130,7 @@ class ManipulatorControlHandler : public ManipulatorConfig<T> {
   };
   [[nodiscard]] T getRadius() const {
     const T radius_{m_config.r0};
-    ROS_DEBUG_STREAM("R0 : " << WHITE(radius_));
+    ROS_DEBUG_STREAM("Init radius : " << WHITE(radius_));
     return radius_;
   };
 };
