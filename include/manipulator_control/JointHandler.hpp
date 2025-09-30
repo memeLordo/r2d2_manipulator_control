@@ -165,7 +165,8 @@ class JointHandlerCollection : public NamedHandlerCollection<JointHandler, T> {
  public:
   template <typename... Args>
   JointHandlerCollection(ros::NodeHandle* node, Args&&... names)
-      : NamedHandlerCollection<JointHandler, T>(node, names...){};
+      : NamedHandlerCollection<JointHandler, T>(node,
+                                                std::forward<Args>(names)...){};
 
  public:
   void publish() { this->call_each(&JointHandler<T>::publish); };
@@ -182,7 +183,7 @@ class JointHandlerCollection : public NamedHandlerCollection<JointHandler, T> {
   };
   [[nodiscard]] T getRadius() const {
     auto radiuses_{this->get_each(&JointHandler<T>::getRadius)};
-    return std::accumulate(radiuses_.begin(), radiuses_.end(), T{0});
+    return std::accumulate(radiuses_.cbegin(), radiuses_.cend(), T{0});
   };
 };
 #endif  // R2D2_JOINT_HANDLER_HPP
