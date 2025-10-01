@@ -9,10 +9,9 @@ int main(int argc, char** argv) {
     TopicServiceHandler ts{&node};
     ManipulatorControlHandler mc{&node};
     ManipulatorServiceHandler ms{&node, mc};
-    ros::MultiThreadedSpinner spinner{8};
     ROS_INFO("Manipulator Control started");
-    spinner.spin();
-  } catch (const std::exception& e) {
-    ROS_ERROR_STREAM(RED("Got exception: " << e.what()));
+    ros::spin();
+  } catch (std::exception& e) {
+    ROS_ERROR_STREAM("Got exception: " << e.what());
   }
 }
