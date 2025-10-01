@@ -161,12 +161,13 @@ class JointHandler : public JointConfig<T> {
 };
 
 template <typename T = double>
-class JointHandlerCollection : public NamedHandlerCollection<JointHandler, T> {
+class JointHandlerVector
+    : public NamedHandlerVector<std::vector, JointHandler, T> {
  public:
   template <typename... Args>
-  JointHandlerCollection(ros::NodeHandle* node, Args&&... names)
-      : NamedHandlerCollection<JointHandler, T>(node,
-                                                std::forward<Args>(names)...){};
+  JointHandlerVector(ros::NodeHandle* node, Args&&... names)
+      : NamedHandlerVector<std::vector, JointHandler, T>(
+            node, std::forward<Args>(names)...){};
 
  public:
   void publish() { this->call_each(&JointHandler<T>::publish); };
