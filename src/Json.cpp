@@ -34,7 +34,7 @@ void from_json(const json& j, nozzle_t<T>& p) {
 
 template <template <typename> class Type, typename T>
 IJsonConfigMap<Type, T>::IJsonConfigMap(std::string_view fileName)
-    : IJsonConfig<T>(fileName) {
+    : IJsonConfig<>(fileName) {
   for (const auto& [key, value] : this->m_json.items()) {
     m_paramsMap[key] = value.template get<Type<T>>();
   }
