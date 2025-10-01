@@ -21,10 +21,11 @@ class TopicServiceHandler {
     srv_.request.update = true;
 
     if (!(m_client.exists() && m_client.call(srv_))) {
-      ROS_ERROR("Couldn't update params!");
+      ROS_WARN("Couldn't update params!");
       return;
     }
     ROS_INFO_STREAM(CYAN("Params updated succsessfully!"));
   };
+  ~TopicServiceHandler() { ROS_DEBUG_STREAM(RED("~TopicServiceHandler()")); }
 };
 #endif  // R2D2_TOPIC_SERVICE_HPP
