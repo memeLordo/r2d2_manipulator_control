@@ -1,8 +1,6 @@
 #ifndef R2D2_MANIPULATOR_CONTROL_HPP
 #define R2D2_MANIPULATOR_CONTROL_HPP
 
-#include <mutex>
-
 #include "JointHandler.hpp"
 #include "PayloadHandler.hpp"
 #include "PipeHandler.hpp"
@@ -73,11 +71,10 @@ class ManipulatorControlHandler : public ManipulatorConfig<T> {
   using ManipulatorConfig<T>::m_config;
   PipeHandler<T> m_pipe;
   PayloadHandler<T> m_payload;
-  JointHandlerCollection<T> m_joints;
+  JointHandlerVector<T> m_joints;
   JointHandler<T>& m_shoulder{m_joints("shoulder")};
   JointHandler<T>& m_elbow{m_joints("elbow")};
   ros::Timer m_timer;
-  std::mutex m_mutex;
   volatile bool m_needsSetup{true};
 
  public:

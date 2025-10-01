@@ -19,7 +19,6 @@ ManipulatorControlHandler<T>::ManipulatorControlHandler(ros::NodeHandle* node)
 }
 template <typename T>
 void ManipulatorControlHandler<T>::callbackManipulator(const ros::TimerEvent&) {
-  std::lock_guard<std::mutex> lock(m_mutex);
   ROS_DEBUG_STREAM("\ncallbackManipulator()");
 
   switch (m_workMode.type) {

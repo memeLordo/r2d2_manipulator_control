@@ -6,13 +6,16 @@ int main(int argc, char** argv) {
   ros::init(argc, argv, "manipulator_control");
   ros::NodeHandle node;
   try {
+    CHECK_FOR_STACK_ERRORS();
     TopicServiceHandler ts{&node};
     ManipulatorControlHandler mc{&node};
     ManipulatorServiceHandler ms{&node, mc};
-    ros::MultiThreadedSpinner spinner{8};
     ROS_INFO("Manipulator Control started");
-    spinner.spin();
-  } catch (const std::exception& e) {
-    ROS_ERROR_STREAM(RED("Got exception: " << e.what()));
+    ros::spin();
+  } catch (const r2d2_errors::RuntimeErrorStack& e) {
+    ROS_ERROR_STREAM("Got exception: " << GREEN(e.what()));
+    PROCESS_ERROR_STACK();
+  } catch (std::exception& e) {
+    ROS_ERROR_STREAM("Got exception: " << e.what());
   }
 }
