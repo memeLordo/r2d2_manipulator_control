@@ -5,5 +5,5 @@
 using namespace r2d2_process;
 
 IJsonConfig<true> jc{"convert_rate"};
-const double Angle::s_convertRatio{jc.getParam("angle")};
-const double Force::s_convertRatio{jc.getParam("force")};
+const double config::g_angleRatio{jc.getParam("angle")};
+const double config::g_forceRatio{jc.getParam("force")};

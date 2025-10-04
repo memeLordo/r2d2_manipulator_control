@@ -8,7 +8,7 @@
 
 using namespace r2d2_type::config;
 
-std::string r2d2_json::getFilePath(std::string_view fileName) {
+std::string r2d2_json::getFilePath(std::string_view fileName) noexcept {
   const std::string dirName_{"config"};
   const std::string packageName_{"manipulator_control"};
   return {ros::package::getPath(packageName_) + "/" + dirName_ + "/" +
