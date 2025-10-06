@@ -56,7 +56,7 @@ class JointHandler : public JointConfig<T> {
         node->subscribe(m_outputTopic, 1, &JointHandler::callbackJoint, this);
     m_publisher = node->advertise<r2d2_msg_pkg::DriverCommand>(m_inputTopic, 1);
   };
-  ~JointHandler() {
+  ~JointHandler() noexcept {
     ROS_DEBUG_STREAM(RED("~" + m_name + "Handler()"));
     m_publisher.shutdown();
     m_subscriber.shutdown();
@@ -69,7 +69,7 @@ class JointHandler : public JointConfig<T> {
   };
 
  protected:
-  [[nodiscard]] r2d2_msg_pkg::DriverCommand prepareMsg() const {
+  [[nodiscard]] r2d2_msg_pkg::DriverCommand prepareMsg() const noexcept {
     const auto omega_{m_config.speed};
     const auto theta_{r2d2_process::Angle::wrap<int16_t>(m_params.theta)};
     const auto control_word_{static_cast<uint16_t>(m_params.control_word)};
@@ -161,7 +161,7 @@ class JointHandler : public JointConfig<T> {
 };
 
 template <typename T = double>
-class JointHandlerVector
+class JointHandlerVector final
     : public NamedHandlerVector<std::vector, JointHandler, T> {
  public:
   template <typename... Args>

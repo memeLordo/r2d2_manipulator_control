@@ -12,7 +12,7 @@ int main(int argc, char** argv) {
     ManipulatorServiceHandler ms{&node, mc};
     ROS_INFO("Manipulator Control started");
     ros::spin();
-  } catch (const r2d2_errors::collector::RuntimeErrorRecord& e) {
+  } catch (const r2d2_errors::agent::RecordNotEmptyError& e) {
     ROS_ERROR_STREAM("Got exception: " << GREEN(e.what()));
     PROCESS_ERROR_RECORD();
   } catch (std::exception& e) {

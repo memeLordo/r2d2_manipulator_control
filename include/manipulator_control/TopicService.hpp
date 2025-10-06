@@ -6,7 +6,7 @@
 #include "r2d2_msg_pkg/GetParams.h"
 #include "r2d2_utils_pkg/Debug.hpp"
 
-class TopicServiceHandler {
+class TopicServiceHandler final {
  private:
   ros::ServiceClient m_client;
 
@@ -26,6 +26,8 @@ class TopicServiceHandler {
     }
     ROS_INFO_STREAM(CYAN("Params updated succsessfully!"));
   };
-  ~TopicServiceHandler() { ROS_DEBUG_STREAM(RED("~TopicServiceHandler()")); }
+  ~TopicServiceHandler() noexcept {
+    ROS_DEBUG_STREAM(RED("~TopicServiceHandler()"));
+  }
 };
 #endif  // R2D2_TOPIC_SERVICE_HPP

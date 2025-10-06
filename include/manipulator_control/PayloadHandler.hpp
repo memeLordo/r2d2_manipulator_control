@@ -21,7 +21,7 @@ class PayloadConfig {
 };
 
 template <typename T = double>
-class PayloadHandler : PayloadConfig {
+class PayloadHandler final : PayloadConfig {
  private:
   using PayloadConfig::m_name;
   using PayloadConfig::m_outputTopic;
@@ -36,7 +36,7 @@ class PayloadHandler : PayloadConfig {
     m_subscriber = node->subscribe(m_outputTopic, 1,
                                    &PayloadHandler::callbackPayload, this);
   };
-  ~PayloadHandler() {
+  ~PayloadHandler() noexcept {
     ROS_DEBUG_STREAM(RED("~PayloadHandler()"));
     m_subscriber.shutdown();
   };

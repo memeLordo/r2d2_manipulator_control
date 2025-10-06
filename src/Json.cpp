@@ -2,8 +2,6 @@
 
 #include <ros/package.h>
 
-#include <string_view>
-
 #include "r2d2_utils_pkg/Types.hpp"
 
 using namespace r2d2_type::config;

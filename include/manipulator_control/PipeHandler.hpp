@@ -20,7 +20,7 @@ class PipeConfig {
 };
 
 template <typename T = double>
-class PipeHandler : PipeConfig {
+class PipeHandler final : PipeConfig {
  private:
   using PipeConfig::m_name;
   using PipeConfig::m_outputTopic;
@@ -35,7 +35,7 @@ class PipeHandler : PipeConfig {
     m_subscriber =
         node->subscribe(m_outputTopic, 1, &PipeHandler::callbackPipe, this);
   };
-  ~PipeHandler() {
+  ~PipeHandler() noexcept {
     ROS_DEBUG_STREAM(RED("~PipeHandler()"));
     m_subscriber.shutdown();
   };
