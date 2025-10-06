@@ -4,7 +4,7 @@
 #include "ManipulatorControl.hpp"
 #include "r2d2_msg_pkg/ManipulatorCommand.h"
 
-class ManipulatorServiceHandler {
+class ManipulatorServiceHandler final {
  private:
   const std::string m_serviceTopic;
   ManipulatorControlHandler<>& m_manipulatorControl;
@@ -18,7 +18,7 @@ class ManipulatorServiceHandler {
     m_manipulatorService = node->advertiseService(
         m_serviceTopic, &ManipulatorServiceHandler::callbackService, this);
   };
-  ~ManipulatorServiceHandler() {
+  ~ManipulatorServiceHandler() noexcept {
     ROS_DEBUG_STREAM(RED("~ManipulatorServiceHandler()"));
     m_manipulatorService.shutdown();
   };

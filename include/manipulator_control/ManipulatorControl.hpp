@@ -63,7 +63,7 @@ class ManipulatorConfig
 };
 
 template <typename T = double>
-class ManipulatorControlHandler : public ManipulatorConfig<T> {
+class ManipulatorControlHandler final : public ManipulatorConfig<T> {
  private:
   using ManipulatorConfig<T>::m_workMode;
   using ManipulatorConfig<T>::m_nozzleType;
@@ -79,7 +79,7 @@ class ManipulatorControlHandler : public ManipulatorConfig<T> {
 
  public:
   explicit ManipulatorControlHandler(ros::NodeHandle* node);
-  ~ManipulatorControlHandler() {
+  ~ManipulatorControlHandler() noexcept {
     ROS_DEBUG_STREAM(RED("~ManipulatorControlHandler()"));
     m_timer.stop();
   };
