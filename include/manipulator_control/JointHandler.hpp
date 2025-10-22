@@ -140,7 +140,9 @@ class JointHandler : public JointConfig<T> {
 
   [[nodiscard]] bool needsControl() const { return m_needsControl; };
   [[nodiscard]] T getRadius() const {
-    return m_config.length * r2d2_math::sin(m_params.theta);
+    const T radius_{m_config.length * r2d2_math::sin(getCallbackAngle())};
+    ROS_DEBUG_STREAM(m_name << "::getRadius() : " << WHITE(radius_));
+    return radius_;
   };
   [[nodiscard]] T getAngle() const {
     ROS_DEBUG_STREAM(m_name << "::getAngle() : " << WHITE(m_params.theta));
