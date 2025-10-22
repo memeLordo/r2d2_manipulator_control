@@ -137,11 +137,6 @@ class JointHandler : public JointConfig<T> {
   };
 
   [[nodiscard]] bool needsControl() const { return m_needsControl; };
-  [[nodiscard]] T getRadius() const {
-    const T radius_{m_config.length * r2d2_math::sin(getCallbackAngle())};
-    ROS_DEBUG_STREAM(m_name << "::getRadius() : " << WHITE(radius_));
-    return radius_;
-  };
   [[nodiscard]] T getAngle() const {
     ROS_DEBUG_STREAM(m_name << "::getAngle() : " << WHITE(m_params.theta));
     return m_params.theta;
@@ -154,6 +149,11 @@ class JointHandler : public JointConfig<T> {
     ROS_DEBUG_STREAM(m_name << YELLOW("::getCallbackAngle() : ")
                             << WHITE(theta_));
     return theta_;
+  };
+  [[nodiscard]] T getRadius() const {
+    const T radius_{m_config.length * r2d2_math::sin(getCallbackAngle())};
+    ROS_DEBUG_STREAM(m_name << "::getRadius() : " << WHITE(radius_));
+    return radius_;
   };
   [[nodiscard]] T getTargetAngle(T radius) const {
     const T theta_{horner::polynome(m_config.coeffs, radius) -
