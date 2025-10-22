@@ -69,12 +69,6 @@ class JointHandler : public JointConfig<T> {
   };
 
  protected:
-  void checkAngleControl() {
-    m_needsControl =
-        r2d2_math::abs(getAngle() - getCallbackAngle()) > getAngleTolerance();
-    ROS_DEBUG_STREAM(
-        CYAN(m_name << "::needsAngleControl_ = " << m_needsControl));
-  };
   r2d2_msg_pkg::DriverCommand prepareMsg() const {
     const auto omega_{m_config.speed};
     const auto theta_{r2d2_process::Angle::wrap<int16_t>(m_params.theta)};
@@ -91,11 +85,11 @@ class JointHandler : public JointConfig<T> {
     return msg;
   };
   void checkAnleControl(const T theta) {
-    m_needsControl =
-        r2d2_math::abs(getAngle() - theta) > m_config.angle_tolerance;
+    m_needsControl = r2d2_math::abs(getAngle() - theta) >= getAngleTolerance();
     ROS_DEBUG_STREAM(
         CYAN(m_name << "::needsAngleControl_ = " << m_needsControl));
   };
+  void checkAngleControl() { checkAnleControl(getCallbackAngle()); };
 
  public:
   void publish() {
