@@ -69,11 +69,11 @@ class JointHandler : public JointConfig<T> {
   };
 
  protected:
-  void checkAngleDiff(const T theta) {
-    m_needsAngleControl =
-        std::abs(getAngle() - theta) > m_config.angle_tolerance;
+  void checkAngleControl() {
+    m_needsControl =
+        r2d2_math::abs(getAngle() - getCallbackAngle()) > getAngleTolerance();
     ROS_DEBUG_STREAM(
-        CYAN(m_name << "::needsAngleControl_ = " << m_needsAngleControl));
+        CYAN(m_name << "::needsAngleControl_ = " << m_needsControl));
   };
   r2d2_msg_pkg::DriverCommand prepareMsg() const {
     const auto omega_{m_config.speed};
@@ -90,12 +90,11 @@ class JointHandler : public JointConfig<T> {
     msg.control_word = control_word_;
     return msg;
   };
-  bool needsAngleControl(const T theta) {
-    m_needsAngleControl =
+  void checkAnleControl(const T theta) {
+    m_needsControl =
         r2d2_math::abs(getAngle() - theta) > m_config.angle_tolerance;
     ROS_DEBUG_STREAM(
-        CYAN(m_name << "::needsAngleControl_ = " << m_needsAngleControl));
-    return m_needsAngleControl;
+        CYAN(m_name << "::needsAngleControl_ = " << m_needsControl));
   };
 
  public:
@@ -103,6 +102,8 @@ class JointHandler : public JointConfig<T> {
     ROS_DEBUG_STREAM(BLUE(m_name << "::publish()"));
     m_publisher.publish(prepareMsg());
   };
+  void setControl(const bool needsControl) { m_needsControl = needsControl; };
+  void resetControl() { setControl(false); };
   void setAngle(const T theta) {
     ROS_DEBUG_STREAM(m_name << "::updateAngle(theta = " << WHITE(theta) << ")");
     m_params.theta = theta;
@@ -113,15 +114,13 @@ class JointHandler : public JointConfig<T> {
   };
   void updateAngleByRadius(const T radius) {
     setAngle(getCallbackAngle());
-    ROS_DEBUG_STREAM(CYAN(m_name << "::needsUpdate = " << m_needsUpdate));
-    if (!m_needsUpdate) return;
 
-    if (const T targetAngle_{getTargetAngle(radius)};
-        needsAngleControl(targetAngle_)) {
+    if (const T targetAngle_{getTargetAngle(radius)}) {
       setAngle(targetAngle_);
       setControlWord(ControlType::CONTROL_ANGLE);
       return;
     }
+    setAngle(getCallbackAngle());
     setControlWord(ControlType::HOLD);
   };
   void incrementAngleBy(const int8_t diff, const T dTheta = T{0.1}) {
@@ -139,7 +138,7 @@ class JointHandler : public JointConfig<T> {
                           << YELLOW(static_cast<int>(m_params.control_word))));
   };
 
-  [[nodiscard]] bool needsAngleControl() const { return m_needsAngleControl; };
+  [[nodiscard]] bool needsControl() const { return m_needsControl; };
   [[nodiscard]] T getRadius() const {
     return m_config.length * r2d2_math::sin(m_params.theta);
   };
@@ -176,16 +175,23 @@ class JointHandlerVector final
 
  public:
   void publish() { this->call_each(&JointHandler<T>::publish); };
+  void resetControl() { this->call_each(&JointHandler<T>::resetControl); };
+  void setControl(const bool needsControl) {
+    this->call_each(&JointHandler<T>::setControl, needsControl);
+  };
+  void setControlByAngle(const T theta) {
+    this->call_each(&JointHandler<T>::setControlByAngle, theta);
+  };
   void updateAngleByRadius(const T radius) {
     this->call_each(&JointHandler<T>::updateAngleByRadius, radius);
   };
-  [[nodiscard]] bool needAngleControlAny() const {
+  [[nodiscard]] bool needsControlAny() const {
     return std::any_of(this->cbegin(), this->cend(),
-                       [](auto& obj) { return obj.needsAngleControl(); });
+                       [](auto& obj) { return obj.needsControl(); });
   };
-  [[nodiscard]] bool needAngleControlAll() const {
+  [[nodiscard]] bool needsControlAll() const {
     return std::all_of(this->cbegin(), this->cend(),
-                       [](auto& obj) { return obj.needsAngleControl(); });
+                       [](auto& obj) { return obj.needsControl(); });
   };
   [[nodiscard]] T getRadius() const {
     auto radiuses_{this->get_each(&JointHandler<T>::getRadius)};
