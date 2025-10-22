@@ -3,6 +3,7 @@
 
 #include <ros/topic.h>
 
+#include "TopicAwait.hpp"
 #include "r2d2_msg_pkg/DriverState.h"
 #include "r2d2_utils_pkg/Debug.hpp"
 #include "r2d2_utils_pkg/Math.hpp"
@@ -32,7 +33,7 @@ class PayloadHandler final : PayloadConfig {
   PayloadHandler() = default;
   explicit PayloadHandler(ros::NodeHandle* node) : PayloadConfig{} {
     ROS_DEBUG_STREAM(MAGENTA("PayloadHandler()"));
-    waitForTopic();
+    waitForTopic<r2d2_msg_pkg::DriverState>(m_name, m_outputTopic);
     m_subscriber = node->subscribe(m_outputTopic, 1,
                                    &PayloadHandler::callbackPayload, this);
   };
@@ -47,10 +48,6 @@ class PayloadHandler final : PayloadConfig {
   };
 
  public:
-  void waitForTopic() {
-    ROS_INFO_STREAM(CYAN("Waiting for " << m_name << " topic..."));
-    ros::topic::waitForMessage<r2d2_msg_pkg::DriverState>(m_outputTopic);
-  };
   [[nodiscard]] T getForce() const {
     const T force_{r2d2_process::Force::unwrap<T>(m_callbackParams.force)};
     ROS_DEBUG_STREAM(m_name << "::getForce() : " << WHITE(force_));
