@@ -104,6 +104,13 @@ class JointHandler : public JointConfig<T> {
   };
   void setControl(const bool needsControl) { m_needsControl = needsControl; };
   void resetControl() { setControl(false); };
+  void setControlWord(const ControlType control_word) {
+    if (m_params.control_word == control_word) return;
+    m_params.control_word = control_word;
+    ROS_DEBUG_STREAM(BLUE(m_name
+                          << "::set control_word to "
+                          << YELLOW(static_cast<int>(m_params.control_word))));
+  };
   void setAngle(const T theta) {
     ROS_DEBUG_STREAM(m_name << "::updateAngle(theta = " << WHITE(theta) << ")");
     m_params.theta = theta;
@@ -127,13 +134,6 @@ class JointHandler : public JointConfig<T> {
                             << WHITE(static_cast<int>(diff))
                             << ", dTheta = " << WHITE(dTheta) << ")");
     m_params.theta += theta_;
-  };
-  void setControlWord(ControlType control_word) {
-    if (m_params.control_word == control_word) return;
-    m_params.control_word = control_word;
-    ROS_DEBUG_STREAM(BLUE(m_name
-                          << "::set control_word to "
-                          << YELLOW(static_cast<int>(m_params.control_word))));
   };
 
   [[nodiscard]] bool needsControl() const { return m_needsControl; };
