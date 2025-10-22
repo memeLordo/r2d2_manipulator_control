@@ -112,7 +112,8 @@ class JointHandler : public JointConfig<T> {
                           << YELLOW(static_cast<int>(m_params.control_word))));
   };
   void setAngle(const T theta) {
-    ROS_DEBUG_STREAM(m_name << "::updateAngle(theta = " << WHITE(theta) << ")");
+    // ROS_DEBUG_STREAM(m_name << "::updateAngle(theta = " << WHITE(theta) <<
+    // ")");
     m_params.theta = theta;
   };
   void setAngleByRadius(const T radius) {
