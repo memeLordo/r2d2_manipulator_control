@@ -3,6 +3,7 @@
 
 #include <ros/topic.h>
 
+#include "TopicAwait.hpp"
 #include "r2d2_msg_pkg/DriverCommand.h"
 #include "r2d2_msg_pkg/DriverState.h"
 #include "r2d2_utils_pkg/Collections.hpp"
@@ -51,7 +52,7 @@ class JointHandler : public JointConfig<T> {
   explicit JointHandler(ros::NodeHandle* node, const std::string& name)
       : JointConfig<T>(name) {
     ROS_DEBUG_STREAM(MAGENTA(m_name + "Handler()"));
-    waitForTopic();
+    waitForTopic<r2d2_msg_pkg::DriverState>(m_name, m_outputTopic);
     m_subscriber =
         node->subscribe(m_outputTopic, 1, &JointHandler::callbackJoint, this);
     m_publisher = node->advertise<r2d2_msg_pkg::DriverCommand>(m_inputTopic, 1);
@@ -96,10 +97,6 @@ class JointHandler : public JointConfig<T> {
   void publish() {
     ROS_DEBUG_STREAM(BLUE(m_name << "::publish()"));
     m_publisher.publish(prepareMsg());
-  };
-  void waitForTopic() {
-    ROS_INFO_STREAM(CYAN("Waiting for " << m_name << " topic..."));
-    ros::topic::waitForMessage<r2d2_msg_pkg::DriverState>(m_outputTopic);
   };
   void setAngle(const T theta) {
     ROS_DEBUG_STREAM(m_name << "::updateAngle(theta = " << WHITE(theta) << ")");
