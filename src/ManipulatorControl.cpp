@@ -57,7 +57,7 @@ void ManipulatorControlHandler<T>::processSetup(const T radius, const T force) {
     return;
   }
   checkSetup(force);
-  m_joints.updateAngleByRadius(radius);
+  m_joints.setAngleByRadius(radius);
 }
 template <typename T>
 void ManipulatorControlHandler<T>::processControl(const T force) {
@@ -66,7 +66,7 @@ void ManipulatorControlHandler<T>::processControl(const T force) {
     case LockStatus::UNLOCKED:
       ROS_DEBUG_STREAM(YELLOW("LockStatus::UNLOCKED"));
       m_joints.setCallbackAngle();
-      m_shoulder.updateAngleByRadius(getCurrentRadius());
+      m_shoulder.setAngleByRadius(getCurrentRadius());
       m_elbow.incrementAngleBy(getForceDiffSign(force));
       return;
     default:

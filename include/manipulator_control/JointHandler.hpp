@@ -121,11 +121,8 @@ class JointHandler : public JointConfig<T> {
     m_params.theta = getCallbackAngle();
     setControlWord(ControlType::HOLD);
   };
-  // TODO: update -> set
-  void updateAngleByRadius(const T radius) {
-    if (!m_needsControl) {
-      return;
-    }
+  void setAngleByRadius(const T radius) {
+    if (!m_needsControl) return;
     ROS_DEBUG_STREAM(
         m_name << "::updateAngleByRadius(radius = " << WHITE(radius) << ")");
     setAngle(getTargetAngle(radius));
@@ -188,7 +185,7 @@ class JointHandlerVector final
   void setCallbackAngle() {
     this->call_each(&JointHandler<T>::setCallbackAngle);
   };
-  void updateAngleByRadius(const T radius) {
+  void setAngleByRadius(const T radius) {
     this->call_each(&JointHandler<T>::updateAngleByRadius, radius);
   };
   [[nodiscard]] bool needsControlAny() const {
