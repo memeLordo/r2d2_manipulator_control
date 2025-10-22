@@ -70,7 +70,16 @@ class JointHandler : public JointConfig<T> {
   };
 
  protected:
-  [[nodiscard]] r2d2_msg_pkg::DriverCommand prepareMsg() const noexcept {
+  T getAngleTolerance() const {
+    return m_needsTolerance ? m_config.angle_tolerance : 0;
+  };
+  void checkAngleDiff(const T theta) {
+    m_needsAngleControl =
+        std::abs(getAngle() - theta) > m_config.angle_tolerance;
+    ROS_DEBUG_STREAM(
+        CYAN(m_name << "::needsAngleControl_ = " << m_needsAngleControl));
+  };
+  r2d2_msg_pkg::DriverCommand prepareMsg() const {
     const auto omega_{m_config.speed};
     const auto theta_{r2d2_process::Angle::wrap<int16_t>(m_params.theta)};
     const auto control_word_{static_cast<uint16_t>(m_params.control_word)};
