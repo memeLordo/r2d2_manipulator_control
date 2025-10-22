@@ -28,6 +28,7 @@ class PayloadHandler final : PayloadConfig {
   using PayloadConfig::m_outputTopic;
   r2d2_type::callback::payload16_t m_callbackParams{};
   ros::Subscriber m_subscriber;
+  volatile bool m_needsControl{true};
 
  public:
   PayloadHandler() = default;
@@ -48,6 +49,9 @@ class PayloadHandler final : PayloadConfig {
   };
 
  public:
+  void setControl(const bool needsControl) { m_needsControl = needsControl; };
+  void resetControl() { setControl(false); };
+  [[nodiscard]] bool needsControl() const { return m_needsControl; };
   [[nodiscard]] T getForce() const {
     const T force_{r2d2_process::Force::unwrap<T>(m_callbackParams.force)};
     ROS_DEBUG_STREAM(m_name << "::getForce() : " << WHITE(force_));
