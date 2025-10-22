@@ -131,6 +131,11 @@ class JointHandler : public JointConfig<T> {
     setAngle(getTargetAngle(radius));
     setControlWord(ControlType::CONTROL_ANGLE);
   };
+  void resetAngle() {
+    ROS_DEBUG_STREAM(m_name << "::resetAngle()");
+    setAngle(0);
+    setControlWord(ControlType::CONTROL_ANGLE);
+  };
   void incrementAngleBy(const int8_t diff, const T dTheta = T{0.1}) {
     const T theta_{diff * dTheta};
     ROS_DEBUG_STREAM(m_name << "::incrementAngleBy(diff = "
@@ -179,6 +184,7 @@ class JointHandlerVector final
  public:
   void publish() { this->call_each(&JointHandler<T>::publish); };
   void resetControl() { this->call_each(&JointHandler<T>::resetControl); };
+  void resetAngle() { this->call_each(&JointHandler<T>::resetAngle); };
   void setCallbackAngle() {
     this->call_each(&JointHandler<T>::setCallbackAngle);
   };
