@@ -44,8 +44,7 @@ class JointHandler : public JointConfig<T> {
   r2d2_type::callback::joint16_t m_callbackParams{};
   ros::Subscriber m_subscriber;
   ros::Publisher m_publisher;
-  volatile bool m_needsAngleControl{true};
-  volatile bool m_needsUpdate{true};
+  volatile bool m_needsControl{true};
 
  public:
   JointHandler() = default;
@@ -70,9 +69,6 @@ class JointHandler : public JointConfig<T> {
   };
 
  protected:
-  T getAngleTolerance() const {
-    return m_needsTolerance ? m_config.angle_tolerance : 0;
-  };
   void checkAngleDiff(const T theta) {
     m_needsAngleControl =
         std::abs(getAngle() - theta) > m_config.angle_tolerance;
@@ -150,6 +146,9 @@ class JointHandler : public JointConfig<T> {
   [[nodiscard]] T getAngle() const {
     ROS_DEBUG_STREAM(m_name << "::getAngle() : " << WHITE(m_params.theta));
     return m_params.theta;
+  };
+  [[nodiscard]] T getAngleTolerance() const {
+    return m_needsControl ? 0.1 : m_config.angle_tolerance;
   };
   [[nodiscard]] T getCallbackAngle() const {
     const T theta_{r2d2_process::Angle::unwrap<T>(m_callbackParams.theta)};
