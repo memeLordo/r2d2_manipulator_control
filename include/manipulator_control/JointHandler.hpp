@@ -179,9 +179,6 @@ class JointHandlerVector final
  public:
   void publish() { this->call_each(&JointHandler<T>::publish); };
   void resetControl() { this->call_each(&JointHandler<T>::resetControl); };
-  void setControl(const bool needsControl) {
-    this->call_each(&JointHandler<T>::setControl, needsControl);
-  };
   void setCallbackAngle() {
     this->call_each(&JointHandler<T>::setCallbackAngle);
   };

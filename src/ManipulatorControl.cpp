@@ -45,7 +45,6 @@ void ManipulatorControlHandler<T>::callbackManipulator(const ros::TimerEvent&) {
 }
 template <typename T>
 void ManipulatorControlHandler<T>::processStop() {
-  m_joints.setAngle(0);
 }
 template <typename T>
 void ManipulatorControlHandler<T>::processSetup(const T radius, const T force) {
