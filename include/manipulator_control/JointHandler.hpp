@@ -116,10 +116,6 @@ class JointHandler : public JointConfig<T> {
     // ")");
     m_params.theta = theta;
   };
-  void setAngleByRadius(const T radius) {
-    setAngle(getTargetAngle(radius));
-    setControlWord(ControlType::CONTROL_ANGLE);
-  };
   void updateAngleByRadius(const T radius) {
     if (m_needsControl) {
       setAngle(getTargetAngle(radius));
@@ -182,9 +178,6 @@ class JointHandlerVector final
   };
   void setAngle(const T theta) {
     this->call_each(&JointHandler<T>::setAngle, theta);
-  };
-  void setControlByAngle(const T theta) {
-    this->call_each(&JointHandler<T>::setControlByAngle, theta);
   };
   void updateAngleByRadius(const T radius) {
     this->call_each(&JointHandler<T>::updateAngleByRadius, radius);
