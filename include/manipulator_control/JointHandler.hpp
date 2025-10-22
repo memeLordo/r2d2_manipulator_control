@@ -123,13 +123,13 @@ class JointHandler : public JointConfig<T> {
   };
   // TODO: update -> set
   void updateAngleByRadius(const T radius) {
-    if (m_needsControl) {
-      setAngle(getTargetAngle(radius));
-      setControlWord(ControlType::CONTROL_ANGLE);
+    if (!m_needsControl) {
       return;
     }
-    setAngle(getCallbackAngle());
-    setControlWord(ControlType::HOLD);
+    ROS_DEBUG_STREAM(
+        m_name << "::updateAngleByRadius(radius = " << WHITE(radius) << ")");
+    setAngle(getTargetAngle(radius));
+    setControlWord(ControlType::CONTROL_ANGLE);
   };
   void incrementAngleBy(const int8_t diff, const T dTheta = T{0.1}) {
     const T theta_{diff * dTheta};
