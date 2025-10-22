@@ -22,75 +22,57 @@ void ManipulatorControlHandler<T>::callbackManipulator(const ros::TimerEvent&) {
   ROS_DEBUG_STREAM("\ncallbackManipulator()");
 
   switch (m_workMode.type) {
-    case WorkMode::AUTO:
-      ROS_DEBUG_STREAM(YELLOW("WorkMode::AUTO"));
-      processControl(m_pipe.getRadius(), m_payload.getForce());
-      return;
-
     case WorkMode::MANUAL:
       ROS_DEBUG_STREAM(YELLOW("WorkMode::MANUAL"));
-      this->resetMode();
-      return;
+      processSetup(m_pipe.getRadius(), m_payload.getForce());
+      break;
+
+    case WorkMode::AUTO:
+      ROS_DEBUG_STREAM(YELLOW("WorkMode::AUTO"));
+      processControl(m_payload.getForce());
+      break;
 
     case WorkMode::STOP:
       ROS_DEBUG_STREAM(YELLOW("WorkMode::STOP"));
       processStop();
-      return;
+      break;
 
     default:
       ROS_DEBUG_STREAM(YELLOW("Pending mode"));
       return;
   }
-}
-// TODO: make setAngleByRadius(getRadius()) for all
-template <typename T>
-void ManipulatorControlHandler<T>::processStop() {
-  processAngleControl(getRadius());
   publishResults();
 }
 template <typename T>
-void ManipulatorControlHandler<T>::checkSetup(const T force) {
-  if (!m_needsSetup) {
-    ROS_DEBUG_STREAM_ONCE(CYAN("Control setup finished!"));
-    return;
-  }
-  ROS_DEBUG_STREAM(MAGENTA("\ncheckSetup()"));
-  const bool needsAngleControl_{m_joints.needAngleControlAll()};
-  const bool needsForceControl_{force < getTargetForce()};
-  m_needsSetup = needsAngleControl_ && needsForceControl_;
-  ROS_DEBUG_STREAM(CYAN("needsAngleControl_ = " << needsAngleControl_));
-  ROS_DEBUG_STREAM(CYAN("needsForceControl_ = " << needsForceControl_));
-  ROS_DEBUG_STREAM(CYAN("m_needsSetup = " << m_needsSetup));
-  ROS_DEBUG_STREAM(RED("\nend") << MAGENTA("::checkSetup()"));
+void ManipulatorControlHandler<T>::processStop() {
+  m_joints.updateAngleByRadius(getRadius());
 }
 template <typename T>
-void ManipulatorControlHandler<T>::processControl(const T radius,
-                                                  const T force) {
+void ManipulatorControlHandler<T>::processSetup(const T radius, const T force) {
+  ROS_DEBUG_STREAM(MAGENTA("\nprocessSetup()"));
+  if (!m_needsSetup) {
+    ROS_DEBUG_STREAM_ONCE(CYAN("Control setup finished!"));
+    m_joints.resetControl();
+    this->setMode(WorkMode::AUTO);
+    return;
+  }
+  checkSetup(force);
+  m_joints.updateAngleByRadius(radius);
+}
+template <typename T>
+void ManipulatorControlHandler<T>::processControl(const T force) {
+  ROS_DEBUG_STREAM(MAGENTA("\nprocessControl()"));
+  const T currentRadius_{getCurrentRadius()};
+
   switch (m_lockStatus.type) {
     case LockStatus::UNLOCKED:
       ROS_DEBUG_STREAM(YELLOW("LockStatus::UNLOCKED"));
-      checkSetup(force);
-      processAngleControl(radius);
-      processForceControl(force);
-      break;
+      m_shoulder.updateAngleByRadius(currentRadius_);
+      m_elbow.incrementAngleBy(getForceDiffSign(force));
+      return;
     default:
-      break;
+      return;
   }
-  publishResults();
-}
-template <typename T>
-void ManipulatorControlHandler<T>::processAngleControl(const T radius) {
-  ROS_DEBUG_STREAM(MAGENTA("\nprocessRadiusControl()"));
-  m_joints.updateAngleByRadius(radius);
-  ROS_DEBUG_STREAM(RED("\nend") << MAGENTA("::processRadiusControl()"));
-}
-template <typename T>
-void ManipulatorControlHandler<T>::processForceControl(const T force) {
-  if (m_needsSetup) return;
-  ROS_DEBUG_STREAM(MAGENTA("\nprocessForceControl()"));
-  m_elbow.setAngleByRadius(getCurrentRadius() + getForceDiffSign(force));
-  // m_elbow.incrementAngleBy(getForceDiff(force));
-  ROS_DEBUG_STREAM(RED("\nend") << MAGENTA("::processForceControl()"));
 }
 
 template class ManipulatorControlHandler<>;
