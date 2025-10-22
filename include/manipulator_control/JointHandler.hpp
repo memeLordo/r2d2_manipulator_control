@@ -179,6 +179,9 @@ class JointHandlerVector final
   void setControl(const bool needsControl) {
     this->call_each(&JointHandler<T>::setControl, needsControl);
   };
+  void setAngle(const T theta) {
+    this->call_each(&JointHandler<T>::setAngle, theta);
+  };
   void setControlByAngle(const T theta) {
     this->call_each(&JointHandler<T>::setControlByAngle, theta);
   };
