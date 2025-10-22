@@ -32,9 +32,9 @@ class PipeHandler final : PipeConfig {
   PipeHandler() = default;
   explicit PipeHandler(ros::NodeHandle* node) : PipeConfig{} {
     ROS_DEBUG_STREAM(MAGENTA("PipeHandler()"));
-    TopicServiceHandler ts{node};
     m_subscriber =
         node->subscribe(m_outputTopic, 1, &PipeHandler::callbackPipe, this);
+    TopicServiceHandler ts{node};
   };
   ~PipeHandler() noexcept {
     ROS_DEBUG_STREAM(RED("~PipeHandler()"));
