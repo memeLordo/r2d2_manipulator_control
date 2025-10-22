@@ -113,10 +113,8 @@ class JointHandler : public JointConfig<T> {
     setControlWord(ControlType::CONTROL_ANGLE);
   };
   void updateAngleByRadius(const T radius) {
-    setAngle(getCallbackAngle());
-
-    if (const T targetAngle_{getTargetAngle(radius)}) {
-      setAngle(targetAngle_);
+    if (m_needsControl) {
+      setAngle(getTargetAngle(radius));
       setControlWord(ControlType::CONTROL_ANGLE);
       return;
     }
