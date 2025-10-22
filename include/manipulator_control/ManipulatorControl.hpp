@@ -1,5 +1,5 @@
-#ifndef R2D2_MANIPULATOR_CONTROL_HPP
-#define R2D2_MANIPULATOR_CONTROL_HPP
+#ifndef INCLUDE_MANIPULATOR_CONTROL_MANIPULATORCONTROL_HPP_
+#define INCLUDE_MANIPULATOR_CONTROL_MANIPULATORCONTROL_HPP_
 
 #include "JointHandler.hpp"
 #include "PayloadHandler.hpp"
@@ -131,4 +131,4 @@ class ManipulatorControlHandler final : public ManipulatorConfig<T> {
     return radius_;
   };
 };
-#endif  // R2D2_MANIPULATOR_CONTROL_HPP
+#endif  // INCLUDE_MANIPULATOR_CONTROL_MANIPULATORCONTROL_HPP_

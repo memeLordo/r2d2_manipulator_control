@@ -1,5 +1,5 @@
-#ifndef R2D2_PAYLOAD_HANDLER_HPP
-#define R2D2_PAYLOAD_HANDLER_HPP
+#ifndef INCLUDE_MANIPULATOR_CONTROL_PAYLOADHANDLER_HPP_
+#define INCLUDE_MANIPULATOR_CONTROL_PAYLOADHANDLER_HPP_
 
 #include <ros/topic.h>
 
@@ -57,4 +57,4 @@ class PayloadHandler final : PayloadConfig {
     return force_;
   };
 };
-#endif  // R2D2_PAYLOAD_HANDLER_HPP
+#endif  // INCLUDE_MANIPULATOR_CONTROL_PAYLOADHANDLER_HPP_

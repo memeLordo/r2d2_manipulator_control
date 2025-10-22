@@ -1,5 +1,5 @@
-#ifndef R2D2_PIPE_HANDLER_HPP
-#define R2D2_PIPE_HANDLER_HPP
+#ifndef INCLUDE_MANIPULATOR_CONTROL_PIPEHANDLER_HPP_
+#define INCLUDE_MANIPULATOR_CONTROL_PIPEHANDLER_HPP_
 
 #include <ros/topic.h>
 
@@ -57,4 +57,4 @@ class PipeHandler final : PipeConfig {
     return radius_;
   };
 };
-#endif  // R2D2_PIPE_HANDLER_HPP
+#endif  // INCLUDE_MANIPULATOR_CONTROL_PIPEHANDLER_HPP_

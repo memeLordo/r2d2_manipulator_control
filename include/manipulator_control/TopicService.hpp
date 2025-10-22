@@ -1,5 +1,5 @@
-#ifndef R2D2_TOPIC_SERVICE_HPP
-#define R2D2_TOPIC_SERVICE_HPP
+#ifndef INCLUDE_MANIPULATOR_CONTROL_TOPICSERVICE_HPP_
+#define INCLUDE_MANIPULATOR_CONTROL_TOPICSERVICE_HPP_
 
 #include <ros/node_handle.h>
 
@@ -30,4 +30,4 @@ class TopicServiceHandler final {
     ROS_DEBUG_STREAM(RED("~TopicServiceHandler()"));
   }
 };
-#endif  // R2D2_TOPIC_SERVICE_HPP
+#endif  // INCLUDE_MANIPULATOR_CONTROL_TOPICSERVICE_HPP_

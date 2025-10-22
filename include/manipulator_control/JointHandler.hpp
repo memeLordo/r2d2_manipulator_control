@@ -1,5 +1,5 @@
-#ifndef R2D2_JOINT_HANDLER_HPP
-#define R2D2_JOINT_HANDLER_HPP
+#ifndef INCLUDE_MANIPULATOR_CONTROL_JOINTHANDLER_HPP_
+#define INCLUDE_MANIPULATOR_CONTROL_JOINTHANDLER_HPP_
 
 #include <ros/topic.h>
 
@@ -187,4 +187,4 @@ class JointHandlerVector final
     return std::accumulate(radiuses_.cbegin(), radiuses_.cend(), T{0});
   };
 };
-#endif  // R2D2_JOINT_HANDLER_HPP
+#endif  // INCLUDE_MANIPULATOR_CONTROL_JOINTHANDLER_HPP_
