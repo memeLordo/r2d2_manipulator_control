@@ -24,18 +24,9 @@ class ManipulatorConfig
   void updateConfig() { m_config = this->getParams(m_nozzleType.key); };
 
  public:
-  void resetMode() {
-    ROS_DEBUG("Reset mode");
-    m_workMode.type = r2d2_state::WorkMode::NONE;
-  };
-  void resetLock() {
-    ROS_DEBUG("Reset lock");
-    m_lockStatus.type = r2d2_state::LockStatus::NONE;
-  };
   template <typename U>
   bool setMode(const U& value) {
-    ROS_DEBUG_STREAM("Set mode(value = " << WHITE(static_cast<int>(value))
-                                         << ")");
+    ROS_DEBUG_STREAM("setMode(val=" << WHITE(static_cast<int>(value)) << ")");
     m_workMode.updateType(value);
     if (m_workMode.key.empty()) {
       ROS_ERROR_STREAM("Got unknown work mode!");
@@ -45,8 +36,7 @@ class ManipulatorConfig
   };
   template <typename U>
   bool setNozzle(const U& value) {
-    ROS_DEBUG_STREAM("Set nozzle(value = " << WHITE(static_cast<int>(value))
-                                           << ")");
+    ROS_DEBUG_STREAM("setNozzle(val=" << WHITE(static_cast<int>(value)) << ")");
     m_nozzleType.updateType(value);
     if (m_nozzleType.key.empty()) {
       ROS_ERROR_STREAM("Got unknown nozzle type!");
@@ -57,14 +47,21 @@ class ManipulatorConfig
   };
   template <typename U>
   bool setLock(const U& value) {
-    ROS_DEBUG_STREAM("Set lock(value = " << WHITE(static_cast<int>(value))
-                                         << ")");
+    ROS_DEBUG_STREAM("setLock(val=" << WHITE(static_cast<int>(value)) << ")");
     m_lockStatus.updateType(value);
     if (m_lockStatus.key.empty()) {
       ROS_ERROR_STREAM("Got unknown lock status!");
       return false;
     }
     return true;
+  };
+  void resetMode() {
+    ROS_DEBUG("Reset mode");
+    m_workMode.updateType(r2d2_state::WorkMode::NONE);
+  };
+  void resetLock() {
+    ROS_DEBUG("Reset lock");
+    m_lockStatus.updateType(r2d2_state::LockStatus::LOCKED);
   };
 };
 
