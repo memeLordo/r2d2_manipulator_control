@@ -92,23 +92,15 @@ class ManipulatorControlHandler final : public ManipulatorConfig<T> {
   void processSetup(const T radius, const T force);
   void processControl(const T force);
   void processStop();
-  // void processAngleControl(const T radius);
-  // void processForceControl(const T force);
 
  protected:
-  void publishResults() {
-    ROS_DEBUG_STREAM(MAGENTA("\npublishResults()"));
-    m_joints.publish();
-  };
   void checkSetup(const T force) {
-    // ROS_DEBUG_STREAM(MAGENTA("\ncheckSetup()"));
     const bool needsAngleControl_{m_joints.needsControlAll()};
     const bool needsForceControl_{force < getTargetForce()};
     m_needsSetup = needsAngleControl_ && needsForceControl_;
     ROS_DEBUG_STREAM(CYAN("needsAngleControl_ = " << needsAngleControl_));
     ROS_DEBUG_STREAM(CYAN("needsForceControl_ = " << needsForceControl_));
     ROS_DEBUG_STREAM(CYAN("m_needsSetup = " << m_needsSetup));
-    // ROS_DEBUG_STREAM(RED("\nend") << MAGENTA("::checkSetup()"));
   }
   void updateControlFlag(const T force) {
     m_payload.setControl(r2d2_math::abs(force) > getForceTolerance());
