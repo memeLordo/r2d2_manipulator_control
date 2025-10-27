@@ -28,8 +28,7 @@ class ManipulatorServiceHandler final {
       r2d2_msg_pkg::ManipulatorCommand::Request& req,
       r2d2_msg_pkg::ManipulatorCommand::Response& res) {
     res.success = true;
-    return callbackModeService(req, res) && callbackNozzleService(req, res) &&
-           callbackStatusService(req, res);
+    return callbackModeService(req, res) && callbackNozzleService(req, res);
   };
 
   [[nodiscard]] bool callbackModeService(
@@ -47,15 +46,6 @@ class ManipulatorServiceHandler final {
     ROS_DEBUG_STREAM(
         "callbackNozzleService::got request, nozzle_type: " << req.nozzle_type);
     if (!m_manipulatorControl.setNozzle(req.nozzle_type)) res.success &= false;
-    return true;
-  };
-
-  [[nodiscard]] bool callbackStatusService(
-      r2d2_msg_pkg::ManipulatorCommand::Request& req,
-      r2d2_msg_pkg::ManipulatorCommand::Response& res) {
-    ROS_DEBUG_STREAM(
-        "callbackStatusService::got request, lock_status: " << req.lock_status);
-    if (!m_manipulatorControl.setLock(req.lock_status)) res.success &= false;
     return true;
   };
 };

@@ -1,7 +1,5 @@
 #include "ManipulatorControl.hpp"
 
-#include "r2d2_utils_pkg/Math.hpp"
-
 using namespace r2d2_state;
 using namespace r2d2_type;
 
@@ -60,33 +58,26 @@ void ManipulatorControlHandler<T>::processSetup(const T radius, const T force) {
 template <typename T>
 void ManipulatorControlHandler<T>::processControl(const T force) {
   ROS_DEBUG_STREAM(MAGENTA("\nprocessControl()"));
+  m_joints.setCallbackAngle();
   const T curentRadius_{getCurrentRadius()};
-  switch (m_lockStatus.type) {
-    case LockStatus::UNLOCKED:
-      ROS_DEBUG_STREAM(YELLOW("LockStatus::UNLOCKED"));
-      m_joints.setCallbackAngle();
+  const T forceDiff_{getTargetForceDiff(force)};
 
-      m_shoulder.updateControlFlag(curentRadius_);
-      m_shoulder.setAngleByRadius(curentRadius_);
+  m_shoulder.updateControlFlag(curentRadius_);
+  m_shoulder.setAngleByRadius(curentRadius_);
 
-      m_elbow.incrementAngleBy(getForceDiffSign(force),
-                               0.01 * r2d2_math::abs(getForceDiff(force)));
-      return;
-
-    default:
-      return;
-  }
+  updateControlFlag(forceDiff_);
+  m_elbow.incrementAngleBy(-forceDiff_, 0.01);
 }
 template <typename T>
 void ManipulatorControlHandler<T>::processStop() {
   ROS_DEBUG_STREAM(MAGENTA("\nprocessStop()"));
-  m_joints.setCallbackAngle();
-  m_joints.updateControlFlag(getCurrentRadius());
   if (!m_joints.needsControlAny()) {
     m_needsSetup = true;
     this->resetMode();
     return;
   }
+  m_joints.setCallbackAngle();
+  m_joints.updateControlFlag(getCurrentRadius());
   m_joints.resetAngle();
 }
 

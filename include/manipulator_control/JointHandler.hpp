@@ -86,7 +86,7 @@ class JointHandler : public JointConfig<T> {
   };
 
  public:
-  void publish() {
+  void publish() const {
     ROS_DEBUG_STREAM(BLUE(m_name << "::publish()"));
     m_publisher.publish(prepareMsg());
   };
@@ -130,7 +130,7 @@ class JointHandler : public JointConfig<T> {
     setAngle(getTargetAngle(radius));
     setControlWord(ControlType::CONTROL_ANGLE);
   };
-  void incrementAngleBy(const int diff, const T thetaStep = T{0.01}) {
+  void incrementAngleBy(const T diff, const T thetaStep = T{1}) {
     const T theta_{diff * thetaStep};
     ROS_DEBUG_STREAM(m_name << "::incrementAngleBy(diff = " << WHITE(diff)
                             << ", thetaStep = " << WHITE(thetaStep) << ")");

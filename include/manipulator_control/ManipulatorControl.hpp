@@ -13,7 +13,6 @@ class ManipulatorConfig
  protected:
   r2d2_state::WorkModePair m_workMode{};
   r2d2_state::NozzleTypePair m_nozzleType{};
-  r2d2_state::LockStatusPair m_lockStatus{};
   r2d2_type::config::nozzle_t<T> m_config;
 
  protected:
@@ -45,23 +44,9 @@ class ManipulatorConfig
     updateConfig();
     return true;
   };
-  template <typename U>
-  bool setLock(const U& value) {
-    ROS_DEBUG_STREAM("setLock(val=" << WHITE(static_cast<int>(value)) << ")");
-    m_lockStatus.updateType(value);
-    if (m_lockStatus.key.empty()) {
-      ROS_ERROR_STREAM("Got unknown lock status!");
-      return false;
-    }
-    return true;
-  };
   void resetMode() {
     ROS_DEBUG("Reset mode");
     m_workMode.updateType(r2d2_state::WorkMode::NONE);
-  };
-  void resetLock() {
-    ROS_DEBUG("Reset lock");
-    m_lockStatus.updateType(r2d2_state::LockStatus::LOCKED);
   };
 };
 
@@ -70,7 +55,6 @@ class ManipulatorControlHandler final : public ManipulatorConfig<T> {
  private:
   using ManipulatorConfig<T>::m_workMode;
   using ManipulatorConfig<T>::m_nozzleType;
-  using ManipulatorConfig<T>::m_lockStatus;
   using ManipulatorConfig<T>::m_config;
   PipeHandler<T> m_pipe;
   PayloadHandler<T> m_payload;
@@ -106,16 +90,6 @@ class ManipulatorControlHandler final : public ManipulatorConfig<T> {
     m_payload.setControl(r2d2_math::abs(force) > getForceTolerance());
     ROS_DEBUG_STREAM(CYAN("needsForceControl = " << m_payload.needsControl()));
   };
-  [[nodiscard]] T getForceDiff(const T force) const {
-    return force - getTargetForce();
-  };
-  [[nodiscard]] int8_t getForceDiffSign(const T force) {
-    const T forceDiff_{getForceDiff(force)};
-    ROS_DEBUG_STREAM(BLUE("forceDiff = " << forceDiff_));
-    updateControlFlag(forceDiff_);
-    if (m_payload.needsControl()) return -r2d2_math::sign(forceDiff_);
-    return 0;
-  };
 
  public:
   [[nodiscard]] T getRadius() const {
@@ -134,6 +108,9 @@ class ManipulatorControlHandler final : public ManipulatorConfig<T> {
                        : m_config.force_needed};
     ROS_DEBUG_STREAM("Target force : " << WHITE(force_));
     return force_;
+  };
+  [[nodiscard]] T getTargetForceDiff(const T force) const {
+    return m_payload.needsControl() ? force - getTargetForce() : 0;
   };
   [[nodiscard]] T getForceTolerance(const T minTolerance = T{1}) const {
     return m_payload.needsControl() ? minTolerance : m_config.force_tolerance;
