@@ -52,7 +52,7 @@ void ManipulatorControlHandler<T>::processSetup(const T radius, const T force) {
   ROS_DEBUG_STREAM(MAGENTA("\nprocessSetup()"));
   if (!m_needsSetup) {
     ROS_DEBUG_STREAM_ONCE(CYAN("Control setup finished!"));
-    m_joints.resetControl();
+    m_joints.resetControlFlag();
     this->setMode(WorkMode::AUTO);
     return;
   }

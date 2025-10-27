@@ -176,11 +176,13 @@ class JointHandlerVector final
 
  public:
   void publish() { this->call_each(&JointHandler<T>::publish); };
-  void resetControl() { this->call_each(&JointHandler<T>::resetControl); };
-  void resetAngle() { this->call_each(&JointHandler<T>::resetAngle); };
   void setCallbackAngle() {
     this->call_each(&JointHandler<T>::setCallbackAngle);
   };
+  void resetControlFlag() {
+    this->call_each(&JointHandler<T>::resetControlFlag);
+  };
+  void resetAngle() { this->call_each(&JointHandler<T>::resetAngle); };
   [[nodiscard]] bool needsControlAny() const {
     return std::any_of(this->cbegin(), this->cend(),
                        [](auto& obj) { return obj.needsControl(); });
