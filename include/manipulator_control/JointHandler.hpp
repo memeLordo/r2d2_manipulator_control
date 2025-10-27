@@ -198,5 +198,8 @@ class JointHandlerVector final
   void setAngleByRadius(const T radius) {
     this->call_each(&JointHandler<T>::setAngleByRadius, radius);
   };
+  void updateControlFlag(const T radius) {
+    this->call_each(&JointHandler<T>::updateControlFlag, radius);
+  };
 };
 #endif  // INCLUDE_MANIPULATOR_CONTROL_JOINTHANDLER_HPP_
