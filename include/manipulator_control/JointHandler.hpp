@@ -84,12 +84,6 @@ class JointHandler : public JointConfig<T> {
     msg.control_word = control_word_;
     return msg;
   };
-  void checkAnleControl(const T theta) {
-    m_needsControl = r2d2_math::abs(getAngle() - theta) >= getAngleTolerance();
-    ROS_DEBUG_STREAM(
-        CYAN(m_name << "::needsAngleControl_ = " << m_needsControl));
-  };
-  void checkAngleControl() { checkAnleControl(getCallbackAngle()); };
 
  public:
   void publish() {
@@ -98,6 +92,13 @@ class JointHandler : public JointConfig<T> {
   };
   void setControl(const bool needsControl) { m_needsControl = needsControl; };
   void resetControl() { setControl(false); };
+  void updateControlFlag(const T radius) {
+    m_needsControl =
+        r2d2_math::abs(getCallbackAngle() - getTargetAngle(radius)) >
+        getAngleTolerance();
+    ROS_DEBUG_STREAM(
+        CYAN(m_name << "::needsAngleControl_ = " << m_needsControl));
+  };
   void setControlWord(const ControlType control_word) {
     if (m_params.control_word == control_word) return;
     m_params.control_word = control_word;
