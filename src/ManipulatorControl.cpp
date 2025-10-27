@@ -1,5 +1,7 @@
 #include "ManipulatorControl.hpp"
 
+#include "r2d2_utils_pkg/Math.hpp"
+
 using namespace r2d2_state;
 using namespace r2d2_type;
 
@@ -22,8 +24,8 @@ void ManipulatorControlHandler<T>::callbackManipulator(const ros::TimerEvent&) {
   ROS_DEBUG_STREAM("\ncallbackManipulator()");
 
   switch (m_workMode.type) {
-    case WorkMode::MANUAL:
-      ROS_DEBUG_STREAM(YELLOW("WorkMode::MANUAL"));
+    case WorkMode::SETUP:
+      ROS_DEBUG_STREAM(YELLOW("WorkMode::SETUP"));
       processSetup(m_pipe.getRadius(), m_payload.getForce());
       break;
 
@@ -41,11 +43,7 @@ void ManipulatorControlHandler<T>::callbackManipulator(const ros::TimerEvent&) {
       ROS_DEBUG_STREAM(YELLOW("Pending mode"));
       return;
   }
-  publishResults();
-}
-template <typename T>
-void ManipulatorControlHandler<T>::processStop() {
-  m_joints.resetAngle();
+  m_joints.publish();
 }
 template <typename T>
 void ManipulatorControlHandler<T>::processSetup(const T radius, const T force) {
@@ -62,13 +60,19 @@ void ManipulatorControlHandler<T>::processSetup(const T radius, const T force) {
 template <typename T>
 void ManipulatorControlHandler<T>::processControl(const T force) {
   ROS_DEBUG_STREAM(MAGENTA("\nprocessControl()"));
+  const T curentRadius_{getCurrentRadius()};
   switch (m_lockStatus.type) {
     case LockStatus::UNLOCKED:
       ROS_DEBUG_STREAM(YELLOW("LockStatus::UNLOCKED"));
       m_joints.setCallbackAngle();
-      m_shoulder.setAngleByRadius(getCurrentRadius());
-      m_elbow.incrementAngleBy(getForceDiffSign(force));
+
+      m_shoulder.updateControlFlag(curentRadius_);
+      m_shoulder.setAngleByRadius(curentRadius_);
+
+      m_elbow.incrementAngleBy(getForceDiffSign(force),
+                               0.01 * r2d2_math::abs(getForceDiff(force)));
       return;
+
     default:
       return;
   }
