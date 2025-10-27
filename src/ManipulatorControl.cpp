@@ -58,9 +58,9 @@ void ManipulatorControlHandler<T>::processSetup(const T radius, const T force) {
 template <typename T>
 void ManipulatorControlHandler<T>::processControl(const T force) {
   ROS_DEBUG_STREAM(MAGENTA("\nprocessControl()"));
+  m_joints.setCallbackAngle();
   const T curentRadius_{getCurrentRadius()};
   const T forceDiff_{getForceDiff(force)};
-  m_joints.setCallbackAngle();
 
   m_shoulder.updateControlFlag(curentRadius_);
   m_shoulder.setAngleByRadius(curentRadius_);
@@ -71,13 +71,13 @@ void ManipulatorControlHandler<T>::processControl(const T force) {
 template <typename T>
 void ManipulatorControlHandler<T>::processStop() {
   ROS_DEBUG_STREAM(MAGENTA("\nprocessStop()"));
-  m_joints.setCallbackAngle();
-  m_joints.updateControlFlag(getCurrentRadius());
   if (!m_joints.needsControlAny()) {
     m_needsSetup = true;
     this->resetMode();
     return;
   }
+  m_joints.setCallbackAngle();
+  m_joints.updateControlFlag(getCurrentRadius());
   m_joints.resetAngle();
 }
 
