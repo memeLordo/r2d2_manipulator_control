@@ -140,8 +140,8 @@ class ManipulatorControlHandler final : public ManipulatorConfig<T> {
     ROS_DEBUG_STREAM("Target force : " << WHITE(force_));
     return force_;
   };
-  [[nodiscard]] T getForceTolerance() const {
-    return m_payload.needsControl() ? 0.1 : m_config.force_tolerance;
+  [[nodiscard]] T getForceTolerance(const T minTolerance = T{1}) const {
+    return m_payload.needsControl() ? minTolerance : m_config.force_tolerance;
   };
 };
 #endif  // INCLUDE_MANIPULATOR_CONTROL_MANIPULATORCONTROL_HPP_
