@@ -1,7 +1,5 @@
 #include "ManipulatorControl.hpp"
 
-#include "r2d2_utils_pkg/Math.hpp"
-
 using namespace r2d2_state;
 using namespace r2d2_type;
 
@@ -61,6 +59,7 @@ template <typename T>
 void ManipulatorControlHandler<T>::processControl(const T force) {
   ROS_DEBUG_STREAM(MAGENTA("\nprocessControl()"));
   const T curentRadius_{getCurrentRadius()};
+  const T forceDiff_{getForceDiff(force)};
   switch (m_lockStatus.type) {
     case LockStatus::UNLOCKED:
       ROS_DEBUG_STREAM(YELLOW("LockStatus::UNLOCKED"));
@@ -69,8 +68,8 @@ void ManipulatorControlHandler<T>::processControl(const T force) {
       m_shoulder.updateControlFlag(curentRadius_);
       m_shoulder.setAngleByRadius(curentRadius_);
 
-      m_elbow.incrementAngleBy(getForceDiffSign(force),
-                               0.01 * r2d2_math::abs(getForceDiff(force)));
+      updateControlFlag(forceDiff_);
+      m_elbow.incrementAngleBy(-forceDiff_);
       return;
 
     default:
