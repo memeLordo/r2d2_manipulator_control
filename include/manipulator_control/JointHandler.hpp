@@ -131,11 +131,10 @@ class JointHandler : public JointConfig<T> {
     setAngle(0);
     setControlWord(ControlType::CONTROL_ANGLE);
   };
-  void incrementAngleBy(const int8_t diff, const T dTheta = T{0.1}) {
-    const T theta_{diff * dTheta};
-    ROS_DEBUG_STREAM(m_name << "::incrementAngleBy(diff = "
-                            << WHITE(static_cast<int>(diff))
-                            << ", dTheta = " << WHITE(dTheta) << ")");
+  void incrementAngleBy(const int diff, const T thetaStep = T{0.01}) {
+    const T theta_{diff * thetaStep};
+    ROS_DEBUG_STREAM(m_name << "::incrementAngleBy(diff = " << WHITE(diff)
+                            << ", thetaStep = " << WHITE(thetaStep) << ")");
     m_params.theta += theta_;
   };
 
