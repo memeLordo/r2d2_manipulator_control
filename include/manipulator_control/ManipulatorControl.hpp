@@ -123,6 +123,11 @@ class ManipulatorControlHandler final : public ManipulatorConfig<T> {
   };
 
  public:
+  [[nodiscard]] T getRadius() const {
+    const T radius_{m_config.r0};
+    ROS_DEBUG_STREAM("Base radius : " << WHITE(radius_));
+    return radius_;
+  };
   [[nodiscard]] T getCurrentRadius() const {
     const T currentRadius_{m_joints.getRadius() + getRadius()};
     ROS_DEBUG_STREAM(RED("Current radius : ") << WHITE(currentRadius_));
@@ -137,11 +142,6 @@ class ManipulatorControlHandler final : public ManipulatorConfig<T> {
   };
   [[nodiscard]] T getForceTolerance() const {
     return m_payload.needsControl() ? 0.1 : m_config.force_tolerance;
-  };
-  [[nodiscard]] T getRadius() const {
-    const T radius_{m_config.r0};
-    ROS_DEBUG_STREAM("Init radius : " << WHITE(radius_));
-    return radius_;
   };
 };
 #endif  // INCLUDE_MANIPULATOR_CONTROL_MANIPULATORCONTROL_HPP_
