@@ -13,7 +13,6 @@ class ManipulatorConfig
  protected:
   r2d2_state::WorkModePair m_workMode{};
   r2d2_state::NozzleTypePair m_nozzleType{};
-  r2d2_state::LockStatusPair m_lockStatus{};
   r2d2_type::config::nozzle_t<T> m_config;
 
  protected:
@@ -45,23 +44,9 @@ class ManipulatorConfig
     updateConfig();
     return true;
   };
-  template <typename U>
-  bool setLock(const U& value) {
-    ROS_DEBUG_STREAM("setLock(val=" << WHITE(static_cast<int>(value)) << ")");
-    m_lockStatus.updateType(value);
-    if (m_lockStatus.key.empty()) {
-      ROS_ERROR_STREAM("Got unknown lock status!");
-      return false;
-    }
-    return true;
-  };
   void resetMode() {
     ROS_DEBUG("Reset mode");
     m_workMode.updateType(r2d2_state::WorkMode::NONE);
-  };
-  void resetLock() {
-    ROS_DEBUG("Reset lock");
-    m_lockStatus.updateType(r2d2_state::LockStatus::LOCKED);
   };
 };
 
@@ -70,7 +55,6 @@ class ManipulatorControlHandler final : public ManipulatorConfig<T> {
  private:
   using ManipulatorConfig<T>::m_workMode;
   using ManipulatorConfig<T>::m_nozzleType;
-  using ManipulatorConfig<T>::m_lockStatus;
   using ManipulatorConfig<T>::m_config;
   PipeHandler<T> m_pipe;
   PayloadHandler<T> m_payload;

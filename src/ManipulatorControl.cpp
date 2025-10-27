@@ -60,21 +60,13 @@ void ManipulatorControlHandler<T>::processControl(const T force) {
   ROS_DEBUG_STREAM(MAGENTA("\nprocessControl()"));
   const T curentRadius_{getCurrentRadius()};
   const T forceDiff_{getForceDiff(force)};
-  switch (m_lockStatus.type) {
-    case LockStatus::UNLOCKED:
-      ROS_DEBUG_STREAM(YELLOW("LockStatus::UNLOCKED"));
-      m_joints.setCallbackAngle();
+  m_joints.setCallbackAngle();
 
-      m_shoulder.updateControlFlag(curentRadius_);
-      m_shoulder.setAngleByRadius(curentRadius_);
+  m_shoulder.updateControlFlag(curentRadius_);
+  m_shoulder.setAngleByRadius(curentRadius_);
 
-      updateControlFlag(forceDiff_);
-      m_elbow.incrementAngleBy(-forceDiff_);
-      return;
-
-    default:
-      return;
-  }
+  updateControlFlag(forceDiff_);
+  m_elbow.incrementAngleBy(-forceDiff_, 0.01);
 }
 template <typename T>
 void ManipulatorControlHandler<T>::processStop() {
