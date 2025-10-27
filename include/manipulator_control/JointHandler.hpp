@@ -90,8 +90,6 @@ class JointHandler : public JointConfig<T> {
     ROS_DEBUG_STREAM(BLUE(m_name << "::publish()"));
     m_publisher.publish(prepareMsg());
   };
-  void setControl(const bool needsControl) { m_needsControl = needsControl; };
-  void resetControl() { setControl(false); };
   void updateControlFlag(const T radius) {
     m_needsControl =
         r2d2_math::abs(getCallbackAngle() - getTargetAngle(radius)) >
@@ -99,6 +97,10 @@ class JointHandler : public JointConfig<T> {
     ROS_DEBUG_STREAM(
         CYAN(m_name << "::needsAngleControl_ = " << m_needsControl));
   };
+  void setControlFlag(const bool needsControl) {
+    m_needsControl = needsControl;
+  };
+  void resetControlFlag() { setControlFlag(false); };
   void setControlWord(const ControlType control_word) {
     if (m_params.control_word == control_word) return;
     m_params.control_word = control_word;
