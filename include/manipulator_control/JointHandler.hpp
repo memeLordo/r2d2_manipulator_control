@@ -115,7 +115,7 @@ class JointHandler : public JointConfig<T> {
   };
   void setCallbackAngle() {
     ROS_DEBUG_STREAM(m_name << "::setCallbackAngle()");
-    m_params.theta = getCallbackAngle();
+    setAngle(getCallbackAngle());
     setControlWord(ControlType::HOLD);
   };
   void setAngleByRadius(const T radius) {
