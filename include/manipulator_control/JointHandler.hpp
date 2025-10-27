@@ -126,6 +126,7 @@ class JointHandler : public JointConfig<T> {
     setControlWord(ControlType::CONTROL_ANGLE);
   };
   void resetAngle() {
+    if (!m_needsControl) return;
     ROS_DEBUG_STREAM(m_name << "::resetAngle()");
     setAngle(0);
     setControlWord(ControlType::CONTROL_ANGLE);
