@@ -90,9 +90,6 @@ class ManipulatorControlHandler final : public ManipulatorConfig<T> {
     m_payload.setControl(r2d2_math::abs(force) > getForceTolerance());
     ROS_DEBUG_STREAM(CYAN("needsForceControl = " << m_payload.needsControl()));
   };
-  [[nodiscard]] T getTargetForceDiff(const T force) const {
-    return m_payload.needsControl() ? force - getTargetForce() : 0;
-  };
 
  public:
   [[nodiscard]] T getRadius() const {
@@ -111,6 +108,9 @@ class ManipulatorControlHandler final : public ManipulatorConfig<T> {
                        : m_config.force_needed};
     ROS_DEBUG_STREAM("Target force : " << WHITE(force_));
     return force_;
+  };
+  [[nodiscard]] T getTargetForceDiff(const T force) const {
+    return m_payload.needsControl() ? force - getTargetForce() : 0;
   };
   [[nodiscard]] T getForceTolerance(const T minTolerance = T{1}) const {
     return m_payload.needsControl() ? minTolerance : m_config.force_tolerance;
