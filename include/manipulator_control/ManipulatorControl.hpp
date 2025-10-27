@@ -129,7 +129,7 @@ class ManipulatorControlHandler final : public ManipulatorConfig<T> {
     return radius_;
   };
   [[nodiscard]] T getCurrentRadius() const {
-    const T currentRadius_{m_joints.getRadius() + getRadius()};
+    const T currentRadius_{getRadius() + m_joints.getRadius()};
     ROS_DEBUG_STREAM(RED("Current radius : ") << WHITE(currentRadius_));
     return currentRadius_;
   };
