@@ -60,7 +60,7 @@ void ManipulatorControlHandler<T>::processControl(const T force) {
   ROS_DEBUG_STREAM(MAGENTA("\nprocessControl()"));
   m_joints.setCallbackAngle();
   const T curentRadius_{getCurrentRadius()};
-  const T forceDiff_{getForceDiff(force)};
+  const T forceDiff_{getTargetForceDiff(force)};
 
   m_shoulder.updateControlFlag(curentRadius_);
   m_shoulder.setAngleByRadius(curentRadius_);

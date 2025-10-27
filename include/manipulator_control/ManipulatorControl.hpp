@@ -90,7 +90,7 @@ class ManipulatorControlHandler final : public ManipulatorConfig<T> {
     m_payload.setControl(r2d2_math::abs(force) > getForceTolerance());
     ROS_DEBUG_STREAM(CYAN("needsForceControl = " << m_payload.needsControl()));
   };
-  [[nodiscard]] T getForceDiff(const T force) const {
+  [[nodiscard]] T getTargetForceDiff(const T force) const {
     return m_payload.needsControl() ? force - getTargetForce() : 0;
   };
 
