@@ -86,7 +86,7 @@ class JointHandler : public JointConfig<T> {
   };
 
  public:
-  void publish() {
+  void publish() const {
     ROS_DEBUG_STREAM(BLUE(m_name << "::publish()"));
     m_publisher.publish(prepareMsg());
   };
