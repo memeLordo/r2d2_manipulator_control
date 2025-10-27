@@ -181,9 +181,6 @@ class JointHandlerVector final
   void setCallbackAngle() {
     this->call_each(&JointHandler<T>::setCallbackAngle);
   };
-  void setAngleByRadius(const T radius) {
-    this->call_each(&JointHandler<T>::updateAngleByRadius, radius);
-  };
   [[nodiscard]] bool needsControlAny() const {
     return std::any_of(this->cbegin(), this->cend(),
                        [](auto& obj) { return obj.needsControl(); });
@@ -195,6 +192,9 @@ class JointHandlerVector final
   [[nodiscard]] T getRadius() const {
     auto radiuses_{this->get_each(&JointHandler<T>::getRadius)};
     return std::accumulate(radiuses_.cbegin(), radiuses_.cend(), T{0});
+  };
+  void setAngleByRadius(const T radius) {
+    this->call_each(&JointHandler<T>::setAngleByRadius, radius);
   };
 };
 #endif  // INCLUDE_MANIPULATOR_CONTROL_JOINTHANDLER_HPP_
