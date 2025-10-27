@@ -142,9 +142,6 @@ class JointHandler : public JointConfig<T> {
     ROS_DEBUG_STREAM(m_name << "::getAngle() : " << WHITE(m_params.theta));
     return m_params.theta;
   };
-  [[nodiscard]] T getAngleTolerance() const {
-    return m_needsControl ? 0.1 : m_config.angle_tolerance;
-  };
   [[nodiscard]] T getCallbackAngle() const {
     const T theta_{r2d2_process::Angle::unwrap<T>(m_callbackParams.theta)};
     ROS_DEBUG_STREAM(m_name << YELLOW("::getCallbackAngle() : ")
@@ -162,6 +159,9 @@ class JointHandler : public JointConfig<T> {
     ROS_DEBUG_STREAM(m_name << "::calcAngle(radius = " << WHITE(radius)
                             << ") : " << WHITE(theta_));
     return r2d2_math::max<T>(theta_, 0);
+  };
+  [[nodiscard]] T getAngleTolerance(const T minTolerance = T{0.1}) const {
+    return m_needsControl ? minTolerance : m_config.angle_tolerance;
   };
 };
 
