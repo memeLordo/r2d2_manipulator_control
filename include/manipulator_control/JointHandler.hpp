@@ -1,8 +1,9 @@
-#ifndef R2D2_JOINT_HANDLER_HPP
-#define R2D2_JOINT_HANDLER_HPP
+#ifndef INCLUDE_MANIPULATOR_CONTROL_JOINTHANDLER_HPP_
+#define INCLUDE_MANIPULATOR_CONTROL_JOINTHANDLER_HPP_
 
 #include <ros/topic.h>
 
+#include "TopicAwait.hpp"
 #include "r2d2_msg_pkg/DriverCommand.h"
 #include "r2d2_msg_pkg/DriverState.h"
 #include "r2d2_utils_pkg/Collections.hpp"
@@ -43,15 +44,14 @@ class JointHandler : public JointConfig<T> {
   r2d2_type::callback::joint16_t m_callbackParams{};
   ros::Subscriber m_subscriber;
   ros::Publisher m_publisher;
-  volatile bool m_needsAngleControl{true};
-  volatile bool m_needsUpdate{true};
+  volatile bool m_needsControl{true};
 
  public:
   JointHandler() = default;
   explicit JointHandler(ros::NodeHandle* node, const std::string& name)
       : JointConfig<T>(name) {
     ROS_DEBUG_STREAM(MAGENTA(m_name + "Handler()"));
-    waitForTopic();
+    waitForTopic<r2d2_msg_pkg::DriverState>(m_name, m_outputTopic);
     m_subscriber =
         node->subscribe(m_outputTopic, 1, &JointHandler::callbackJoint, this);
     m_publisher = node->advertise<r2d2_msg_pkg::DriverCommand>(m_inputTopic, 1);
@@ -69,7 +69,7 @@ class JointHandler : public JointConfig<T> {
   };
 
  protected:
-  [[nodiscard]] r2d2_msg_pkg::DriverCommand prepareMsg() const noexcept {
+  r2d2_msg_pkg::DriverCommand prepareMsg() const {
     const auto omega_{m_config.speed};
     const auto theta_{r2d2_process::Angle::wrap<int16_t>(m_params.theta)};
     const auto control_word_{static_cast<uint16_t>(m_params.control_word)};
@@ -84,63 +84,60 @@ class JointHandler : public JointConfig<T> {
     msg.control_word = control_word_;
     return msg;
   };
-  bool needsAngleControl(const T theta) {
-    m_needsAngleControl =
-        r2d2_math::abs(getAngle() - theta) > m_config.angle_tolerance;
-    ROS_DEBUG_STREAM(
-        CYAN(m_name << "::needsAngleControl_ = " << m_needsAngleControl));
-    return m_needsAngleControl;
-  };
 
  public:
   void publish() {
     ROS_DEBUG_STREAM(BLUE(m_name << "::publish()"));
     m_publisher.publish(prepareMsg());
   };
-  void waitForTopic() {
-    ROS_INFO_STREAM(CYAN("Waiting for " << m_name << " topic..."));
-    ros::topic::waitForMessage<r2d2_msg_pkg::DriverState>(m_outputTopic);
+  void updateControlFlag(const T radius) {
+    m_needsControl =
+        r2d2_math::abs(getCallbackAngle() - getTargetAngle(radius)) >
+        getAngleTolerance();
+    ROS_DEBUG_STREAM(
+        CYAN(m_name << "::needsAngleControl_ = " << m_needsControl));
   };
-  void setAngle(const T theta) {
-    ROS_DEBUG_STREAM(m_name << "::updateAngle(theta = " << WHITE(theta) << ")");
-    m_params.theta = theta;
+  void setControlFlag(const bool needsControl) {
+    m_needsControl = needsControl;
   };
-  void setAngleByRadius(const T radius) {
-    setAngle(getTargetAngle(radius));
-    setControlWord(ControlType::CONTROL_ANGLE);
-  };
-  void updateAngleByRadius(const T radius) {
-    setAngle(getCallbackAngle());
-    ROS_DEBUG_STREAM(CYAN(m_name << "::needsUpdate = " << m_needsUpdate));
-    if (!m_needsUpdate) return;
-
-    if (const T targetAngle_{getTargetAngle(radius)};
-        needsAngleControl(targetAngle_)) {
-      setAngle(targetAngle_);
-      setControlWord(ControlType::CONTROL_ANGLE);
-      return;
-    }
-    setControlWord(ControlType::HOLD);
-  };
-  void incrementAngleBy(const int8_t diff, const T dTheta = T{0.1}) {
-    const T theta_{diff * dTheta};
-    ROS_DEBUG_STREAM(m_name << "::incrementAngleBy(diff = "
-                            << WHITE(static_cast<int>(diff))
-                            << ", dTheta = " << WHITE(dTheta) << ")");
-    m_params.theta += theta_;
-  };
-  void setControlWord(ControlType control_word) {
+  void resetControlFlag() { setControlFlag(false); };
+  void setControlWord(const ControlType control_word) {
     if (m_params.control_word == control_word) return;
     m_params.control_word = control_word;
     ROS_DEBUG_STREAM(BLUE(m_name
                           << "::set control_word to "
                           << YELLOW(static_cast<int>(m_params.control_word))));
   };
-
-  [[nodiscard]] bool needsAngleControl() const { return m_needsAngleControl; };
-  [[nodiscard]] T getRadius() const {
-    return m_config.length * r2d2_math::sin(m_params.theta);
+  void setAngle(const T theta) {
+    // ROS_DEBUG_STREAM(m_name << "::updateAngle(theta = " << WHITE(theta) <<
+    // ")");
+    m_params.theta = theta;
   };
+  void setCallbackAngle() {
+    ROS_DEBUG_STREAM(m_name << "::setCallbackAngle()");
+    setAngle(getCallbackAngle());
+    setControlWord(ControlType::HOLD);
+  };
+  void resetAngle() {
+    if (!m_needsControl) return;
+    ROS_DEBUG_STREAM(m_name << "::resetAngle()");
+    setAngle(0);
+    setControlWord(ControlType::CONTROL_ANGLE);
+  };
+  void setAngleByRadius(const T radius) {
+    if (!m_needsControl) return;
+    ROS_DEBUG_STREAM(m_name << "::setAngleByRadius(" << WHITE(radius) << ")");
+    setAngle(getTargetAngle(radius));
+    setControlWord(ControlType::CONTROL_ANGLE);
+  };
+  void incrementAngleBy(const int diff, const T thetaStep = T{0.01}) {
+    const T theta_{diff * thetaStep};
+    ROS_DEBUG_STREAM(m_name << "::incrementAngleBy(diff = " << WHITE(diff)
+                            << ", thetaStep = " << WHITE(thetaStep) << ")");
+    m_params.theta += theta_;
+  };
+
+  [[nodiscard]] bool needsControl() const { return m_needsControl; };
   [[nodiscard]] T getAngle() const {
     ROS_DEBUG_STREAM(m_name << "::getAngle() : " << WHITE(m_params.theta));
     return m_params.theta;
@@ -151,12 +148,20 @@ class JointHandler : public JointConfig<T> {
                             << WHITE(theta_));
     return theta_;
   };
+  [[nodiscard]] T getRadius() const {
+    const T radius_{m_config.length * r2d2_math::sin(getCallbackAngle())};
+    ROS_DEBUG_STREAM(m_name << "::getRadius() : " << WHITE(radius_));
+    return radius_;
+  };
   [[nodiscard]] T getTargetAngle(T radius) const {
     const T theta_{horner::polynome(m_config.coeffs, radius) -
                    m_config.angle_offset};
     ROS_DEBUG_STREAM(m_name << "::calcAngle(radius = " << WHITE(radius)
                             << ") : " << WHITE(theta_));
     return r2d2_math::max<T>(theta_, 0);
+  };
+  [[nodiscard]] T getAngleTolerance(const T minTolerance = T{0.1}) const {
+    return m_needsControl ? minTolerance : m_config.angle_tolerance;
   };
 };
 
@@ -171,20 +176,30 @@ class JointHandlerVector final
 
  public:
   void publish() { this->call_each(&JointHandler<T>::publish); };
-  void updateAngleByRadius(const T radius) {
-    this->call_each(&JointHandler<T>::updateAngleByRadius, radius);
+  void setCallbackAngle() {
+    this->call_each(&JointHandler<T>::setCallbackAngle);
   };
-  [[nodiscard]] bool needAngleControlAny() const {
+  void resetControlFlag() {
+    this->call_each(&JointHandler<T>::resetControlFlag);
+  };
+  void resetAngle() { this->call_each(&JointHandler<T>::resetAngle); };
+  [[nodiscard]] bool needsControlAny() const {
     return std::any_of(this->cbegin(), this->cend(),
-                       [](auto& obj) { return obj.needsAngleControl(); });
+                       [](auto& obj) { return obj.needsControl(); });
   };
-  [[nodiscard]] bool needAngleControlAll() const {
+  [[nodiscard]] bool needsControlAll() const {
     return std::all_of(this->cbegin(), this->cend(),
-                       [](auto& obj) { return obj.needsAngleControl(); });
+                       [](auto& obj) { return obj.needsControl(); });
   };
   [[nodiscard]] T getRadius() const {
     auto radiuses_{this->get_each(&JointHandler<T>::getRadius)};
     return std::accumulate(radiuses_.cbegin(), radiuses_.cend(), T{0});
   };
+  void setAngleByRadius(const T radius) {
+    this->call_each(&JointHandler<T>::setAngleByRadius, radius);
+  };
+  void updateControlFlag(const T radius) {
+    this->call_each(&JointHandler<T>::updateControlFlag, radius);
+  };
 };
-#endif  // R2D2_JOINT_HANDLER_HPP
+#endif  // INCLUDE_MANIPULATOR_CONTROL_JOINTHANDLER_HPP_

@@ -1,5 +1,5 @@
-#ifndef R2D2_MANIPULATOR_CONTROL_HPP
-#define R2D2_MANIPULATOR_CONTROL_HPP
+#ifndef INCLUDE_MANIPULATOR_CONTROL_MANIPULATORCONTROL_HPP_
+#define INCLUDE_MANIPULATOR_CONTROL_MANIPULATORCONTROL_HPP_
 
 #include "JointHandler.hpp"
 #include "PayloadHandler.hpp"
@@ -24,16 +24,9 @@ class ManipulatorConfig
   void updateConfig() { m_config = this->getParams(m_nozzleType.key); };
 
  public:
-  void resetMode() {
-    ROS_DEBUG("Reset mode");
-    m_workMode.type = r2d2_state::WorkMode::NONE;
-  };
-  void resetLock() {
-    ROS_DEBUG("Reset lock");
-    m_lockStatus.type = r2d2_state::LockStatus::NONE;
-  };
-  bool setMode(const T value) {
-    ROS_DEBUG_STREAM("Set mode(value = " << WHITE(value) << ")");
+  template <typename U>
+  bool setMode(const U& value) {
+    ROS_DEBUG_STREAM("setMode(val=" << WHITE(static_cast<int>(value)) << ")");
     m_workMode.updateType(value);
     if (m_workMode.key.empty()) {
       ROS_ERROR_STREAM("Got unknown work mode!");
@@ -41,8 +34,9 @@ class ManipulatorConfig
     }
     return true;
   };
-  bool setNozzle(const T value) {
-    ROS_DEBUG_STREAM("Set nozzle(value = " << WHITE(value) << ")");
+  template <typename U>
+  bool setNozzle(const U& value) {
+    ROS_DEBUG_STREAM("setNozzle(val=" << WHITE(static_cast<int>(value)) << ")");
     m_nozzleType.updateType(value);
     if (m_nozzleType.key.empty()) {
       ROS_ERROR_STREAM("Got unknown nozzle type!");
@@ -51,14 +45,23 @@ class ManipulatorConfig
     updateConfig();
     return true;
   };
-  bool setLock(const T value) {
-    ROS_DEBUG_STREAM("Set lock(value = " << WHITE(value) << ")");
+  template <typename U>
+  bool setLock(const U& value) {
+    ROS_DEBUG_STREAM("setLock(val=" << WHITE(static_cast<int>(value)) << ")");
     m_lockStatus.updateType(value);
     if (m_lockStatus.key.empty()) {
       ROS_ERROR_STREAM("Got unknown lock status!");
       return false;
     }
     return true;
+  };
+  void resetMode() {
+    ROS_DEBUG("Reset mode");
+    m_workMode.updateType(r2d2_state::WorkMode::NONE);
+  };
+  void resetLock() {
+    ROS_DEBUG("Reset lock");
+    m_lockStatus.updateType(r2d2_state::LockStatus::LOCKED);
   };
 };
 
@@ -86,32 +89,42 @@ class ManipulatorControlHandler final : public ManipulatorConfig<T> {
 
  private:
   void callbackManipulator(const ros::TimerEvent&);
+  void processSetup(const T radius, const T force);
+  void processControl(const T force);
   void processStop();
-  void checkSetup(const T force);
-  void processControl(const T radius, const T force);
-  void processAngleControl(const T radius);
-  void processForceControl(const T force);
 
  protected:
-  void publishResults() {
-    ROS_DEBUG_STREAM(MAGENTA("\npublishResults()"));
-    m_joints.publish();
+  void checkSetup(const T force) {
+    const bool needsAngleControl_{m_joints.needsControlAll()};
+    const bool needsForceControl_{force < getTargetForce()};
+    m_needsSetup = needsAngleControl_ && needsForceControl_;
+    ROS_DEBUG_STREAM(CYAN("needsAngleControl_ = " << needsAngleControl_));
+    ROS_DEBUG_STREAM(CYAN("needsForceControl_ = " << needsForceControl_));
+    ROS_DEBUG_STREAM(CYAN("m_needsSetup = " << m_needsSetup));
+  }
+  void updateControlFlag(const T force) {
+    m_payload.setControl(r2d2_math::abs(force) > getForceTolerance());
+    ROS_DEBUG_STREAM(CYAN("needsForceControl = " << m_payload.needsControl()));
   };
-  bool needsForceControl(const T force) const {
-    const bool needsForceControl_{r2d2_math::abs(force) > getForceTolerance()};
-    ROS_DEBUG_STREAM(CYAN("needsForceControl = " << needsForceControl_));
-    return needsForceControl_;
+  [[nodiscard]] T getForceDiff(const T force) const {
+    return force - getTargetForce();
   };
-  [[nodiscard]] int8_t getForceDiffSign(const T force) const {
-    const T forceDiff_{force - getTargetForce()};
+  [[nodiscard]] int8_t getForceDiffSign(const T force) {
+    const T forceDiff_{getForceDiff(force)};
     ROS_DEBUG_STREAM(BLUE("forceDiff = " << forceDiff_));
-    if (needsForceControl(forceDiff_)) return -r2d2_math::sign(forceDiff_);
+    updateControlFlag(forceDiff_);
+    if (m_payload.needsControl()) return -r2d2_math::sign(forceDiff_);
     return 0;
   };
 
  public:
+  [[nodiscard]] T getRadius() const {
+    const T radius_{m_config.r0};
+    ROS_DEBUG_STREAM("Base radius : " << WHITE(radius_));
+    return radius_;
+  };
   [[nodiscard]] T getCurrentRadius() const {
-    const T currentRadius_{m_joints.getRadius() + getRadius()};
+    const T currentRadius_{getRadius() + m_joints.getRadius()};
     ROS_DEBUG_STREAM(RED("Current radius : ") << WHITE(currentRadius_));
     return currentRadius_;
   };
@@ -122,13 +135,8 @@ class ManipulatorControlHandler final : public ManipulatorConfig<T> {
     ROS_DEBUG_STREAM("Target force : " << WHITE(force_));
     return force_;
   };
-  [[nodiscard]] T getForceTolerance() const {
-    return m_config.force_tolerance;
-  };
-  [[nodiscard]] T getRadius() const {
-    const T radius_{m_config.r0};
-    ROS_DEBUG_STREAM("Init radius : " << WHITE(radius_));
-    return radius_;
+  [[nodiscard]] T getForceTolerance(const T minTolerance = T{1}) const {
+    return m_payload.needsControl() ? minTolerance : m_config.force_tolerance;
   };
 };
-#endif  // R2D2_MANIPULATOR_CONTROL_HPP
+#endif  // INCLUDE_MANIPULATOR_CONTROL_MANIPULATORCONTROL_HPP_

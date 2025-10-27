@@ -1,5 +1,7 @@
 #include "ManipulatorControl.hpp"
 
+#include "r2d2_utils_pkg/Math.hpp"
+
 using namespace r2d2_state;
 using namespace r2d2_type;
 
@@ -22,75 +24,70 @@ void ManipulatorControlHandler<T>::callbackManipulator(const ros::TimerEvent&) {
   ROS_DEBUG_STREAM("\ncallbackManipulator()");
 
   switch (m_workMode.type) {
+    case WorkMode::SETUP:
+      ROS_DEBUG_STREAM(YELLOW("WorkMode::SETUP"));
+      processSetup(m_pipe.getRadius(), m_payload.getForce());
+      break;
+
     case WorkMode::AUTO:
       ROS_DEBUG_STREAM(YELLOW("WorkMode::AUTO"));
-      processControl(m_pipe.getRadius(), m_payload.getForce());
-      return;
-
-    case WorkMode::MANUAL:
-      ROS_DEBUG_STREAM(YELLOW("WorkMode::MANUAL"));
-      this->resetMode();
-      return;
+      processControl(m_payload.getForce());
+      break;
 
     case WorkMode::STOP:
       ROS_DEBUG_STREAM(YELLOW("WorkMode::STOP"));
       processStop();
-      return;
+      break;
 
     default:
       ROS_DEBUG_STREAM(YELLOW("Pending mode"));
       return;
   }
-}
-// TODO: make setAngleByRadius(getRadius()) for all
-template <typename T>
-void ManipulatorControlHandler<T>::processStop() {
-  processAngleControl(getRadius());
-  publishResults();
+  m_joints.publish();
 }
 template <typename T>
-void ManipulatorControlHandler<T>::checkSetup(const T force) {
+void ManipulatorControlHandler<T>::processSetup(const T radius, const T force) {
+  ROS_DEBUG_STREAM(MAGENTA("\nprocessSetup()"));
   if (!m_needsSetup) {
     ROS_DEBUG_STREAM_ONCE(CYAN("Control setup finished!"));
+    m_joints.resetControlFlag();
+    this->setMode(WorkMode::AUTO);
     return;
   }
-  ROS_DEBUG_STREAM(MAGENTA("\ncheckSetup()"));
-  const bool needsAngleControl_{m_joints.needAngleControlAll()};
-  const bool needsForceControl_{force < getTargetForce()};
-  m_needsSetup = needsAngleControl_ && needsForceControl_;
-  ROS_DEBUG_STREAM(CYAN("needsAngleControl_ = " << needsAngleControl_));
-  ROS_DEBUG_STREAM(CYAN("needsForceControl_ = " << needsForceControl_));
-  ROS_DEBUG_STREAM(CYAN("m_needsSetup = " << m_needsSetup));
-  ROS_DEBUG_STREAM(RED("\nend") << MAGENTA("::checkSetup()"));
+  checkSetup(force);
+  m_joints.setAngleByRadius(radius);
 }
 template <typename T>
-void ManipulatorControlHandler<T>::processControl(const T radius,
-                                                  const T force) {
+void ManipulatorControlHandler<T>::processControl(const T force) {
+  ROS_DEBUG_STREAM(MAGENTA("\nprocessControl()"));
+  const T curentRadius_{getCurrentRadius()};
   switch (m_lockStatus.type) {
     case LockStatus::UNLOCKED:
       ROS_DEBUG_STREAM(YELLOW("LockStatus::UNLOCKED"));
-      checkSetup(force);
-      processAngleControl(radius);
-      processForceControl(force);
-      break;
+      m_joints.setCallbackAngle();
+
+      m_shoulder.updateControlFlag(curentRadius_);
+      m_shoulder.setAngleByRadius(curentRadius_);
+
+      m_elbow.incrementAngleBy(getForceDiffSign(force),
+                               0.01 * r2d2_math::abs(getForceDiff(force)));
+      return;
+
     default:
-      break;
+      return;
   }
-  publishResults();
 }
 template <typename T>
-void ManipulatorControlHandler<T>::processAngleControl(const T radius) {
-  ROS_DEBUG_STREAM(MAGENTA("\nprocessRadiusControl()"));
-  m_joints.updateAngleByRadius(radius);
-  ROS_DEBUG_STREAM(RED("\nend") << MAGENTA("::processRadiusControl()"));
-}
-template <typename T>
-void ManipulatorControlHandler<T>::processForceControl(const T force) {
-  if (m_needsSetup) return;
-  ROS_DEBUG_STREAM(MAGENTA("\nprocessForceControl()"));
-  m_elbow.setAngleByRadius(getCurrentRadius() + getForceDiffSign(force));
-  // m_elbow.incrementAngleBy(getForceDiff(force));
-  ROS_DEBUG_STREAM(RED("\nend") << MAGENTA("::processForceControl()"));
+void ManipulatorControlHandler<T>::processStop() {
+  ROS_DEBUG_STREAM(MAGENTA("\nprocessStop()"));
+  m_joints.setCallbackAngle();
+  m_joints.updateControlFlag(getCurrentRadius());
+  if (!m_joints.needsControlAny()) {
+    m_needsSetup = true;
+    this->resetMode();
+    return;
+  }
+  m_joints.resetAngle();
 }
 
 template class ManipulatorControlHandler<>;

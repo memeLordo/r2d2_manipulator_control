@@ -12,10 +12,10 @@
        value="$(find manipulator_control)/rosconsole.conf"/>
   
   <!-- Запись топиков в rosbag -->
-  <node pkg="rosbag" type="record" name="console_log"
-    args="-O $(find manipulator_control)/.bags/console.bag /rosout"/>
-  <node pkg="rosbag" type="record" name="debug_log"
-    args='-O $(find manipulator_control)/.bags/manipulator.bag -e "/manipulator.*"'/>
+  <!-- <node pkg="rosbag" type="record" name="console_log" -->
+  <!--   args="-O $(find manipulator_control)/.bags/console.bag /rosout"/> -->
+  <!-- <node pkg="rosbag" type="record" name="debug_log" -->
+  <!--   args='-O $(find manipulator_control)/.bags/manipulator.bag -e "/manipulator.*"'/> -->
 
   <!-- Основной узел манипулятора -->
   <node pkg="manipulator_control" 

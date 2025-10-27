@@ -1,8 +1,9 @@
-#ifndef R2D2_PIPE_HANDLER_HPP
-#define R2D2_PIPE_HANDLER_HPP
+#ifndef INCLUDE_MANIPULATOR_CONTROL_PIPEHANDLER_HPP_
+#define INCLUDE_MANIPULATOR_CONTROL_PIPEHANDLER_HPP_
 
 #include <ros/topic.h>
 
+#include "TopicService.hpp"
 #include "r2d2_msg_pkg/PipeParameters.h"
 #include "r2d2_utils_pkg/Debug.hpp"
 #include "r2d2_utils_pkg/Strings.hpp"
@@ -31,9 +32,9 @@ class PipeHandler final : PipeConfig {
   PipeHandler() = default;
   explicit PipeHandler(ros::NodeHandle* node) : PipeConfig{} {
     ROS_DEBUG_STREAM(MAGENTA("PipeHandler()"));
-    waitForTopic();
     m_subscriber =
         node->subscribe(m_outputTopic, 1, &PipeHandler::callbackPipe, this);
+    TopicServiceHandler ts{node};
   };
   ~PipeHandler() noexcept {
     ROS_DEBUG_STREAM(RED("~PipeHandler()"));
@@ -47,14 +48,10 @@ class PipeHandler final : PipeConfig {
   };
 
  public:
-  void waitForTopic() {
-    ROS_INFO_STREAM(CYAN("Waiting for " << m_name << " topic..."));
-    ros::topic::waitForMessage<r2d2_msg_pkg::PipeParameters>(m_outputTopic);
-  };
   [[nodiscard]] T getRadius() const {
     const T radius_{m_callbackParams.radius()};
     ROS_DEBUG_STREAM(m_name << "::getRadius() : " << WHITE(radius_));
     return radius_;
   };
 };
-#endif  // R2D2_PIPE_HANDLER_HPP
+#endif  // INCLUDE_MANIPULATOR_CONTROL_PIPEHANDLER_HPP_
