@@ -118,17 +118,16 @@ class JointHandler : public JointConfig<T> {
     setAngle(getCallbackAngle());
     setControlWord(ControlType::HOLD);
   };
-  void setAngleByRadius(const T radius) {
-    if (!m_needsControl) return;
-    ROS_DEBUG_STREAM(
-        m_name << "::updateAngleByRadius(radius = " << WHITE(radius) << ")");
-    setAngle(getTargetAngle(radius));
-    setControlWord(ControlType::CONTROL_ANGLE);
-  };
   void resetAngle() {
     if (!m_needsControl) return;
     ROS_DEBUG_STREAM(m_name << "::resetAngle()");
     setAngle(0);
+    setControlWord(ControlType::CONTROL_ANGLE);
+  };
+  void setAngleByRadius(const T radius) {
+    if (!m_needsControl) return;
+    ROS_DEBUG_STREAM(m_name << "::setAngleByRadius(" << WHITE(radius) << ")");
+    setAngle(getTargetAngle(radius));
     setControlWord(ControlType::CONTROL_ANGLE);
   };
   void incrementAngleBy(const int diff, const T thetaStep = T{0.01}) {
