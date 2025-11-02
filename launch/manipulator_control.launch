@@ -5,7 +5,9 @@
 
 	<!-- Параметры среды -->
   <param name="control_rate" value="$(arg rate)"/>
-
+	<!-- Установка параметров логирования -->
+  <env name="ROSCONSOLE_FORMAT" 
+  	value="[${severity}] [${walltime:%d.%m.%Y %H:%M:%S:%f}] [${node}]: ${message}"/>
 	<!-- Первый узел манипулятора -->
 	<node pkg="manipulator_control" 
         type="manipulator_control_node" 
