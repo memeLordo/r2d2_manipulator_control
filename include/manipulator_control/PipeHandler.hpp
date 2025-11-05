@@ -5,7 +5,8 @@
 
 #include "TopicService.hpp"
 #include "r2d2_msg_pkg/PipeParameters.h"
-#include "r2d2_utils_pkg/Debug.hpp"
+#include "r2d2_utils_pkg/Logging/Console.hpp"
+#include "r2d2_utils_pkg/Logging/Custom.hpp"
 #include "r2d2_utils_pkg/Strings.hpp"
 #include "r2d2_utils_pkg/Types.hpp"
 

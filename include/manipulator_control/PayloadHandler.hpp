@@ -5,7 +5,8 @@
 
 #include "TopicAwait.hpp"
 #include "r2d2_msg_pkg/DriverState.h"
-#include "r2d2_utils_pkg/Debug.hpp"
+#include "r2d2_utils_pkg/Logging/Console.hpp"
+#include "r2d2_utils_pkg/Logging/Custom.hpp"
 #include "r2d2_utils_pkg/Math.hpp"
 #include "r2d2_utils_pkg/Strings.hpp"
 #include "r2d2_utils_pkg/Types.hpp"
