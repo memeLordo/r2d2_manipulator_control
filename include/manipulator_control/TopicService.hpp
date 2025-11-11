@@ -12,6 +12,12 @@ class TopicServiceHandler final {
 
  public:
   TopicServiceHandler() = default;
+  /**
+   * @brief Constructs a TopicServiceHandler and calls the parameter update service.
+   * @param node Pointer to the ROS node handle
+   * @details Connects to the /get_params service and requests a parameter update.
+   *          Logs a warning if the service call fails.
+   */
   explicit TopicServiceHandler(ros::NodeHandle* node) noexcept {
     ROS_DEBUG_STREAM(MAGENTA("TopicServiceHandler()"));
     using r2d2_msg_pkg::GetParams;
@@ -26,6 +32,9 @@ class TopicServiceHandler final {
     }
     ROS_INFO_STREAM(CYAN("Params updated succsessfully!"));
   };
+  /**
+   * @brief Destructor for TopicServiceHandler.
+   */
   ~TopicServiceHandler() noexcept {
     ROS_DEBUG_STREAM(RED("~TopicServiceHandler()"));
   }

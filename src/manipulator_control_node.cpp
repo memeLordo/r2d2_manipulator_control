@@ -1,6 +1,14 @@
 #include "ManipulatorControl.hpp"
 #include "ManipulatorService.hpp"
 
+/**
+ * @brief Main entry point for the manipulator control node.
+ * @param argc Number of command line arguments
+ * @param argv Command line arguments
+ * @return Exit code (0 on success)
+ * @details Initializes ROS, creates manipulator control and service handlers,
+ *          and enters the ROS spin loop. Handles exceptions and error records.
+ */
 int main(int argc, char** argv) {
   ros::init(argc, argv, "manipulator_control");
   ros::NodeHandle node;
