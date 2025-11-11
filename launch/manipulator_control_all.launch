@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="rate" default="50.0"/>
+  
+  <param name="control_rate" value="$(arg rate)"/>
+  
+  <!-- Запуск нод через include с подстановкой ID и rate -->
+  <include file="$(find manipulator_control)/launch/manipulator_control.launch">
+    <arg name="id" value="1"/>
+    <arg name="rate" value="$(arg rate)"/>
+  </include>
+  <include file="$(find manipulator_control)/launch/manipulator_control.launch">
+    <arg name="id" value="2"/>
+    <arg name="rate" value="$(arg rate)"/>
+  </include>
+  <include file="$(find manipulator_control)/launch/manipulator_control.launch">
+    <arg name="id" value="3"/>
+    <arg name="rate" value="$(arg rate)"/>
+  </include>
+  <include file="$(find manipulator_control)/launch/manipulator_control.launch">
+    <arg name="id" value="4"/>
+    <arg name="rate" value="$(arg rate)"/>
+  </include>
+  <include file="$(find manipulator_control)/launch/manipulator_control.launch">
+    <arg name="id" value="5"/>
+    <arg name="rate" value="$(arg rate)"/>
+  </include>
+  <include file="$(find manipulator_control)/launch/manipulator_control.launch">
+    <arg name="id" value="6"/>
+    <arg name="rate" value="$(arg rate)"/>
+  </include>
+  <include file="$(find manipulator_control)/launch/manipulator_control.launch">
+    <arg name="id" value="7"/>
+    <arg name="rate" value="$(arg rate)"/>
+  </include>
+  <include file="$(find manipulator_control)/launch/manipulator_control.launch">
+    <arg name="id" value="8"/>
+    <arg name="rate" value="$(arg rate)"/>
+  </include>
+</launch>

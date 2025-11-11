@@ -7,8 +7,8 @@
 #include "r2d2_msg_pkg/DriverCommand.h"
 #include "r2d2_msg_pkg/DriverState.h"
 #include "r2d2_utils_pkg/Collections.hpp"
-#include "r2d2_utils_pkg/Debug.hpp"
 #include "r2d2_utils_pkg/Json.hpp"
+#include "r2d2_utils_pkg/Logging/Custom.hpp"
 #include "r2d2_utils_pkg/Math.hpp"
 #include "r2d2_utils_pkg/Polynome.hpp"
 #include "r2d2_utils_pkg/Strings.hpp"
@@ -73,10 +73,8 @@ class JointHandler : public JointConfig<T> {
     const auto omega_{m_config.speed};
     const auto theta_{r2d2_process::Angle::wrap<int16_t>(m_params.theta)};
     const auto control_word_{static_cast<uint16_t>(m_params.control_word)};
-    ROS_DEBUG_STREAM(m_name << "::prepareMsg() |" << YELLOW(" omeha : ")
-                            << WHITE(omega_) << " " << YELLOW(" theta : ")
-                            << WHITE(theta_) << YELLOW(" control_word : ")
-                            << WHITE(control_word_));
+    ROS_DEBUG_NAMED_COLORED_VOID_C(m_name, ANSI_YELLOW, omega_, theta_,
+                                   control_word_);
     r2d2_msg_pkg::DriverCommand msg;
     msg.header.stamp = ros::Time::now();
     msg.omega = omega_;
@@ -86,16 +84,12 @@ class JointHandler : public JointConfig<T> {
   };
 
  public:
-  void publish() const {
-    ROS_DEBUG_STREAM(BLUE(m_name << "::publish()"));
-    m_publisher.publish(prepareMsg());
-  };
+  void publish() const { m_publisher.publish(prepareMsg()); };
   void updateControlFlag(const T radius) {
     m_needsControl =
         r2d2_math::abs(getCallbackAngle() - getTargetAngle(radius)) >
         getAngleTolerance();
-    ROS_DEBUG_STREAM(
-        CYAN(m_name << "::needsAngleControl_ = " << m_needsControl));
+    ROS_DEBUG_NAMED_COLORED_VARS_C(m_name, ANSI_CYAN, m_needsControl);
   };
   void setControlFlag(const bool needsControl) {
     m_needsControl = needsControl;
@@ -104,61 +98,55 @@ class JointHandler : public JointConfig<T> {
   void setControlWord(const ControlType control_word) {
     if (m_params.control_word == control_word) return;
     m_params.control_word = control_word;
-    ROS_DEBUG_STREAM(BLUE(m_name
-                          << "::set control_word to "
-                          << YELLOW(static_cast<int>(m_params.control_word))));
+    ROS_DEBUG_NAMED_COLORED_VARS_C(m_name, ANSI_BLUE, control_word);
+    // ROS_DEBUG_STREAM('[' + m_name + ']'
+    //                  << BLUE(" Set control_word to ")
+    //                  << YELLOW(static_cast<int>(m_params.control_word)));
   };
-  void setAngle(const T theta) {
-    // ROS_DEBUG_STREAM(m_name << "::updateAngle(theta = " << WHITE(theta) <<
-    // ")");
-    m_params.theta = theta;
-  };
+  void setAngle(const T theta) { m_params.theta = theta; };
   void setCallbackAngle() {
-    ROS_DEBUG_STREAM(m_name << "::setCallbackAngle()");
     setAngle(getCallbackAngle());
     setControlWord(ControlType::HOLD);
   };
   void resetAngle() {
     if (!m_needsControl) return;
-    ROS_DEBUG_STREAM(m_name << "::resetAngle()");
+    ROS_DEBUG_NAMED_VOID_C(m_name, "");
     setAngle(0);
     setControlWord(ControlType::CONTROL_ANGLE);
   };
   void setAngleByRadius(const T radius) {
     if (!m_needsControl) return;
-    ROS_DEBUG_STREAM(m_name << "::setAngleByRadius(" << WHITE(radius) << ")");
+    ROS_DEBUG_NAMED_VOID_C(m_name, radius);
     setAngle(getTargetAngle(radius));
     setControlWord(ControlType::CONTROL_ANGLE);
   };
   void incrementAngleBy(const T diff, const T thetaStep = T{1}) {
     const T theta_{diff * thetaStep};
-    ROS_DEBUG_STREAM(m_name << "::incrementAngleBy(diff = " << WHITE(diff)
-                            << ", thetaStep = " << WHITE(thetaStep) << ")");
+    ROS_DEBUG_NAMED_VOID_C(m_name, diff, thetaStep);
     m_params.theta += theta_;
   };
 
   [[nodiscard]] bool needsControl() const { return m_needsControl; };
   [[nodiscard]] T getAngle() const {
-    ROS_DEBUG_STREAM(m_name << "::getAngle() : " << WHITE(m_params.theta));
+    ROS_DEBUG_NAMED_VARS_C(m_name, m_params.theta);
     return m_params.theta;
   };
   [[nodiscard]] T getCallbackAngle() const {
     const T theta_{r2d2_process::Angle::unwrap<T>(m_callbackParams.theta)};
-    ROS_DEBUG_STREAM(m_name << YELLOW("::getCallbackAngle() : ")
-                            << WHITE(theta_));
+    ROS_DEBUG_NAMED_FUNC_C(m_name, theta_, "");
     return theta_;
   };
   [[nodiscard]] T getRadius() const {
     const T radius_{m_config.length * r2d2_math::sin(getCallbackAngle())};
-    ROS_DEBUG_STREAM(m_name << "::getRadius() : " << WHITE(radius_));
+    ROS_DEBUG_NAMED_FUNC_C(m_name, radius_, "");
     return radius_;
   };
   [[nodiscard]] T getTargetAngle(T radius) const {
     const T theta_{horner::polynome(m_config.coeffs, radius) -
                    m_config.angle_offset};
-    ROS_DEBUG_STREAM(m_name << "::calcAngle(radius = " << WHITE(radius)
-                            << ") : " << WHITE(theta_));
-    return r2d2_math::max<T>(theta_, 0);
+    const T res_{r2d2_math::max<T>(theta_, 0)};
+    ROS_DEBUG_NAMED_FUNC_C(m_name, res_, radius);
+    return res_;
   };
   [[nodiscard]] T getAngleTolerance(const T minTolerance = T{0.1}) const {
     return m_needsControl ? minTolerance : m_config.angle_tolerance;

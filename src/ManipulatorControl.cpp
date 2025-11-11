@@ -19,7 +19,7 @@ ManipulatorControlHandler<T>::ManipulatorControlHandler(ros::NodeHandle* node)
 }
 template <typename T>
 void ManipulatorControlHandler<T>::callbackManipulator(const ros::TimerEvent&) {
-  ROS_DEBUG_STREAM("\ncallbackManipulator()");
+  ROS_DEBUG_STREAM(MAGENTA("\ncallbackManipulator()"));
 
   switch (m_workMode.type) {
     case WorkMode::SETUP:
