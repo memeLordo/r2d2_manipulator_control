@@ -37,9 +37,11 @@ class PipeHandler final : PipeConfig {
  public:
   PipeHandler() = default;
   /**
-   * @brief Constructs a PipeHandler and initializes ROS subscriber and parameter service.
+   * @brief Constructs a PipeHandler and initializes ROS subscriber and
+   * parameter service.
    * @param node Pointer to the ROS node handle
-   * @details Subscribes to pipe parameters topic and calls the parameter update service.
+   * @details Subscribes to pipe parameters topic and calls the parameter update
+   * service.
    */
   explicit PipeHandler(ros::NodeHandle* node) : PipeConfig{} {
     ROS_DEBUG_STREAM(MAGENTA(m_name + "Handler()"));
@@ -56,7 +58,8 @@ class PipeHandler final : PipeConfig {
   /**
    * @brief Callback function for receiving pipe parameter messages.
    * @param msg The pipe parameters message containing diameter and thickness
-   * @details Updates the internal callback parameters with the latest pipe dimensions.
+   * @details Updates the internal callback parameters with the latest pipe
+   * dimensions.
    */
   void callbackPipe(const r2d2_msg_pkg::PipeParametersConstPtr& msg) {
     m_callbackParams =

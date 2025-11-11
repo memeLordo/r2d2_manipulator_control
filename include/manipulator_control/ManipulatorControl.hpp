@@ -17,8 +17,10 @@ class ManipulatorConfig
 
  protected:
   /**
-   * @brief Constructs a ManipulatorConfig object with the specified configuration file.
-   * @param fileName The name of the JSON configuration file (default: "nozzles")
+   * @brief Constructs a ManipulatorConfig object with the specified
+   * configuration file.
+   * @param fileName The name of the JSON configuration file (default:
+   * "nozzles")
    */
   explicit ManipulatorConfig(const std::string& fileName = "nozzles")
       : IJsonConfigMap<r2d2_type::config::nozzle_t, T>{fileName} {};
@@ -26,7 +28,8 @@ class ManipulatorConfig
  protected:
   /**
    * @brief Updates the configuration based on the current nozzle type.
-   * @details Reloads configuration parameters from the JSON file for the current nozzle type.
+   * @details Reloads configuration parameters from the JSON file for the
+   * current nozzle type.
    */
   void updateConfig() { m_config = this->getParams(m_nozzleType.key); };
 
@@ -50,7 +53,8 @@ class ManipulatorConfig
   /**
    * @brief Sets the nozzle type and updates the configuration.
    * @param value The nozzle type value to set
-   * @return True if the nozzle type was set successfully, false if the type is unknown
+   * @return True if the nozzle type was set successfully, false if the type is
+   * unknown
    * @details Updates the nozzle type and reloads configuration parameters.
    */
   template <typename U>
@@ -89,9 +93,11 @@ class ManipulatorControlHandler final : public ManipulatorConfig<T> {
 
  public:
   /**
-   * @brief Constructs a ManipulatorControlHandler and initializes all components.
+   * @brief Constructs a ManipulatorControlHandler and initializes all
+   * components.
    * @param node Pointer to the ROS node handle
-   * @details Initializes pipe, payload, and joint handlers, and sets up the control timer.
+   * @details Initializes pipe, payload, and joint handlers, and sets up the
+   * control timer.
    */
   explicit ManipulatorControlHandler(ros::NodeHandle* node);
   /**
@@ -104,7 +110,8 @@ class ManipulatorControlHandler final : public ManipulatorConfig<T> {
 
  private:
   /**
-   * @brief Timer callback function that processes manipulator control based on work mode.
+   * @brief Timer callback function that processes manipulator control based on
+   * work mode.
    * @param event The timer event (unused)
    * @details Handles different work modes: SETUP, AUTO, and STOP.
    */
@@ -130,10 +137,11 @@ class ManipulatorControlHandler final : public ManipulatorConfig<T> {
 
  protected:
   /**
-   * @brief Checks if setup is still needed based on angle and force control status.
+   * @brief Checks if setup is still needed based on angle and force control
+   * status.
    * @param force The current payload force
-   * @details Updates m_needsSetup flag based on whether all joints need angle control
-   *          and if force is below target threshold.
+   * @details Updates m_needsSetup flag based on whether all joints need angle
+   * control and if force is below target threshold.
    */
   void checkSetup(const T force) {
     const bool needsAngleControl_{m_joints.needsControlAll()};
@@ -173,7 +181,8 @@ class ManipulatorControlHandler final : public ManipulatorConfig<T> {
   };
   /**
    * @brief Gets the target force value based on setup state.
-   * @return Target force - includes tolerance during setup, otherwise just the needed force
+   * @return Target force - includes tolerance during setup, otherwise just the
+   * needed force
    */
   [[nodiscard]] T getTargetForce() const {
     const T force_{m_needsSetup
@@ -193,7 +202,8 @@ class ManipulatorControlHandler final : public ManipulatorConfig<T> {
   /**
    * @brief Gets the force tolerance threshold for control decisions.
    * @param minTolerance Minimum tolerance value (default: 1)
-   * @return The force tolerance - minimum if control is needed, config value otherwise
+   * @return The force tolerance - minimum if control is needed, config value
+   * otherwise
    */
   [[nodiscard]] T getForceTolerance(const T minTolerance = T{1}) const {
     return m_payload.needsControl() ? minTolerance : m_config.force_tolerance;

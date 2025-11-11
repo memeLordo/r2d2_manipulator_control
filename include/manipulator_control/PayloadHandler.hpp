@@ -41,7 +41,8 @@ class PayloadHandler final : PayloadConfig {
   /**
    * @brief Constructs a PayloadHandler and initializes ROS subscriber.
    * @param node Pointer to the ROS node handle
-   * @details Waits for the driver state topic to become available, then subscribes to it.
+   * @details Waits for the driver state topic to become available, then
+   * subscribes to it.
    */
   explicit PayloadHandler(ros::NodeHandle* node) : PayloadConfig{} {
     ROS_DEBUG_STREAM(MAGENTA(m_name + "Handler()"));
@@ -58,7 +59,8 @@ class PayloadHandler final : PayloadConfig {
   /**
    * @brief Callback function for receiving payload driver state messages.
    * @param msg The driver state message containing force data
-   * @details Updates the internal callback parameters with the latest force value.
+   * @details Updates the internal callback parameters with the latest force
+   * value.
    */
   void callbackPayload(const r2d2_msg_pkg::DriverStateConstPtr& msg) {
     m_callbackParams = r2d2_type::callback::payload16_t{msg->force};

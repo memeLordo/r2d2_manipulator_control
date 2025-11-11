@@ -7,8 +7,9 @@ using namespace r2d2_type;
  * @brief Constructs a ManipulatorControlHandler and initializes all components.
  * @tparam T Numeric type for calculations (default: double)
  * @param node Pointer to the ROS node handle
- * @details Initializes pipe, payload, and joint handlers, and sets up the control timer
- *          based on the control_rate parameter from the ROS parameter server.
+ * @details Initializes pipe, payload, and joint handlers, and sets up the
+ * control timer based on the control_rate parameter from the ROS parameter
+ * server.
  */
 template <typename T>
 ManipulatorControlHandler<T>::ManipulatorControlHandler(ros::NodeHandle* node)
@@ -25,11 +26,13 @@ ManipulatorControlHandler<T>::ManipulatorControlHandler(ros::NodeHandle* node)
       &ManipulatorControlHandler<T>::callbackManipulator, this);
 }
 /**
- * @brief Timer callback function that processes manipulator control based on work mode.
+ * @brief Timer callback function that processes manipulator control based on
+ * work mode.
  * @tparam T Numeric type for calculations (default: double)
  * @param event The timer event (unused)
- * @details Handles different work modes: SETUP (initial positioning), AUTO (automatic control),
- *          and STOP (reset to zero). Publishes joint commands after processing.
+ * @details Handles different work modes: SETUP (initial positioning), AUTO
+ * (automatic control), and STOP (reset to zero). Publishes joint commands after
+ * processing.
  */
 template <typename T>
 void ManipulatorControlHandler<T>::callbackManipulator(const ros::TimerEvent&) {
@@ -63,7 +66,8 @@ void ManipulatorControlHandler<T>::callbackManipulator(const ros::TimerEvent&) {
  * @param radius The current pipe radius
  * @param force The current payload force
  * @details Sets joint angles based on radius and checks if setup is complete.
- *          If setup is finished, switches to AUTO mode and resets control flags.
+ *          If setup is finished, switches to AUTO mode and resets control
+ * flags.
  */
 template <typename T>
 void ManipulatorControlHandler<T>::processSetup(const T radius, const T force) {
@@ -81,9 +85,9 @@ void ManipulatorControlHandler<T>::processSetup(const T radius, const T force) {
  * @brief Processes automatic control mode.
  * @tparam T Numeric type for calculations (default: double)
  * @param force The current payload force
- * @details Synchronizes joint angles with current positions, updates control flags,
- *          adjusts shoulder angle based on current radius, and adjusts elbow angle
- *          based on force difference to maintain target force.
+ * @details Synchronizes joint angles with current positions, updates control
+ * flags, adjusts shoulder angle based on current radius, and adjusts elbow
+ * angle based on force difference to maintain target force.
  */
 template <typename T>
 void ManipulatorControlHandler<T>::processControl(const T force) {

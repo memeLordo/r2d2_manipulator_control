@@ -6,7 +6,8 @@ using namespace r2d2_process;
 
 /**
  * @brief Global configuration object for loading conversion rate parameters.
- * @details Loads the "convert_rate.json" configuration file to access angle and force conversion ratios.
+ * @details Loads the "convert_rate.json" configuration file to access angle and
+ * force conversion ratios.
  */
 IJsonConfig<true> jc{"convert_rate"};
 

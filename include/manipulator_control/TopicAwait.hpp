@@ -10,8 +10,8 @@
  * @tparam MsgType The message type expected on the topic
  * @param name The name identifier for logging purposes
  * @param outputTopic The topic name to wait for
- * @details Blocks until the specified topic becomes available, useful for ensuring
- *          topics are ready before subscribing or publishing.
+ * @details Blocks until the specified topic becomes available, useful for
+ * ensuring topics are ready before subscribing or publishing.
  */
 template <typename MsgType>
 inline void waitForTopic(std::string_view name,

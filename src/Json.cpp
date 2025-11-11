@@ -25,7 +25,8 @@ namespace nlohmann {
  * @tparam T Numeric type for the configuration values
  * @param j The JSON object to deserialize from
  * @param p The joint_t object to populate
- * @details Extracts coefficients, length, speed, angle_offset, and angle_tolerance from JSON.
+ * @details Extracts coefficients, length, speed, angle_offset, and
+ * angle_tolerance from JSON.
  */
 template <typename T>
 void from_json(const json& j, joint_t<T>& p) {
@@ -55,7 +56,8 @@ void from_json(const json& j, nozzle_t<T>& p) {
  * @tparam Type The configuration type template
  * @tparam T Numeric type for the configuration values
  * @param fileName The name of the JSON configuration file
- * @details Loads the JSON file and deserializes all entries into a map of configuration objects.
+ * @details Loads the JSON file and deserializes all entries into a map of
+ * configuration objects.
  */
 template <template <typename> class Type, typename T>
 IJsonConfigMap<Type, T>::IJsonConfigMap(std::string_view fileName)

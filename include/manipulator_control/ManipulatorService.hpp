@@ -12,7 +12,8 @@ class ManipulatorServiceHandler final {
 
  public:
   /**
-   * @brief Constructs a ManipulatorServiceHandler and advertises the manipulator command service.
+   * @brief Constructs a ManipulatorServiceHandler and advertises the
+   * manipulator command service.
    * @param node Pointer to the ROS node handle
    * @param manipulatorControlRef Reference to the manipulator control handler
    * @details Sets up a ROS service server for receiving manipulator commands.
