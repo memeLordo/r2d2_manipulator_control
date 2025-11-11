@@ -7,26 +7,30 @@
 using namespace r2d2_type::config;
 
 /**
- * @brief Gets the full file path for a configuration file.
- * @param fileName The name of the configuration file (without extension)
- * @return The full path to the configuration file
+ * @brief   Gets the full file path for a configuration file.
+ *
+ * @param   fileName The name of the configuration file (without extension)
+ * @return           The full path to the configuration file
+ *
  * @details Constructs the path as: <package_path>/config/<fileName>.json
  */
 std::string r2d2_json::getFilePath(std::string_view fileName) noexcept {
-  const std::string dirName_{"config"};
   const std::string packageName_{"manipulator_control"};
+  const std::string dirName_{"config"};
   return {ros::package::getPath(packageName_) + "/" + dirName_ + "/" +
           std::string{fileName} + ".json"};
 }
 
 namespace nlohmann {
 /**
- * @brief Deserializes a joint_t configuration from JSON.
- * @tparam T Numeric type for the configuration values
- * @param j The JSON object to deserialize from
- * @param p The joint_t object to populate
+ * @brief   Deserializes a joint_t configuration from JSON.
+ *
+ * @tparam  T Numeric type for the configuration values
+ * @param   j The JSON object to deserialize from
+ * @param   p The joint_t object to populate
+ *
  * @details Extracts coefficients, length, speed, angle_offset, and
- * angle_tolerance from JSON.
+ *          angle_tolerance from JSON.
  */
 template <typename T>
 void from_json(const json& j, joint_t<T>& p) {
@@ -36,11 +40,14 @@ void from_json(const json& j, joint_t<T>& p) {
   j.at("angle_offset").get_to(p.angle_offset);
   j.at("angle_tolerance").get_to(p.angle_tolerance);
 }
+
 /**
- * @brief Deserializes a nozzle_t configuration from JSON.
- * @tparam T Numeric type for the configuration values
- * @param j The JSON object to deserialize from
- * @param p The nozzle_t object to populate
+ * @brief   Deserializes a nozzle_t configuration from JSON.
+ *
+ * @tparam  T Numeric type for the configuration values
+ * @param   j The JSON object to deserialize from
+ * @param   p The nozzle_t object to populate
+ *
  * @details Extracts target_force, force_tolerance, and init_radius from JSON.
  */
 template <typename T>
@@ -52,19 +59,20 @@ void from_json(const json& j, nozzle_t<T>& p) {
 }  // namespace nlohmann
 
 /**
- * @brief Constructs an IJsonConfigMap and loads all parameters from JSON.
- * @tparam Type The configuration type template
- * @tparam T Numeric type for the configuration values
- * @param fileName The name of the JSON configuration file
+ * @brief   Constructs an IJsonConfigMap and loads all parameters from JSON.
+ *
+ * @tparam  Type     The configuration type template
+ * @tparam  T        Numeric type for the configuration values
+ * @param   fileName The name of the JSON configuration file
+ *
  * @details Loads the JSON file and deserializes all entries into a map of
- * configuration objects.
+ *          configuration objects.
  */
 template <template <typename> class Type, typename T>
 IJsonConfigMap<Type, T>::IJsonConfigMap(std::string_view fileName)
     : IJsonConfig<>(fileName) {
-  for (const auto& [key, value] : this->m_json.items()) {
+  for (const auto& [key, value] : this->m_json.items())
     m_paramsMap[key] = value.template get<Type<T>>();
-  }
 }
 
 template class IJsonConfigMap<joint_t>;

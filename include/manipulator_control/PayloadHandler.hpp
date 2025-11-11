@@ -18,8 +18,10 @@ class PayloadConfig {
 
  protected:
   /**
-   * @brief Constructs a PayloadConfig object with the specified name.
-   * @param name The name of the payload (default: "payload")
+   * @brief   Constructs a PayloadConfig object with the specified name.
+   *
+   * @param   name The name of the payload (default: "payload")
+   *
    * @details Initializes the payload name and output topic name.
    */
   explicit PayloadConfig(std::string_view name = "payload")
@@ -38,11 +40,14 @@ class PayloadHandler final : PayloadConfig {
 
  public:
   PayloadHandler() = default;
+
   /**
-   * @brief Constructs a PayloadHandler and initializes ROS subscriber.
-   * @param node Pointer to the ROS node handle
+   * @brief   Constructs a PayloadHandler and initializes ROS subscriber.
+   *
+   * @param   node Pointer to the ROS node handle
+   *
    * @details Waits for the driver state topic to become available, then
-   * subscribes to it.
+   *          subscribes to it.
    */
   explicit PayloadHandler(ros::NodeHandle* node) : PayloadConfig{} {
     ROS_DEBUG_STREAM(MAGENTA(m_name + "Handler()"));
@@ -57,10 +62,12 @@ class PayloadHandler final : PayloadConfig {
 
  private:
   /**
-   * @brief Callback function for receiving payload driver state messages.
-   * @param msg The driver state message containing force data
+   * @brief   Callback function for receiving payload driver state messages.
+   *
+   * @param   msg The driver state message containing force data
+   *
    * @details Updates the internal callback parameters with the latest force
-   * value.
+   *            value.
    */
   void callbackPayload(const r2d2_msg_pkg::DriverStateConstPtr& msg) {
     m_callbackParams = r2d2_type::callback::payload16_t{msg->force};
@@ -68,22 +75,31 @@ class PayloadHandler final : PayloadConfig {
 
  public:
   /**
-   * @brief Sets the control flag to the specified value.
-   * @param needsControl Boolean indicating whether control is needed
+   * @brief   Sets the control flag to the specified value.
+   *
+   * @param   needsControl Boolean indicating whether control is needed
    */
   void setControl(const bool needsControl) { m_needsControl = needsControl; };
+
   /**
-   * @brief Resets the control flag to false.
+   * @brief   Resets the control flag to false.
    */
   void resetControl() { setControl(false); };
+
   /**
-   * @brief Checks if the payload needs control.
-   * @return True if control is needed, false otherwise
+   * @brief   Checks if the payload needs control.
+   *
+   * @return  True if control is needed, false otherwise
    */
-  [[nodiscard]] bool needsControl() const { return m_needsControl; };
+  [[nodiscard]] bool needsControl() const {
+    ROS_DEBUG_NAMED_COLORED_VARS_C(m_name, ANSI_CYAN, m_needsControl);
+    return m_needsControl;
+  };
+
   /**
-   * @brief Gets the current force value from the callback data.
-   * @return The unwrapped force value from the latest driver state message
+   * @brief   Gets the current force value from the callback data.
+   *
+   * @return  The unwrapped force value from the latest driver state message
    */
   [[nodiscard]] T getForce() const {
     const T force_{r2d2_process::Force::unwrap<T>(m_callbackParams.force)};

@@ -6,12 +6,14 @@
 #include "r2d2_utils_pkg/Logging/Console.hpp"
 
 /**
- * @brief Waits for a ROS topic to become available before proceeding.
- * @tparam MsgType The message type expected on the topic
- * @param name The name identifier for logging purposes
- * @param outputTopic The topic name to wait for
+ * @brief   Waits for a ROS topic to become available before proceeding.
+ *
+ * @tparam  MsgType     The message type expected on the topic
+ * @param   name        The name identifier for logging purposes
+ * @param   outputTopic The topic name to wait for
+ *
  * @details Blocks until the specified topic becomes available, useful for
- * ensuring topics are ready before subscribing or publishing.
+ *          ensuring topics are ready before subscribing or publishing.
  */
 template <typename MsgType>
 inline void waitForTopic(std::string_view name,

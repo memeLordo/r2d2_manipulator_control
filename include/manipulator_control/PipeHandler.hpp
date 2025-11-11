@@ -17,8 +17,10 @@ class PipeConfig {
 
  protected:
   /**
-   * @brief Constructs a PipeConfig object with the specified name.
-   * @param name The name of the pipe (default: "pipe")
+   * @brief   Constructs a PipeConfig object with the specified name.
+   *
+   * @param   name The name of the pipe (default: "pipe")
+   *
    * @details Initializes the pipe name and output topic name for parameters.
    */
   explicit PipeConfig(std::string_view name = "pipe")
@@ -36,12 +38,15 @@ class PipeHandler final : PipeConfig {
 
  public:
   PipeHandler() = default;
+
   /**
-   * @brief Constructs a PipeHandler and initializes ROS subscriber and
-   * parameter service.
-   * @param node Pointer to the ROS node handle
+   * @brief   Constructs a PipeHandler and initializes ROS subscriber and
+   *          parameter service.
+   *
+   * @param   node Pointer to the ROS node handle
+   *
    * @details Subscribes to pipe parameters topic and calls the parameter update
-   * service.
+   *          service.
    */
   explicit PipeHandler(ros::NodeHandle* node) : PipeConfig{} {
     ROS_DEBUG_STREAM(MAGENTA(m_name + "Handler()"));
@@ -56,10 +61,12 @@ class PipeHandler final : PipeConfig {
 
  private:
   /**
-   * @brief Callback function for receiving pipe parameter messages.
-   * @param msg The pipe parameters message containing diameter and thickness
+   * @brief   Callback function for receiving pipe parameter messages.
+   *
+   * @param   msg The pipe parameters message containing diameter and thickness
+   *
    * @details Updates the internal callback parameters with the latest pipe
-   * dimensions.
+   *          dimensions.
    */
   void callbackPipe(const r2d2_msg_pkg::PipeParametersConstPtr& msg) {
     m_callbackParams =
@@ -68,8 +75,9 @@ class PipeHandler final : PipeConfig {
 
  public:
   /**
-   * @brief Calculates the pipe radius from diameter and thickness.
-   * @return The calculated pipe radius value
+   * @brief   Calculates the pipe radius from diameter and thickness.
+   *
+   * @return  The calculated pipe radius value
    */
   [[nodiscard]] T getRadius() const {
     const T radius_{m_callbackParams.radius()};

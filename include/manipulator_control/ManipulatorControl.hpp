@@ -17,27 +17,32 @@ class ManipulatorConfig
 
  protected:
   /**
-   * @brief Constructs a ManipulatorConfig object with the specified
-   * configuration file.
-   * @param fileName The name of the JSON configuration file (default:
-   * "nozzles")
+   * @brief   Constructs a ManipulatorConfig object with the specified
+   *          configuration file.
+   *
+   * @param   fileName The name of the JSON configuration file
+   *                   (default: "nozzles")
    */
   explicit ManipulatorConfig(const std::string& fileName = "nozzles")
       : IJsonConfigMap<r2d2_type::config::nozzle_t, T>{fileName} {};
 
  protected:
   /**
-   * @brief Updates the configuration based on the current nozzle type.
+   * @brief   Updates the configuration based on the current nozzle type.
+   *
    * @details Reloads configuration parameters from the JSON file for the
-   * current nozzle type.
+   *          current nozzle type.
    */
   void updateConfig() { m_config = this->getParams(m_nozzleType.key); };
 
  public:
   /**
-   * @brief Sets the work mode for the manipulator.
-   * @param value The work mode value to set
-   * @return True if the mode was set successfully, false if the mode is unknown
+   * @brief   Sets the work mode for the manipulator.
+   *
+   * @param   value The work mode value to set
+   * @return        True if the mode was set successfully,
+   *                false if the mode is unknown
+   *
    * @details Updates the internal work mode state and validates the mode.
    */
   template <typename U>
@@ -50,11 +55,14 @@ class ManipulatorConfig
     }
     return true;
   };
+
   /**
-   * @brief Sets the nozzle type and updates the configuration.
-   * @param value The nozzle type value to set
-   * @return True if the nozzle type was set successfully, false if the type is
-   * unknown
+   * @brief   Sets the nozzle type and updates the configuration.
+   *
+   * @param   value The nozzle type value to set
+   * @return        True if the nozzle type was set successfully,
+   *                false if the type is unknown
+   *
    * @details Updates the nozzle type and reloads configuration parameters.
    */
   template <typename U>
@@ -68,8 +76,9 @@ class ManipulatorConfig
     updateConfig();
     return true;
   };
+
   /**
-   * @brief Resets the work mode to NONE.
+   * @brief   Resets the work mode to NONE.
    */
   void resetMode() {
     ROS_DEBUG("Reset mode");
@@ -93,15 +102,18 @@ class ManipulatorControlHandler final : public ManipulatorConfig<T> {
 
  public:
   /**
-   * @brief Constructs a ManipulatorControlHandler and initializes all
-   * components.
-   * @param node Pointer to the ROS node handle
+   * @brief   Constructs a ManipulatorControlHandler and initializes all
+   *          components.
+   *
+   * @param   node Pointer to the ROS node handle
+   *
    * @details Initializes pipe, payload, and joint handlers, and sets up the
-   * control timer.
+   *          control timer.
    */
   explicit ManipulatorControlHandler(ros::NodeHandle* node);
+
   /**
-   * @brief Destructor that stops the control timer.
+   * @brief   Destructor that stops the control timer.
    */
   ~ManipulatorControlHandler() noexcept {
     ROS_DEBUG_STREAM(RED("~ManipulatorControlHandler()"));
@@ -110,38 +122,50 @@ class ManipulatorControlHandler final : public ManipulatorConfig<T> {
 
  private:
   /**
-   * @brief Timer callback function that processes manipulator control based on
-   * work mode.
-   * @param event The timer event (unused)
+   * @brief   Timer callback function that processes manipulator control based
+   *          on work mode.
+   *
+   * @param   event The timer event (unused)
+   *
    * @details Handles different work modes: SETUP, AUTO, and STOP.
    */
   void callbackManipulator(const ros::TimerEvent&);
+
   /**
-   * @brief Processes the setup phase of manipulator control.
-   * @param radius The current pipe radius
-   * @param force The current payload force
+   * @brief   Processes the setup phase of manipulator control.
+   *
+   * @param   radius The current pipe radius
+   * @param   force The current payload force
+   *
    * @details Sets joint angles based on radius and checks if setup is complete.
    */
   void processSetup(const T radius, const T force);
+
   /**
-   * @brief Processes automatic control mode.
-   * @param force The current payload force
+   * @brief   Processes automatic control mode.
+   *
+   * @param   force The current payload force
+   *
    * @details Adjusts joint angles based on force feedback and current radius.
    */
   void processControl(const T force);
+
   /**
-   * @brief Processes the stop phase, resetting joints to zero position.
+   * @brief   Processes the stop phase, resetting joints to zero position.
+   *
    * @details Resets all joints to zero angle when no control is needed.
    */
   void processStop();
 
  protected:
   /**
-   * @brief Checks if setup is still needed based on angle and force control
-   * status.
-   * @param force The current payload force
+   * @brief   Checks if setup is still needed based on angle and force control
+   *          status.
+   *
+   * @param   force The current payload force
+   *
    * @details Updates m_needsSetup flag based on whether all joints need angle
-   * control and if force is below target threshold.
+   *          control and if force is below target threshold.
    */
   void checkSetup(const T force) {
     const bool needsAngleControl_{m_joints.needsControlAll()};
@@ -149,40 +173,47 @@ class ManipulatorControlHandler final : public ManipulatorConfig<T> {
     m_needsSetup = needsAngleControl_ && needsForceControl_;
     ROS_DEBUG_COLORED_VARS_C(ANSI_CYAN, needsAngleControl_, needsForceControl_,
                              m_needsSetup);
-  }
+  };
+
   /**
-   * @brief Updates the payload control flag based on force tolerance.
-   * @param force The current payload force
+   * @brief   Updates the payload control flag based on force tolerance.
+   *
+   * @param   force The current payload force
+   *
    * @details Sets payload control flag if force exceeds tolerance threshold.
    */
   void updateControlFlag(const T force) {
     m_payload.setControl(r2d2_math::abs(force) > getForceTolerance());
-    ROS_DEBUG_COLORED_VARS_C(ANSI_CYAN, m_payload.needsControl());
   };
 
  public:
   /**
-   * @brief Gets the base radius from configuration.
-   * @return The base radius value (r0) from nozzle configuration
+   * @brief   Gets the base radius from configuration.
+   *
+   * @return  The base radius value (r0) from nozzle configuration
    */
   [[nodiscard]] T getRadius() const {
     const T radius_{m_config.r0};
     ROS_DEBUG_STREAM("Base radius : " << WHITE(radius_));
     return radius_;
   };
+
   /**
-   * @brief Calculates the current total radius (base + joint contributions).
-   * @return The sum of base radius and all joint radii
+   * @brief   Calculates the current total radius (base + joint contributions).
+   *
+   * @return  The sum of base radius and all joint radii
    */
   [[nodiscard]] T getCurrentRadius() const {
     const T currentRadius_{getRadius() + m_joints.getRadius()};
     ROS_DEBUG_STREAM(RED("Current radius : ") << WHITE(currentRadius_));
     return currentRadius_;
   };
+
   /**
-   * @brief Gets the target force value based on setup state.
-   * @return Target force - includes tolerance during setup, otherwise just the
-   * needed force
+   * @brief   Gets the target force value based on setup state.
+   *
+   * @return  Target force - includes tolerance during setup, otherwise just the
+   *          needed force
    */
   [[nodiscard]] T getTargetForce() const {
     const T force_{m_needsSetup
@@ -191,19 +222,24 @@ class ManipulatorControlHandler final : public ManipulatorConfig<T> {
     ROS_DEBUG_STREAM(CYAN("Target force : ") << WHITE(force_));
     return force_;
   };
+
   /**
-   * @brief Calculates the difference between current force and target force.
-   * @param force The current payload force
-   * @return The force difference if payload control is needed, 0 otherwise
+   * @brief   Calculates the difference between current force and target force.
+   *
+   * @param   force The current payload force
+   * @return        The force difference if payload control is needed,
+   *                otherwise 0
    */
   [[nodiscard]] T getTargetForceDiff(const T force) const {
     return m_payload.needsControl() ? force - getTargetForce() : 0;
   };
+
   /**
-   * @brief Gets the force tolerance threshold for control decisions.
-   * @param minTolerance Minimum tolerance value (default: 1)
-   * @return The force tolerance - minimum if control is needed, config value
-   * otherwise
+   * @brief   Gets the force tolerance threshold for control decisions.
+   *
+   * @param   minTolerance Minimum tolerance value (default: 1)
+   * @return               The force tolerance - minimum if control is needed,
+   *                       config value otherwise
    */
   [[nodiscard]] T getForceTolerance(const T minTolerance = T{1}) const {
     return m_payload.needsControl() ? minTolerance : m_config.force_tolerance;

@@ -12,10 +12,12 @@ class ManipulatorServiceHandler final {
 
  public:
   /**
-   * @brief Constructs a ManipulatorServiceHandler and advertises the
-   * manipulator command service.
-   * @param node Pointer to the ROS node handle
-   * @param manipulatorControlRef Reference to the manipulator control handler
+   * @brief   Constructs a ManipulatorServiceHandler and advertises the
+   *          manipulator command service.
+   *
+   * @param   node Pointer to the ROS node handle
+   * @param   manipulatorControlRef Reference to the manipulator control handler
+   *
    * @details Sets up a ROS service server for receiving manipulator commands.
    */
   explicit ManipulatorServiceHandler(
@@ -32,10 +34,12 @@ class ManipulatorServiceHandler final {
 
  private:
   /**
-   * @brief Main service callback that handles manipulator command requests.
-   * @param req The service request containing work mode and nozzle type
-   * @param res The service response indicating success/failure
-   * @return True if the service call was processed successfully
+   * @brief   Main service callback that handles manipulator command requests.
+   *
+   * @param   req The service request containing work mode and nozzle type
+   * @param   res The service response indicating success/failure
+   * @return      True if the service call was processed successfully
+   *
    * @details Processes both mode and nozzle type changes from the request.
    */
   [[nodiscard]] bool callbackService(
@@ -46,10 +50,12 @@ class ManipulatorServiceHandler final {
   };
 
   /**
-   * @brief Handles work mode change requests from the service.
-   * @param req The service request containing the work mode
-   * @param res The service response (success flag is updated)
-   * @return True if the callback was processed
+   * @brief   Handles work mode change requests from the service.
+   *
+   * @param   req The service request containing the work mode
+   * @param   res The service response (success flag is updated)
+   * @return      True if the callback was processed
+   *
    * @details Sets the work mode in the manipulator control handler.
    */
   [[nodiscard]] bool callbackModeService(
@@ -62,10 +68,12 @@ class ManipulatorServiceHandler final {
   };
 
   /**
-   * @brief Handles nozzle type change requests from the service.
-   * @param req The service request containing the nozzle type
-   * @param res The service response (success flag is updated)
-   * @return True if the callback was processed
+   * @brief   Handles nozzle type change requests from the service.
+   *
+   * @param   req The service request containing the nozzle type
+   * @param   res The service response (success flag is updated)
+   * @return      True if the callback was processed
+   *
    * @details Sets the nozzle type in the manipulator control handler.
    */
   [[nodiscard]] bool callbackNozzleService(

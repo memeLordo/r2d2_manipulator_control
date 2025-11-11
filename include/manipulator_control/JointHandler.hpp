@@ -24,12 +24,16 @@ class JointConfig : private IJsonConfigMap<r2d2_type::config::joint_t, T> {
 
  protected:
   /**
-   * @brief Constructs a JointConfig object with the specified joint name and
-   * configuration file.
-   * @param name The name of the joint (will be capitalized for display)
-   * @param fileName The name of the JSON configuration file (default: "joints")
+   * @brief   Constructs a JointConfig object with the specified joint name and
+   *          configuration file.
+   *
+   * @param   name     The name of the joint (will be capitalized for display)
+   * @param   fileName The name of the JSON configuration file
+   *                   (default: "joints")
+   *
    * @details Initializes the joint configuration by loading parameters from the
-   * JSON file, sets up input and output topic names based on the joint name.
+   *          JSON file, sets up input and output topic names based on the joint
+   *          name.
    */
   explicit JointConfig(std::string_view name,
                        std::string_view fileName = "joints")
@@ -56,13 +60,17 @@ class JointHandler : public JointConfig<T> {
 
  public:
   JointHandler() = default;
+
   /**
-   * @brief Constructs a JointHandler and initializes ROS subscribers and
-   * publishers.
-   * @param node Pointer to the ROS node handle
-   * @param name The name of the joint to handle
+   * @brief   Constructs a JointHandler and initializes ROS subscribers and
+   *          publishers.
+   *
+   * @param   node Pointer to the ROS node handle
+   * @param   name The name of the joint to handle
+   *
    * @details Waits for the driver state topic to become available, then
-   * subscribes to the output topic and advertises the input command topic.
+   *          subscribes to the output topic and advertises the input command
+   *          topic.
    */
   explicit JointHandler(ros::NodeHandle* node, const std::string& name)
       : JointConfig<T>(name) {
@@ -72,8 +80,9 @@ class JointHandler : public JointConfig<T> {
         node->subscribe(m_outputTopic, 1, &JointHandler::callbackJoint, this);
     m_publisher = node->advertise<r2d2_msg_pkg::DriverCommand>(m_inputTopic, 1);
   };
+
   /**
-   * @brief Destructor that shuts down ROS publishers and subscribers.
+   * @brief   Destructor that shuts down ROS publishers and subscribers.
    */
   ~JointHandler() noexcept {
     ROS_DEBUG_STREAM(RED("~" + m_name + "Handler()"));
@@ -83,11 +92,13 @@ class JointHandler : public JointConfig<T> {
 
  private:
   /**
-   * @brief Callback function for receiving driver state messages.
-   * @param msg The driver state message containing omega, theta, and
-   * control_word
+   * @brief   Callback function for receiving driver state messages.
+   *
+   * @param   msg The driver state message containing omega, theta, and
+   *          control_word
+   *
    * @details Updates the internal callback parameters with the latest joint
-   * state.
+   *          state.
    */
   void callbackJoint(const r2d2_msg_pkg::DriverStateConstPtr& msg) {
     m_callbackParams = r2d2_type::callback::joint16_t{msg->omega, msg->theta,
@@ -96,10 +107,12 @@ class JointHandler : public JointConfig<T> {
 
  protected:
   /**
-   * @brief Prepares a DriverCommand message with current joint parameters.
-   * @return A DriverCommand message ready to be published
+   * @brief   Prepares a DriverCommand message with current joint parameters.
+   *
+   * @return  A DriverCommand message ready to be published
+   *
    * @details Wraps the target angle, sets the speed from config, and includes
-   * the control word.
+   *          the control word.
    */
   r2d2_msg_pkg::DriverCommand prepareMsg() const {
     const auto omega_{m_config.speed};
@@ -117,15 +130,18 @@ class JointHandler : public JointConfig<T> {
 
  public:
   /**
-   * @brief Publishes the prepared driver command message.
+   * @brief   Publishes the prepared driver command message.
    */
   void publish() const { m_publisher.publish(prepareMsg()); };
+
   /**
-   * @brief Updates the control flag based on the difference between current and
-   * target angles.
-   * @param radius The current radius value used to calculate the target angle
+   * @brief   Updates the control flag based on the difference between current
+   *          and target angles.
+   *
+   * @param   radius The current radius value used to calculate the target angle
+   *
    * @details Sets m_needsControl to true if the angle difference exceeds the
-   * tolerance threshold.
+   *          tolerance threshold.
    */
   void updateControlFlag(const T radius) {
     m_needsControl =
@@ -133,49 +149,57 @@ class JointHandler : public JointConfig<T> {
         getAngleTolerance();
     ROS_DEBUG_NAMED_COLORED_VARS_C(m_name, ANSI_CYAN, m_needsControl);
   };
+
   /**
-   * @brief Sets the control flag to the specified value.
-   * @param needsControl Boolean indicating whether control is needed
+   * @brief   Sets the control flag to the specified value.
+   *
+   * @param   needsControl Boolean indicating whether control is needed
    */
   void setControlFlag(const bool needsControl) {
     m_needsControl = needsControl;
   };
+
   /**
-   * @brief Resets the control flag to false.
+   * @brief   Resets the control flag to false.
    */
   void resetControlFlag() { setControlFlag(false); };
+
   /**
-   * @brief Sets the control word for the joint driver.
-   * @param control_word The control type (e.g., HOLD, CONTROL_ANGLE)
+   * @brief   Sets the control word for the joint driver.
+   *
+   * @param   control_word The control type (e.g., HOLD, CONTROL_ANGLE)
+   *
    * @details Only updates if the control word has changed to avoid unnecessary
-   * logging.
+   *          logging.
    */
   void setControlWord(const ControlType control_word) {
     if (m_params.control_word == control_word) return;
     m_params.control_word = control_word;
     ROS_DEBUG_NAMED_COLORED_VARS_C(m_name, ANSI_BLUE, control_word);
-    // ROS_DEBUG_STREAM('[' + m_name + ']'
-    //                  << BLUE(" Set control_word to ")
-    //                  << YELLOW(static_cast<int>(m_params.control_word)));
   };
+
   /**
-   * @brief Sets the target angle for the joint.
-   * @param theta The target angle value
+   * @brief   Sets the target angle for the joint.
+   *
+   * @param   theta The target angle value
    */
   void setAngle(const T theta) { m_params.theta = theta; };
+
   /**
-   * @brief Sets the angle to the current callback angle and switches to HOLD
-   * mode.
+   * @brief   Sets the angle to the current callback angle and switches to HOLD
+   *          mode.
    * @details Synchronizes the target angle with the current joint position.
    */
   void setCallbackAngle() {
     setAngle(getCallbackAngle());
     setControlWord(ControlType::HOLD);
   };
+
   /**
-   * @brief Resets the angle to zero and switches to CONTROL_ANGLE mode.
+   * @brief   Resets the angle to zero and switches to CONTROL_ANGLE mode.
+   *
    * @details Only performs the reset if control is needed (m_needsControl is
-   * true).
+   *          true).
    */
   void resetAngle() {
     if (!m_needsControl) return;
@@ -183,11 +207,14 @@ class JointHandler : public JointConfig<T> {
     setAngle(0);
     setControlWord(ControlType::CONTROL_ANGLE);
   };
+
   /**
-   * @brief Sets the angle based on the provided radius value.
-   * @param radius The radius value used to calculate the target angle
+   * @brief   Sets the angle based on the provided radius value.
+   *
+   * @param   radius The radius value used to calculate the target angle
+   *
    * @details Only updates if control is needed. Calculates target angle using
-   * polynomial coefficients.
+   *          polynomial coefficients.
    */
   void setAngleByRadius(const T radius) {
     if (!m_needsControl) return;
@@ -195,12 +222,15 @@ class JointHandler : public JointConfig<T> {
     setAngle(getTargetAngle(radius));
     setControlWord(ControlType::CONTROL_ANGLE);
   };
+
   /**
-   * @brief Increments the current angle by a calculated delta.
-   * @param diff The difference multiplier
-   * @param thetaStep The step size multiplier (default: 1)
+   * @brief   Increments the current angle by a calculated delta.
+   *
+   * @param   diff The difference multiplier
+   * @param   thetaStep The step size multiplier (default: 1)
+   *
    * @details Calculates the increment as diff * thetaStep and adds it to the
-   * current angle.
+   *          current angle.
    */
   void incrementAngleBy(const T diff, const T thetaStep = T{1}) {
     const T theta_{diff * thetaStep};
@@ -209,43 +239,53 @@ class JointHandler : public JointConfig<T> {
   };
 
   /**
-   * @brief Checks if the joint needs control.
-   * @return True if control is needed, false otherwise
+   * @brief   Checks if the joint needs control.
+   *
+   * @return  True if control is needed, false otherwise
    */
   [[nodiscard]] bool needsControl() const { return m_needsControl; };
+
   /**
-   * @brief Gets the current target angle.
-   * @return The target angle value
+   * @brief   Gets the current target angle.
+   *
+   * @return  The target angle value
    */
   [[nodiscard]] T getAngle() const {
     ROS_DEBUG_NAMED_VARS_C(m_name, m_params.theta);
     return m_params.theta;
   };
+
   /**
-   * @brief Gets the current angle from the callback data.
-   * @return The unwrapped angle value from the latest driver state message
+   * @brief   Gets the current angle from the callback data.
+   *
+   * @return  The unwrapped angle value from the latest driver state message
    */
   [[nodiscard]] T getCallbackAngle() const {
     const T theta_{r2d2_process::Angle::unwrap<T>(m_callbackParams.theta)};
     ROS_DEBUG_NAMED_FUNC_C(m_name, theta_, "");
     return theta_;
   };
+
   /**
-   * @brief Calculates the current radius based on the joint angle.
-   * @return The radius value calculated as length * sin(angle)
+   * @brief   Calculates the current radius based on the joint angle.
+   *
+   * @return  The radius value calculated as length * sin(angle)
    */
   [[nodiscard]] T getRadius() const {
     const T radius_{m_config.length * r2d2_math::sin(getCallbackAngle())};
     ROS_DEBUG_NAMED_FUNC_C(m_name, radius_, "");
     return radius_;
   };
+
   /**
-   * @brief Calculates the target angle for a given radius using polynomial
-   * coefficients.
-   * @param radius The radius value to calculate the angle for
-   * @return The target angle, clamped to be non-negative
+   * @brief   Calculates the target angle for a given radius using polynomial
+   *          coefficients.
+   *
+   * @param   radius The radius value to calculate the angle for
+   * @return  The target angle, clamped to be non-negative
+   *
    * @details Uses Horner's method to evaluate the polynomial and subtracts the
-   * angle offset.
+   *          angle offset.
    */
   [[nodiscard]] T getTargetAngle(T radius) const {
     const T theta_{horner::polynome(m_config.coeffs, radius) -
@@ -254,11 +294,13 @@ class JointHandler : public JointConfig<T> {
     ROS_DEBUG_NAMED_FUNC_C(m_name, res_, radius);
     return res_;
   };
+
   /**
-   * @brief Gets the angle tolerance threshold for control decisions.
-   * @param minTolerance Minimum tolerance value (default: 0.1)
-   * @return The angle tolerance - minimum if control is needed, config value
-   * otherwise
+   * @brief   Gets the angle tolerance threshold for control decisions.
+   *
+   * @param   minTolerance Minimum tolerance value (default: 0.1)
+   * @return  The angle tolerance - minimum if control is needed, config value
+   *          otherwise
    */
   [[nodiscard]] T getAngleTolerance(const T minTolerance = T{0.1}) const {
     return m_needsControl ? minTolerance : m_config.angle_tolerance;
@@ -270,9 +312,10 @@ class JointHandlerVector final
     : public NamedHandlerVector<std::vector, JointHandler, T> {
  public:
   /**
-   * @brief Constructs a vector of joint handlers.
-   * @param node Pointer to the ROS node handle
-   * @param names Variadic list of joint names to create handlers for
+   * @brief   Constructs a vector of joint handlers.
+   *
+   * @param   node Pointer to the ROS node handle
+   * @param   names Variadic list of joint names to create handlers for
    */
   template <typename... Args>
   JointHandlerVector(ros::NodeHandle* node, Args&&... names)
@@ -281,60 +324,73 @@ class JointHandlerVector final
 
  public:
   /**
-   * @brief Publishes commands for all joints in the vector.
+   * @brief   Publishes commands for all joints in the vector.
    */
   void publish() { this->call_each(&JointHandler<T>::publish); };
+
   /**
-   * @brief Sets all joints to their callback angles (synchronizes with current
-   * positions).
+   * @brief   Sets all joints to their callback angles (synchronizes with
+   * current positions).
    */
   void setCallbackAngle() {
     this->call_each(&JointHandler<T>::setCallbackAngle);
   };
+
   /**
-   * @brief Resets the control flag for all joints.
+   * @brief   Resets the control flag for all joints.
    */
   void resetControlFlag() {
     this->call_each(&JointHandler<T>::resetControlFlag);
   };
+
   /**
-   * @brief Resets angles for all joints.
+   * @brief   Resets angles for all joints.
    */
   void resetAngle() { this->call_each(&JointHandler<T>::resetAngle); };
+
   /**
-   * @brief Checks if any joint needs control.
-   * @return True if at least one joint needs control, false otherwise
+   * @brief   Checks if any joint needs control.
+   *
+   * @return  True if at least one joint needs control, false otherwise
    */
   [[nodiscard]] bool needsControlAny() const {
     return std::any_of(this->cbegin(), this->cend(),
                        [](auto& obj) { return obj.needsControl(); });
   };
+
   /**
-   * @brief Checks if all joints need control.
-   * @return True if all joints need control, false otherwise
+   * @brief   Checks if all joints need control.
+   *
+   * @return  True if all joints need control, false otherwise
    */
   [[nodiscard]] bool needsControlAll() const {
     return std::all_of(this->cbegin(), this->cend(),
                        [](auto& obj) { return obj.needsControl(); });
   };
+
   /**
-   * @brief Calculates the total radius from all joints.
-   * @return The sum of all joint radii
+   * @brief   Calculates the total radius from all joints.
+   *
+   * @return  The sum of all joint radii
    */
   [[nodiscard]] T getRadius() const {
     auto radiuses_{this->get_each(&JointHandler<T>::getRadius)};
     return std::accumulate(radiuses_.cbegin(), radiuses_.cend(), T{0});
   };
+
   /**
-   * @brief Sets angles for all joints based on the provided radius.
-   * @param radius The radius value to use for angle calculation
+   * @brief   Sets angles for all joints based on the provided radius.
+   *
+   * @param   radius The radius value to use for angle calculation
    */
   void setAngleByRadius(const T radius) {
     this->call_each(&JointHandler<T>::setAngleByRadius, radius);
   };
+
   /**
-   * @brief Updates control flags for all joints based on the provided radius.
-   * @param radius The radius value used to calculate target angles
+   * @brief   Updates control flags for all joints based on the provided radius.
+   *
+   * @param   radius The radius value used to calculate target angles
    */
   void updateControlFlag(const T radius) {
     this->call_each(&JointHandler<T>::updateControlFlag, radius);
