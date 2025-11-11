@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <launch>
 	<!-- Аргументы конфигурации -->
-	<arg name="rate"  default="1.0"/>
   <arg name="id" 	  default="1"/>
+	<arg name="rate"  default="1.0"/>
 
 	<!-- Параметры среды -->
 	<param name="control_rate" value="$(arg rate)"/>
@@ -18,17 +18,8 @@
   <!--   args='-O $(find manipulator_control)/.bags/manipulator.bag -e "/manipulator.*"'/> -->
 
   <!-- Основной узел манипулятора -->
-  <node pkg="manipulator_control" 
-        type="manipulator_control_node" 
-        name="manipulator_control_node_$(arg id)"
-    output="screen">
-
-		<!-- Переназначение топиков -->
-		<remap from="/elbow_input"         to="/manipulator$(arg id)/elbow_input"/>
-		<remap from="/elbow_output"        to="/manipulator$(arg id)/elbow_output"/>
-		<remap from="/shoulder_input"      to="/manipulator$(arg id)/shoulder_input"/>
-		<remap from="/shoulder_output"     to="/manipulator$(arg id)/shoulder_output"/>
-		<remap from="/payload_output"      to="/manipulator$(arg id)/payload_output"/>
-		<remap from="/manipulator_command" to="/manipulator$(arg id)/manipulator_command"/>
-	</node>
+  <include file="$(find manipulator_control)/launch/manipulator_control.launch">
+    <arg name="id" value="$(arg id)"/>
+    <arg name="rate" value="$(arg rate)"/>
+  </include>
 </launch>

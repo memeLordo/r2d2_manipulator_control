@@ -4,7 +4,7 @@
 #include <ros/node_handle.h>
 
 #include "r2d2_msg_pkg/GetParams.h"
-#include "r2d2_utils_pkg/Debug.hpp"
+#include "r2d2_utils_pkg/Logging/Console.hpp"
 
 class TopicServiceHandler final {
  private:

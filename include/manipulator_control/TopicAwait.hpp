@@ -3,7 +3,7 @@
 
 #include <ros/topic.h>
 
-#include "r2d2_utils_pkg/Debug.hpp"
+#include "r2d2_utils_pkg/Logging/Console.hpp"
 
 template <typename MsgType>
 inline void waitForTopic(std::string_view name,

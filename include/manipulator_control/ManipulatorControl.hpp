@@ -82,13 +82,12 @@ class ManipulatorControlHandler final : public ManipulatorConfig<T> {
     const bool needsAngleControl_{m_joints.needsControlAll()};
     const bool needsForceControl_{force < getTargetForce()};
     m_needsSetup = needsAngleControl_ && needsForceControl_;
-    ROS_DEBUG_STREAM(CYAN("needsAngleControl_ = " << needsAngleControl_));
-    ROS_DEBUG_STREAM(CYAN("needsForceControl_ = " << needsForceControl_));
-    ROS_DEBUG_STREAM(CYAN("m_needsSetup = " << m_needsSetup));
+    ROS_DEBUG_COLORED_VARS_C(ANSI_CYAN, needsAngleControl_, needsForceControl_,
+                             m_needsSetup);
   }
   void updateControlFlag(const T force) {
     m_payload.setControl(r2d2_math::abs(force) > getForceTolerance());
-    ROS_DEBUG_STREAM(CYAN("needsForceControl = " << m_payload.needsControl()));
+    ROS_DEBUG_COLORED_VARS_C(ANSI_CYAN, m_payload.needsControl());
   };
 
  public:
@@ -106,7 +105,7 @@ class ManipulatorControlHandler final : public ManipulatorConfig<T> {
     const T force_{m_needsSetup
                        ? m_config.force_needed + m_config.force_tolerance
                        : m_config.force_needed};
-    ROS_DEBUG_STREAM("Target force : " << WHITE(force_));
+    ROS_DEBUG_STREAM(CYAN("Target force : ") << WHITE(force_));
     return force_;
   };
   [[nodiscard]] T getTargetForceDiff(const T force) const {
