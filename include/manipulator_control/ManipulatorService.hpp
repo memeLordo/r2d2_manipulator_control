@@ -11,6 +11,15 @@ class ManipulatorServiceHandler final {
   ros::ServiceServer m_manipulatorService;
 
  public:
+  /**
+   * @brief   Constructs a ManipulatorServiceHandler and advertises the
+   *          manipulator command service.
+   *
+   * @param   node Pointer to the ROS node handle
+   * @param   manipulatorControlRef Reference to the manipulator control handler
+   *
+   * @details Sets up a ROS service server for receiving manipulator commands.
+   */
   explicit ManipulatorServiceHandler(
       ros::NodeHandle* node, ManipulatorControlHandler<>& manipulatorControlRef)
       : m_serviceTopic{"/manipulator_command"},
@@ -24,6 +33,15 @@ class ManipulatorServiceHandler final {
   };
 
  private:
+  /**
+   * @brief   Main service callback that handles manipulator command requests.
+   *
+   * @param   req The service request containing work mode and nozzle type
+   * @param   res The service response indicating success/failure
+   * @return      True if the service call was processed successfully
+   *
+   * @details Processes both mode and nozzle type changes from the request.
+   */
   [[nodiscard]] bool callbackService(
       r2d2_msg_pkg::ManipulatorCommand::Request& req,
       r2d2_msg_pkg::ManipulatorCommand::Response& res) {
@@ -31,6 +49,15 @@ class ManipulatorServiceHandler final {
     return callbackModeService(req, res) && callbackNozzleService(req, res);
   };
 
+  /**
+   * @brief   Handles work mode change requests from the service.
+   *
+   * @param   req The service request containing the work mode
+   * @param   res The service response (success flag is updated)
+   * @return      True if the callback was processed
+   *
+   * @details Sets the work mode in the manipulator control handler.
+   */
   [[nodiscard]] bool callbackModeService(
       r2d2_msg_pkg::ManipulatorCommand::Request& req,
       r2d2_msg_pkg::ManipulatorCommand::Response& res) {
@@ -40,6 +67,15 @@ class ManipulatorServiceHandler final {
     return true;
   };
 
+  /**
+   * @brief   Handles nozzle type change requests from the service.
+   *
+   * @param   req The service request containing the nozzle type
+   * @param   res The service response (success flag is updated)
+   * @return      True if the callback was processed
+   *
+   * @details Sets the nozzle type in the manipulator control handler.
+   */
   [[nodiscard]] bool callbackNozzleService(
       r2d2_msg_pkg::ManipulatorCommand::Request& req,
       r2d2_msg_pkg::ManipulatorCommand::Response& res) {
