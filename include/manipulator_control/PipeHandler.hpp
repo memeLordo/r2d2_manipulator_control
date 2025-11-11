@@ -32,13 +32,13 @@ class PipeHandler final : PipeConfig {
  public:
   PipeHandler() = default;
   explicit PipeHandler(ros::NodeHandle* node) : PipeConfig{} {
-    ROS_DEBUG_STREAM(MAGENTA("PipeHandler()"));
+    ROS_DEBUG_STREAM(MAGENTA(m_name + "Handler()"));
     m_subscriber =
         node->subscribe(m_outputTopic, 1, &PipeHandler::callbackPipe, this);
     TopicServiceHandler ts{node};
   };
   ~PipeHandler() noexcept {
-    ROS_DEBUG_STREAM(RED("~PipeHandler()"));
+    ROS_DEBUG_STREAM(RED("~" + m_name + "Handler()"));
     m_subscriber.shutdown();
   };
 
@@ -51,7 +51,7 @@ class PipeHandler final : PipeConfig {
  public:
   [[nodiscard]] T getRadius() const {
     const T radius_{m_callbackParams.radius()};
-    ROS_DEBUG_STREAM(m_name << "::getRadius() : " << WHITE(radius_));
+    ROS_DEBUG_NAMED_FUNC_C(m_name, radius_, "");
     return radius_;
   };
 };
