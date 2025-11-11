@@ -9,7 +9,7 @@
 
 	<!-- Установка параметров логирования -->
   <env name="ROSCONSOLE_FORMAT" 
-  	   value="[${severity}] [${walltime:%d.%m.%Y %H:%M:%S:%f}]: ${message}"/>
+  	   value="[${severity}] [${walltime:%d.%m.%Y %H:%M:%S.%f}]: ${message}"/>
 
   <!-- Основной узел манипулятора -->
   <node pkg="manipulator_control" 
